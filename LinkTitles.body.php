@@ -47,11 +47,13 @@
 
 				// Build an SQL query and fetch all page titles ordered
 				// by length from shortest to longest.
+				// Only titles from 'normal' pages (namespace uid = 0)
+				// are returned.
 				$dbr = wfGetDB( DB_SLAVE );
 				$res = $dbr->select( 
 					'page', 
 					'page_title', 
-					'', 
+					'page_namespace = 0', 
 					__METHOD__, 
 					array( 'ORDER BY' => 'length(page_title)' ));
 

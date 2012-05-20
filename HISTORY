@@ -1,5 +1,8 @@
 Extension:LinkTitles
 
+0.0.3: 2012-05-20
+* Only look for page titles from 'normal' pages (namespace = 0).
+
 0.0.2: 2012-05-20
 * Prevent generation of self-references.
 * Escape slashes in page titles before using them in a regexp.
