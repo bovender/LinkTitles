@@ -5,9 +5,9 @@
 $messages = array();
 
 $messages['en'] = array(
-	'pubmedparser-desc' => 'Automatically adds links to existing pages when a page is saved.',
+	'linktitles-desc' => 'Automatically adds links to existing pages when a page is saved.',
 );
 
 $messages['de'] = array(
-	'pubmedparser-desc' => 'Fügt beim Speichern von Seiten automatisch Querverweise zu vorhandenen Seiten ein.',
+	'linktitles-desc' => 'Fügt beim Speichern von Seiten automatisch Querverweise zu vorhandenen Seiten ein.',
 );
