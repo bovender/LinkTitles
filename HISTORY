@@ -1,5 +1,11 @@
 Extension:LinkTitles
 
+0.0.5: 2012-05-20
+* Add $wgLinkTitlesMinimumTitleLength configuration variable.
+
+0.0.4: 2012-05-20
+* Add $wgLinkTitlesPreferShortTitles configuration variable.
+
 0.0.3: 2012-05-20
 * Only look for page titles from 'normal' pages (namespace = 0).
 

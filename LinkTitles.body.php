@@ -36,6 +36,10 @@
 		public static function onArticleSave( &$article, &$user, &$text, &$summary,
 				$minor, $watchthis, $sectionanchor, &$flags, &$status ) {
 
+			// Configuration variables need to be defined here as globals.
+			global $wgLinkTitlesPreferShortTitles;
+			global $wgLinkTitlesMinimumTitleLength;
+
 			// To prevent time-consuming parsing of the page whenever
 			// it is edited and saved, we only parse it if the flag
 			// 'minor edits' is not set.
@@ -55,9 +59,9 @@
 				$res = $dbr->select( 
 					'page', 
 					'page_title', 
-					'page_namespace = 0', 
+					array( 'page_namespace = 0', 'CHAR_LENGTH(page_title) > ' . $wgLinkTitlesMinimumTitleLength ), 
 					__METHOD__, 
-					array( 'ORDER BY' => 'length(page_title) ' . $sort_order ));
+					array( 'ORDER BY' => 'CHAR_LENGTH(page_title) ' . $sort_order ));
 
 				// Iterate through the page titles
 				$new_text = $text;
@@ -75,7 +79,6 @@
 							// even indexes will text that is not enclosed by brackets
 							$arr[$i] = preg_replace( '/\b(' . $safe_title . ')\b/i', '[[$1]]', $arr[$i] );
 						};
-						dump( $arr );
 						$new_text = implode( '', $arr );
 					}; // if $title != $my_title
 				}; // foreach $res as $row
