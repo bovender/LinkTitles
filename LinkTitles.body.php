@@ -41,6 +41,10 @@
 			// 'minor edits' is not set.
 
 			if ( !$minor ) {
+				// To prevent adding self-references, we now
+				// extract the current page's title.
+				$my_title = $article->getTitle()->getText();
+
 				// Build an SQL query and fetch all page titles ordered
 				// by length from shortest to longest.
 				$dbr = wfGetDB( DB_SLAVE );
@@ -52,22 +56,32 @@
 					array( 'ORDER BY' => 'length(page_title)' ));
 
 				// Iterate through the page titles
+				$new_text = $text;
 				foreach( $res as $row ) {
 					// Page titles are stored in the database with spaces
 					// replaced by underscores. Therefore we now convert
 					// the underscores back to spaces.
 					$title = str_replace('_', ' ', $row->page_title);
 
-					// Now look for every occurrence of $title in the
-					// page $text and enclose it in double square brackets,
-					// unless it is already enclosed in brackets (directly
-					// adjacent or remotely, see http://stackoverflow.com/questions/10672286
-					// Regex built with the help from Eugene @ Stackoverflow
-					// http://stackoverflow.com/a/10672440/270712
-					$text = preg_replace(
-						'/(' . $title . ')([^\]]+(\[|$))/i',
-						'[[$1]]$2',
-						$text );
+					if ( $title != $my_title ) {
+
+						// Now look for every occurrence of $title in the
+						// page $text and enclose it in double square brackets,
+						// unless it is already enclosed in brackets (directly
+						// adjacent or remotely, see http://stackoverflow.com/questions/10672286
+						// Regex built with the help from Eugene @ Stackoverflow
+						// http://stackoverflow.com/a/10672440/270712
+						$new_text = preg_replace(
+							'/(\b' . str_replace('/', '\/', $title) . '\b)([^\]]+(\[|$))/i',
+							'[[$1]]$2',
+							$new_text );
+						if ( $new_text == '' ) {
+							throw new Exception( 'new text was deleted! - title: ' . $title );
+						};
+					}; // if $title != $my_title
+				}; // foreach $res as $row
+				if ( $new_text != '' ) {
+					$text = $new_text;
 				};
 			};
 			return true;
