@@ -55,7 +55,7 @@
 					'page_title', 
 					'page_namespace = 0', 
 					__METHOD__, 
-					array( 'ORDER BY' => 'length(page_title)' ));
+					array( 'ORDER BY' => 'length(page_title) DESC' ));
 
 				// Iterate through the page titles
 				$new_text = $text;
@@ -66,17 +66,15 @@
 					$title = str_replace('_', ' ', $row->page_title);
 
 					if ( $title != $my_title ) {
-
-						// Now look for every occurrence of $title in the
-						// page $text and enclose it in double square brackets,
-						// unless it is already enclosed in brackets (directly
-						// adjacent or remotely, see http://stackoverflow.com/questions/10672286
-						// Regex built with the help from Eugene @ Stackoverflow
-						// http://stackoverflow.com/a/10672440/270712
-						$new_text = preg_replace(
-							'/(\b' . str_replace('/', '\/', $title) . '\b)([^\]]+(\[|$))/i',
-							'[[$1]]$2',
-							$new_text );
+						// split the string by [[...]] groups
+						$arr = preg_split( '/(\[\[.*?\]\])/', $new_text, -1, PREG_SPLIT_DELIM_CAPTURE );
+						$safe_title = str_replace( '/', '\/', $title );
+						for ( $i = 0; $i < count( $arr ); $i+=2 ) {
+							// even indexes will text that is not enclosed by brackets
+							$arr[$i] = preg_replace( '/\b(' . $safe_title . ')\b/i', '[[$1]]', $arr[$i] );
+						};
+						dump( $arr );
+						$new_text = implode( '', $arr );
 					}; // if $title != $my_title
 				}; // foreach $res as $row
 				if ( $new_text != '' ) {
@@ -85,5 +83,24 @@
 			};
 			return true;
 		}
+
+		/*
+		 * The following function was initially used, but it does not replace
+		 * every occurrence of the title words in the page text.
+		 *
+		public static function parse1( &$new_text ) {
+			// Now look for every occurrence of $title in the
+			// page $text and enclose it in double square brackets,
+			// unless it is already enclosed in brackets (directly
+			// adjacent or remotely, see http://stackoverflow.com/questions/10672286
+			// Regex built with the help from Eugene @ Stackoverflow
+			// http://stackoverflow.com/a/10672440/270712
+			$new_text = preg_replace(
+				'/(\b' . str_replace('/', '\/', $title) . '\b)([^\]]+(\[|$))/ium',
+				'[[$1]]$2',
+				$new_text );
+			return true;
+			}
+		*/
 	}
 	// vim: ts=2:sw=2:noet
