@@ -75,9 +75,6 @@
 							'/(\b' . str_replace('/', '\/', $title) . '\b)([^\]]+(\[|$))/i',
 							'[[$1]]$2',
 							$new_text );
-						if ( $new_text == '' ) {
-							throw new Exception( 'new text was deleted! - title: ' . $title );
-						};
 					}; // if $title != $my_title
 				}; // foreach $res as $row
 				if ( $new_text != '' ) {
