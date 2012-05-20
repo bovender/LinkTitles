@@ -39,22 +39,42 @@
 		/// saved.
 		public static function onArticleSave( &$article, &$user, &$text, &$summary,
 				$minor, $watchthis, $sectionanchor, &$flags, &$status ) {
-			error_reporting(E_ALL);
-			ini_set('display_errors', 'Off');
-			ini_set('error_log', 'php://stderr');
-			global $wgRequest;
-			$params = new DerivativeRequest( 
-				$wgRequest, 
-				array(
-					'action' => 'query',
-					'list' => 'allpages')
-			);
-			// $api = new ApiMain( $params, false ); // false: do not edit page
-			// $api->execute();
-			// $data = & $api->getResultData();
-			// dump($data);
+
+			// To prevent time-consuming parsing of the page whenever
+			// it is edited and saved, we only parse it if the flag
+			// 'minor edits' is not set.
+
+			if ( !$minor ) {
+				// Build an SQL query and fetch all page titles ordered
+				// by length from shortest to longest.
+				$dbr = wfGetDB( DB_SLAVE );
+				$res = $dbr->select( 
+					'page', 
+					'page_title', 
+					'', 
+					__METHOD__, 
+					array( 'ORDER BY' => 'length(page_title)' ));
+
+				// Iterate through the page titles
+				foreach( $res as $row ) {
+					// Page titles are stored in the database with spaces
+					// replaced by underscores. Therefore we now convert
+					// the underscores back to spaces.
+					$title = str_replace('_', ' ', $row->page_title);
+
+					// Now look for every occurrence of $title in the
+					// page $text and enclose it in double square brackets,
+					// unless it is already enclosed in brackets (directly
+					// adjacent or remotely, see http://stackoverflow.com/questions/10672286
+					// Regex built with the help from Eugene @ Stackoverflow
+					// http://stackoverflow.com/a/10672440/270712
+					$text = preg_replace(
+						'/(' . $title . ')([^\]]+(\[|$))/i',
+						'[[$1]]$2',
+						$text );
+				};
+			};
 			return true;
 		}
-
 	}
 	// vim: ts=2:sw=2:noet

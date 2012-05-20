@@ -41,5 +41,9 @@
   $wgHooks['ParserFirstCallInit'][]       = 'LinkTitles::Setup';
 	$wgHooks['ArticleSave'][]               = 'LinkTitles::onArticleSave';
 		
+	// error_reporting(E_ALL);
+	// ini_set('display_errors', 'Off');
+	// ini_set('error_log', 'php://stderr');
+
 	// vim: ts=2:sw=2:noet
 
