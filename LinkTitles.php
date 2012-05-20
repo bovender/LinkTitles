@@ -45,6 +45,9 @@
 
 	// Hook up our custom function to the ArticleSave event.
 	$wgHooks['ArticleSave'][] = 'LinkTitles::onArticleSave';
+
+	// Configuration variables
+	$wgLinkTitlesPreferShortTitles = false;	
 		
 	// vim: ts=2:sw=2:noet
 

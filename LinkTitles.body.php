@@ -45,6 +45,8 @@
 				// extract the current page's title.
 				$my_title = $article->getTitle()->getText();
 
+				( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'DESC' : $sort_order = '';
+
 				// Build an SQL query and fetch all page titles ordered
 				// by length from shortest to longest.
 				// Only titles from 'normal' pages (namespace uid = 0)
@@ -55,7 +57,7 @@
 					'page_title', 
 					'page_namespace = 0', 
 					__METHOD__, 
-					array( 'ORDER BY' => 'length(page_title) DESC' ));
+					array( 'ORDER BY' => 'length(page_title) ' . $sort_order ));
 
 				// Iterate through the page titles
 				$new_text = $text;
