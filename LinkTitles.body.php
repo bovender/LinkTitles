@@ -59,7 +59,7 @@
 				$res = $dbr->select( 
 					'page', 
 					'page_title', 
-					array( 'page_namespace = 0', 'CHAR_LENGTH(page_title) > ' . $wgLinkTitlesMinimumTitleLength ), 
+					array( 'page_namespace = 0', 'CHAR_LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength ), 
 					__METHOD__, 
 					array( 'ORDER BY' => 'CHAR_LENGTH(page_title) ' . $sort_order ));
 
