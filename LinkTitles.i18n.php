@@ -5,7 +5,7 @@
 $messages = array();
 
 $messages['en'] = array(
-	'linktitles-desc' => 'Automatically adds links to existing pages when a page is saved.',
+	'linktitles-desc' => 'Automatically adds links to existing pages whenever a page is saved.',
 );
 
 $messages['de'] = array(

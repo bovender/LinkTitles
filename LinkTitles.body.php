@@ -29,10 +29,6 @@
 	};
 
 	class LinkTitles {
-		/// Default setup function.
-		public static function Setup( &$parser ) {
-			return true;
-		}
 
 		/// This function is hooked to the ArticleSave event.
 		/// It will be called whenever a page is about to be 

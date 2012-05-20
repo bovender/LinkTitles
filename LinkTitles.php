@@ -23,6 +23,14 @@
     die( 'Not an entry point.' );
   }
 
+	/*
+	error_reporting(E_ALL);
+	ini_set('display_errors', 'Off');
+	ini_set('error_log', 'php://stderr');
+	$wgMainCacheType = CACHE_NONE;
+	$wgCacheDirectory = false;
+	*/
+
   $wgExtensionCredits['parserhook'][] = array(
     'path'           => __FILE__,
     'name'           => 'LinkTitles',
@@ -33,17 +41,10 @@
     );
 
   $wgExtensionMessagesFiles['LinkTitles'] = dirname( __FILE__ ) . '/LinkTitles.i18n.php';
-
   $wgAutoloadClasses['LinkTitles'] = dirname(__FILE__) . '/LinkTitles.body.php';
-  $wgAutoloadClasses['LinkTitlesFetcher'] = dirname(__FILE__) . '/LinkTitlesFetcher.body.php';
 
-  // Define a setup function
-  $wgHooks['ParserFirstCallInit'][]       = 'LinkTitles::Setup';
-	$wgHooks['ArticleSave'][]               = 'LinkTitles::onArticleSave';
+	// Hook up our custom function to the ArticleSave event.
+	$wgHooks['ArticleSave'][] = 'LinkTitles::onArticleSave';
 		
-	// error_reporting(E_ALL);
-	// ini_set('display_errors', 'Off');
-	// ini_set('error_log', 'php://stderr');
-
 	// vim: ts=2:sw=2:noet
 
