@@ -29,6 +29,18 @@
 	};
 
 	class LinkTitles {
+		/// Setup function, hooks the extension's functions to MediaWiki events.
+		public static function setup() {
+			global $wgLinkTitlesParseOnEdit;
+			global $wgLinkTitlesParseOnRender;
+			global $wgHooks;
+			if ( $wgLinkTitlesParseOnEdit ) {
+				$wgHooks['ArticleSave'][] = 'LinkTitles::onArticleSave';
+			};
+			if ( $wgLinkTitlesParseOnRender ) { 
+				$wgHooks['ArticleAfterFetchContent'][] = 'LinkTitles::onArticleAfterFetchContent';
+			};
+		}
 
 		/// This function is hooked to the ArticleSave event.
 		/// It will be called whenever a page is about to be 
@@ -39,19 +51,25 @@
 			// To prevent time-consuming parsing of the page whenever
 			// it is edited and saved, we only parse it if the flag
 			// 'minor edits' is not set.
-			if ( !$minor ) {
-				return parseContent( $article, $content );
-			};
+			return $minor or self::parseContent( $article, $content );
 		}
 
 		/// Called when an ArticleAfterFetchContent event occurs; this requires the
 		/// $wgLinkTitlesParseOnRender option to be set to 'true'
 		public static function onArticleAfterFetchContent( &$article, &$content ) {
-			return parseContent( $article, $content );
+			// The ArticleAfterFetchContent event is triggered whenever page content
+			// is retrieved from the database, i.e. also for editing etc.
+			// Therefore we access the global $action variabl to only parse the 
+			// content when the page is viewed.
+			global $action;
+			if ( in_array( $action, array('view', 'render', 'purge') ) ) {
+				self::parseContent( $article, $content );
+			};
+			return true;
 		}
 
 		/// This function performs the actual parsing of the content.
-		static function parseContent( &$article, &$content ) {
+		static function parseContent( &$article, &$text ) {
 			// Configuration variables need to be defined here as globals.
 			global $wgLinkTitlesPreferShortTitles;
 			global $wgLinkTitlesMinimumTitleLength;
@@ -98,6 +116,7 @@
 			if ( $newText != '' ) {
 				$text = $newText;
 			};
+			return true;
 		}
 
 		/*

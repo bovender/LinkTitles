@@ -23,17 +23,16 @@
     die( 'Not an entry point.' );
   }
 
-	/*
 	error_reporting(E_ALL);
 	ini_set('display_errors', 'Off');
 	ini_set('error_log', 'php://stderr');
 	$wgMainCacheType = CACHE_NONE;
 	$wgCacheDirectory = false;
-	*/
 
 	// Configuration variables
 	$wgLinkTitlesPreferShortTitles = false;	
 	$wgLinkTitlesMinimumTitleLength = 3;
+	$wgLinkTitlesParseHeadings = false;
 	$wgLinkTitlesParseOnEdit = true;
 	$wgLinkTitlesParseOnRender = false;
 
@@ -48,14 +47,7 @@
 
   $wgExtensionMessagesFiles['LinkTitles'] = dirname( __FILE__ ) . '/LinkTitles.i18n.php';
   $wgAutoloadClasses['LinkTitles'] = dirname(__FILE__) . '/LinkTitles.body.php';
+	$wgExtensionFunctions[] = 'LinkTitles::setup';
 
-	// Hook up our custom function to the ArticleSave event.
-	if ( $wgLinkTitlesParseOnEdit ) {
-		$wgHooks['ArticleSave'][] = 'LinkTitles::onArticleSave';
-	};
-	if ( $wgLinkTitlesParseOnRender ) { 
-		$wgHooks['ArticleAfterFetchContent'][] = 'LinkTitles::onArticleAfterFetchContent';
-	};
-		
 	// vim: ts=2:sw=2:noet
 
