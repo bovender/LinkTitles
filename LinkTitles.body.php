@@ -36,74 +36,85 @@
 		public static function onArticleSave( &$article, &$user, &$text, &$summary,
 				$minor, $watchthis, $sectionanchor, &$flags, &$status ) {
 
-			// Configuration variables need to be defined here as globals.
-			global $wgLinkTitlesPreferShortTitles;
-			global $wgLinkTitlesMinimumTitleLength;
-
 			// To prevent time-consuming parsing of the page whenever
 			// it is edited and saved, we only parse it if the flag
 			// 'minor edits' is not set.
-
 			if ( !$minor ) {
-				// To prevent adding self-references, we now
-				// extract the current page's title.
-				$my_title = $article->getTitle()->getText();
-
-				( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'DESC' : $sort_order = '';
-
-				// Build an SQL query and fetch all page titles ordered
-				// by length from shortest to longest.
-				// Only titles from 'normal' pages (namespace uid = 0)
-				// are returned.
-				$dbr = wfGetDB( DB_SLAVE );
-				$res = $dbr->select( 
-					'page', 
-					'page_title', 
-					array( 'page_namespace = 0', 'CHAR_LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength ), 
-					__METHOD__, 
-					array( 'ORDER BY' => 'CHAR_LENGTH(page_title) ' . $sort_order ));
-
-				// Iterate through the page titles
-				$new_text = $text;
-				foreach( $res as $row ) {
-					// Page titles are stored in the database with spaces
-					// replaced by underscores. Therefore we now convert
-					// the underscores back to spaces.
-					$title = str_replace('_', ' ', $row->page_title);
-
-					if ( $title != $my_title ) {
-						// split the string by [[...]] groups
-						$arr = preg_split( '/(\[\[.*?\]\])/', $new_text, -1, PREG_SPLIT_DELIM_CAPTURE );
-						$safe_title = str_replace( '/', '\/', $title );
-						for ( $i = 0; $i < count( $arr ); $i+=2 ) {
-							// even indexes will text that is not enclosed by brackets
-							$arr[$i] = preg_replace( '/\b(' . $safe_title . ')\b/i', '[[$1]]', $arr[$i] );
-						};
-						$new_text = implode( '', $arr );
-					}; // if $title != $my_title
-				}; // foreach $res as $row
-				if ( $new_text != '' ) {
-					$text = $new_text;
-				};
+				return parseContent( $article, $content );
 			};
-			return true;
+		}
+
+		/// Called when an ArticleAfterFetchContent event occurs; this requires the
+		/// $wgLinkTitlesParseOnRender option to be set to 'true'
+		public static function onArticleAfterFetchContent( &$article, &$content ) {
+			return parseContent( $article, $content );
+		}
+
+		/// This function performs the actual parsing of the content.
+		static function parseContent( &$article, &$content ) {
+			// Configuration variables need to be defined here as globals.
+			global $wgLinkTitlesPreferShortTitles;
+			global $wgLinkTitlesMinimumTitleLength;
+			global $wgLinkTitlesParseHeadings;
+
+			// To prevent adding self-references, we now
+			// extract the current page's title.
+			$myTitle = $article->getTitle()->getText();
+
+			( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'DESC' : $sort_order = '';
+
+
+			// Build an SQL query and fetch all page titles ordered
+			// by length from shortest to longest.
+			// Only titles from 'normal' pages (namespace uid = 0)
+			// are returned.
+			$dbr = wfGetDB( DB_SLAVE );
+			$res = $dbr->select( 
+				'page', 
+				'page_title', 
+				array( 'page_namespace = 0', 'CHAR_LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength ), 
+				__METHOD__, 
+				array( 'ORDER BY' => 'CHAR_LENGTH(page_title) ' . $sort_order ));
+
+			// Iterate through the page titles
+			$newText = $text;
+			foreach( $res as $row ) {
+				// Page titles are stored in the database with spaces
+				// replaced by underscores. Therefore we now convert
+				// the underscores back to spaces.
+				$title = str_replace('_', ' ', $row->page_title);
+
+				if ( $title != $myTitle ) {
+					// split the string by [[...]] groups
+					$arr = preg_split( '/(\[\[.*?\]\])/', $newText, -1, PREG_SPLIT_DELIM_CAPTURE );
+					$safeTitle = str_replace( '/', '\/', $title );
+					for ( $i = 0; $i < count( $arr ); $i+=2 ) {
+						// even indexes will point to text that is not enclosed by brackets
+						$arr[$i] = preg_replace( '/\b(' . $safeTitle . ')\b/i', '[[$1]]', $arr[$i] );
+					};
+					$newText = implode( '', $arr );
+				}; // if $title != $myTitle
+			}; // foreach $res as $row
+			if ( $newText != '' ) {
+				$text = $newText;
+			};
 		}
 
 		/*
 		 * The following function was initially used, but it does not replace
 		 * every occurrence of the title words in the page text.
 		 *
-		public static function parse1( &$new_text ) {
+		public static function parse1( &$newText ) {
 			// Now look for every occurrence of $title in the
 			// page $text and enclose it in double square brackets,
 			// unless it is already enclosed in brackets (directly
 			// adjacent or remotely, see http://stackoverflow.com/questions/10672286
 			// Regex built with the help from Eugene @ Stackoverflow
 			// http://stackoverflow.com/a/10672440/270712
-			$new_text = preg_replace(
+			$newText = preg_replace(
 				'/(\b' . str_replace('/', '\/', $title) . '\b)([^\]]+(\[|$))/ium',
 				'[[$1]]$2',
-				$new_text );
+				$newText );
 			return true;
 			}
 		*/

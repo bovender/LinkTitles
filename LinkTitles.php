@@ -31,6 +31,12 @@
 	$wgCacheDirectory = false;
 	*/
 
+	// Configuration variables
+	$wgLinkTitlesPreferShortTitles = false;	
+	$wgLinkTitlesMinimumTitleLength = 3;
+	$wgLinkTitlesParseOnEdit = true;
+	$wgLinkTitlesParseOnRender = false;
+
   $wgExtensionCredits['parserhook'][] = array(
     'path'           => __FILE__,
     'name'           => 'LinkTitles',
@@ -44,11 +50,12 @@
   $wgAutoloadClasses['LinkTitles'] = dirname(__FILE__) . '/LinkTitles.body.php';
 
 	// Hook up our custom function to the ArticleSave event.
-	$wgHooks['ArticleSave'][] = 'LinkTitles::onArticleSave';
-
-	// Configuration variables
-	$wgLinkTitlesPreferShortTitles = false;	
-	$wgLinkTitlesMinimumTitleLength = 3;
+	if ( $wgLinkTitlesParseOnEdit ) {
+		$wgHooks['ArticleSave'][] = 'LinkTitles::onArticleSave';
+	};
+	if ( $wgLinkTitlesParseOnRender ) { 
+		$wgHooks['ArticleAfterFetchContent'][] = 'LinkTitles::onArticleAfterFetchContent';
+	};
 		
 	// vim: ts=2:sw=2:noet
 
