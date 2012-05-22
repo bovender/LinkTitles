@@ -1,0 +1,29 @@
+LinkTitles 1.0.0: 2012-05-22
+* Added new option to parse or not parse headings
+* Added new option to parse pages on saving edits
+* Added new option to parse pages on viewing (unless the page is retrieved
+  from cache)
+* Minor performance improvement
+
+LinkTitles 0.0.7: 2012-05-20
+* Fix version information
+
+LinkTitles 0.0.6: 2012-05-20
+* Fix bug: Minimum length title 
+
+LinkTitles 0.0.5: 2012-05-20
+* Add $wgLinkTitlesMinimumTitleLength configuration variable.
+
+LinkTitles 0.0.4: 2012-05-20
+* Add $wgLinkTitlesPreferShortTitles configuration variable.
+
+LinkTitles 0.0.3: 2012-05-20
+* Only look for page titles from 'normal' pages (namespace = 0).
+
+LinkTitles 0.0.2: 2012-05-20
+* Prevent generation of self-references.
+* Escape slashes in page titles before using them in a regexp.
+
+LinkTitles 0.0.1: 2012-05-20
+* Initial release.
+

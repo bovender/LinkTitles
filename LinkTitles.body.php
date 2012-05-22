@@ -51,7 +51,7 @@
 			// To prevent time-consuming parsing of the page whenever
 			// it is edited and saved, we only parse it if the flag
 			// 'minor edits' is not set.
-			return $minor or self::parseContent( $article, $content );
+			return $minor or self::parseContent( $article, $text );
 		}
 
 		/// Called when an ArticleAfterFetchContent event occurs; this requires the
@@ -80,7 +80,8 @@
 			$myTitle = $article->getTitle()->getText();
 
 			( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'DESC' : $sort_order = '';
-
+			( $wgLinkTitlesParseHeadings ) ? $delimiter = '' : $delimiter = '=+.+?=+|';
+			$delimiter = '/(' . $delimiter . '\[\[.*?\]\])/i';
 
 			// Build an SQL query and fetch all page titles ordered
 			// by length from shortest to longest.
@@ -95,7 +96,6 @@
 				array( 'ORDER BY' => 'CHAR_LENGTH(page_title) ' . $sort_order ));
 
 			// Iterate through the page titles
-			$newText = $text;
 			foreach( $res as $row ) {
 				// Page titles are stored in the database with spaces
 				// replaced by underscores. Therefore we now convert
@@ -104,38 +104,20 @@
 
 				if ( $title != $myTitle ) {
 					// split the string by [[...]] groups
-					$arr = preg_split( '/(\[\[.*?\]\])/', $newText, -1, PREG_SPLIT_DELIM_CAPTURE );
+					// credits to inhan @ StackOverflow for suggesting preg_split
+					// see http://stackoverflow.com/questions/10672286
+					$arr = preg_split( $delimiter, $text, -1, PREG_SPLIT_DELIM_CAPTURE );
+					// dump( $arr );
 					$safeTitle = str_replace( '/', '\/', $title );
 					for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 						// even indexes will point to text that is not enclosed by brackets
 						$arr[$i] = preg_replace( '/\b(' . $safeTitle . ')\b/i', '[[$1]]', $arr[$i] );
 					};
-					$newText = implode( '', $arr );
+					$text = implode( '', $arr );
 				}; // if $title != $myTitle
 			}; // foreach $res as $row
-			if ( $newText != '' ) {
-				$text = $newText;
-			};
 			return true;
 		}
-
-		/*
-		 * The following function was initially used, but it does not replace
-		 * every occurrence of the title words in the page text.
-		 *
-		public static function parse1( &$newText ) {
-			// Now look for every occurrence of $title in the
-			// page $text and enclose it in double square brackets,
-			// unless it is already enclosed in brackets (directly
-			// adjacent or remotely, see http://stackoverflow.com/questions/10672286
-			// Regex built with the help from Eugene @ Stackoverflow
-			// http://stackoverflow.com/a/10672440/270712
-			$newText = preg_replace(
-				'/(\b' . str_replace('/', '\/', $title) . '\b)([^\]]+(\[|$))/ium',
-				'[[$1]]$2',
-				$newText );
-			return true;
-			}
-		*/
 	}
+
 	// vim: ts=2:sw=2:noet
