@@ -80,8 +80,18 @@
 			$myTitle = $article->getTitle()->getText();
 
 			( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'DESC' : $sort_order = '';
+
+			// Build a regular expression that will capture existing wiki links ("[[...]]"),
+			// wiki headings ("= ... =", "== ... ==" etc.),  
+			// urls ("http://example.com", "[http://example.com]", "[http://example.com Description]",
+			// and email addresses ("mail@example.com").
+			// Since there is a user option to skip headings, we make this part of the expression
+			// optional. Note that in order to use preg_split(), it is important to have only one
+			// capturing subpattern (which precludes the use of conditional subpatterns).
 			( $wgLinkTitlesParseHeadings ) ? $delimiter = '' : $delimiter = '=+.+?=+|';
-			$delimiter = '/(' . $delimiter . '\[\[.*?\]\])/i';
+			$urlPattern = '[a-z]+?\:\/\/(?:\S+\.)+\S+(?:\/.*)?';
+			$delimiter = '/(' . $delimiter . '\[\[.*?\]\]|\[' . 
+				$urlPattern . '\s.+?\]|'. $urlPattern . '(?=\s|$)|(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b))/i';
 
 			// Build an SQL query and fetch all page titles ordered
 			// by length from shortest to longest.
@@ -111,7 +121,7 @@
 					$safeTitle = str_replace( '/', '\/', $title );
 					for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 						// even indexes will point to text that is not enclosed by brackets
-						$arr[$i] = preg_replace( '/\b(' . $safeTitle . ')\b/i', '[[$1]]', $arr[$i] );
+						$arr[$i] = preg_replace( '/(?<![\:\.\@\/\?\&])\b(' . $safeTitle . ')\b/i', '[[$1]]', $arr[$i] );
 					};
 					$text = implode( '', $arr );
 				}; // if $title != $myTitle

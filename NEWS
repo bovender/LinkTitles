@@ -1,3 +1,6 @@
+LinkTitles 1.1.0: 2012-05-24
+* No longer parses urls and email addresses.
+
 LinkTitles 1.0.0: 2012-05-22
 * Added new option to parse or not parse headings
 * Added new option to parse pages on saving edits
