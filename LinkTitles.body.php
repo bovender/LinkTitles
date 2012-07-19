@@ -74,6 +74,7 @@
 			global $wgLinkTitlesPreferShortTitles;
 			global $wgLinkTitlesMinimumTitleLength;
 			global $wgLinkTitlesParseHeadings;
+			global $wgLinkTitlesBlackList;
 
 			// To prevent adding self-references, we now
 			// extract the current page's title.
@@ -93,6 +94,10 @@
 			$delimiter = '/(' . $delimiter . '\[\[.*?\]\]|\[' . 
 				$urlPattern . '\s.+?\]|'. $urlPattern . '(?=\s|$)|(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b))/i';
 
+			$black_list = str_replace( '_', ' ',
+				'("' . implode( '", "',$wgLinkTitlesBlackList ) . '")' );
+			dump( $black_list );
+
 			// Build an SQL query and fetch all page titles ordered
 			// by length from shortest to longest.
 			// Only titles from 'normal' pages (namespace uid = 0)
@@ -101,9 +106,14 @@
 			$res = $dbr->select( 
 				'page', 
 				'page_title', 
-				array( 'page_namespace = 0', 'CHAR_LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength ), 
+				array( 
+					'page_namespace = 0', 
+					'CHAR_LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
+					'page_title NOT IN ' . $black_list,
+				), 
 				__METHOD__, 
-				array( 'ORDER BY' => 'CHAR_LENGTH(page_title) ' . $sort_order ));
+				array( 'ORDER BY' => 'CHAR_LENGTH(page_title) ' . $sort_order )
+			);
 
 			// Iterate through the page titles
 			foreach( $res as $row ) {

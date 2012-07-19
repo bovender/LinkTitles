@@ -23,13 +23,11 @@
     die( 'Not an entry point.' );
   }
 
-	/*
-		error_reporting(E_ALL);
-		ini_set('display_errors', 'Off');
-		ini_set('error_log', 'php://stderr');
-		$wgMainCacheType = CACHE_NONE;
-		$wgCacheDirectory = false;
-	*/
+	error_reporting(E_ALL);
+	ini_set('display_errors', 'Off');
+	ini_set('error_log', 'php://stderr');
+	$wgMainCacheType = CACHE_NONE;
+	$wgCacheDirectory = false;
 
 	// Configuration variables
 	$wgLinkTitlesPreferShortTitles = false;	
@@ -37,13 +35,14 @@
 	$wgLinkTitlesParseHeadings = false;
 	$wgLinkTitlesParseOnEdit = true;
 	$wgLinkTitlesParseOnRender = false;
+	$wgLinkTitlesBlackList = array();
 
   $wgExtensionCredits['parserhook'][] = array(
     'path'           => __FILE__,
     'name'           => 'LinkTitles',
     'author'         => '[http://www.mediawiki.org/wiki/User:Bovender Daniel Kraus]', 
     'url'            => 'http://www.mediawiki.org/wiki/Extension:LinkTitles',
-    'version'        => '1.1.0',
+    'version'        => '1.2.0',
     'descriptionmsg' => 'linktitles-desc'
     );
 

@@ -1,3 +1,7 @@
+LinkTitles 1.2.0: 2012-07-19
+* Added a black list option to prevent certain page titles from being
+  automatically linked.
+
 LinkTitles 1.1.0: 2012-05-24
 * No longer parses urls and email addresses.
 
@@ -30,3 +34,4 @@ LinkTitles 0.0.2: 2012-05-20
 LinkTitles 0.0.1: 2012-05-20
 * Initial release.
 
+# vim: flp=\*\s 
