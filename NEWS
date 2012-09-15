@@ -1,3 +1,6 @@
+LinkTitles 1.3.0: 2012-09-15
+* Do not link template names.
+
 LinkTitles 1.2.0: 2012-07-19
 * Added a black list option to prevent certain page titles from being
   automatically linked.
