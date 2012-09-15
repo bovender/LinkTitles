@@ -91,12 +91,11 @@
 			// capturing subpattern (which precludes the use of conditional subpatterns).
 			( $wgLinkTitlesParseHeadings ) ? $delimiter = '' : $delimiter = '=+.+?=+|';
 			$urlPattern = '[a-z]+?\:\/\/(?:\S+\.)+\S+(?:\/.*)?';
-			$delimiter = '/(' . $delimiter . '\[\[.*?\]\]|\[' . 
+			$delimiter = '/(' . $delimiter . '\[\[.*?\]\]|{{[^|]+?}}|{{.+\|{{.+\|||\[' . 
 				$urlPattern . '\s.+?\]|'. $urlPattern . '(?=\s|$)|(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b))/i';
 
 			$black_list = str_replace( '_', ' ',
 				'("' . implode( '", "',$wgLinkTitlesBlackList ) . '")' );
-			dump( $black_list );
 
 			// Build an SQL query and fetch all page titles ordered
 			// by length from shortest to longest.
