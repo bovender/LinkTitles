@@ -25,7 +25,7 @@
 
 	/*
 		error_reporting(E_ALL);
-		ini_set('display_errors', 'Off');
+		ini_set('display_errors', 'On');
 		ini_set('error_log', 'php://stderr');
 		$wgMainCacheType = CACHE_NONE;
 		$wgCacheDirectory = false;
@@ -44,7 +44,7 @@
     'name'           => 'LinkTitles',
     'author'         => '[http://www.mediawiki.org/wiki/User:Bovender Daniel Kraus]', 
     'url'            => 'http://www.mediawiki.org/wiki/Extension:LinkTitles',
-    'version'        => '1.3.0',
+    'version'        => '1.3.1',
     'descriptionmsg' => 'linktitles-desc'
     );
 

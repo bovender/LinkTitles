@@ -91,7 +91,7 @@
 			// capturing subpattern (which precludes the use of conditional subpatterns).
 			( $wgLinkTitlesParseHeadings ) ? $delimiter = '' : $delimiter = '=+.+?=+|';
 			$urlPattern = '[a-z]+?\:\/\/(?:\S+\.)+\S+(?:\/.*)?';
-			$delimiter = '/(' . $delimiter . '\[\[.*?\]\]|{{[^|]+?}}|{{.+\|{{.+\|||\[' . 
+			$delimiter = '/(' . $delimiter . '\[\[.*?\]\]|{{[^|]+?}}|{{.+\||{{.+\||\[' . 
 				$urlPattern . '\s.+?\]|'. $urlPattern . '(?=\s|$)|(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b))/i';
 
 			$black_list = str_replace( '_', ' ',
