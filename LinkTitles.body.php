@@ -80,7 +80,7 @@
 			// extract the current page's title.
 			$myTitle = $article->getTitle()->getText();
 
-			( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'DESC' : $sort_order = '';
+			( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'ASC' : $sort_order = 'DESC';
 
 			// Build a regular expression that will capture existing wiki links ("[[...]]"),
 			// wiki headings ("= ... =", "== ... ==" etc.),  
