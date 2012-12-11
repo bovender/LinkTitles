@@ -1,3 +1,6 @@
+LinkTitles 1.5.0: 2012-12-11
+* Added new option to link only the first occurrence of a page title.
+
 LinkTitles 1.4.0: 2012-10-09
 * Added new option to skip template variables.
 
