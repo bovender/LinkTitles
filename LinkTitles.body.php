@@ -76,12 +76,14 @@
 			global $wgLinkTitlesParseHeadings;
 			global $wgLinkTitlesBlackList;
 			global $wgLinkTitlesSkipTemplates;
+			global $wgLinkTitlesFirstOnly;
 
 			// To prevent adding self-references, we now
 			// extract the current page's title.
 			$myTitle = $article->getTitle()->getText();
 
 			( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'ASC' : $sort_order = 'DESC';
+			( $wgLinkTitlesFirstOnly ) ? $limit = 1 : $limit = -1;
 
 			if ( $wgLinkTitlesSkipTemplates )
 			{
@@ -137,9 +139,11 @@
 					$arr = preg_split( $delimiter, $text, -1, PREG_SPLIT_DELIM_CAPTURE );
 					// dump( $arr );
 					$safeTitle = str_replace( '/', '\/', $title );
-					for ( $i = 0; $i < count( $arr ); $i+=2 ) {
+					( $wgLinkTitlesFirstOnly ) ? $loopLimit = 1 : $loopLimit = count( $arr );
+					for ( $i = 0; $i < $loopLimit; $i+=2 ) {
 						// even indexes will point to text that is not enclosed by brackets
-						$arr[$i] = preg_replace( '/(?<![\:\.\@\/\?\&])\b(' . $safeTitle . ')\b/i', '[[$1]]', $arr[$i] );
+						$arr[$i] = preg_replace( '/(?<![\:\.\@\/\?\&])\b(' . $safeTitle . ')\b/i', 
+							'[[$1]]', $arr[$i], $limit );
 					};
 					$text = implode( '', $arr );
 				}; // if $title != $myTitle

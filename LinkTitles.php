@@ -39,13 +39,14 @@
 	$wgLinkTitlesParseOnRender = false;
 	$wgLinkTitlesSkipTemplates = false;
 	$wgLinkTitlesBlackList = array();
+	$wgLinkTitlesFirstOnly = false;
 
   $wgExtensionCredits['parserhook'][] = array(
     'path'           => __FILE__,
     'name'           => 'LinkTitles',
     'author'         => '[http://www.mediawiki.org/wiki/User:Bovender Daniel Kraus]', 
     'url'            => 'http://www.mediawiki.org/wiki/Extension:LinkTitles',
-    'version'        => '1.4.0',
+    'version'        => '1.5.0',
     'descriptionmsg' => 'linktitles-desc'
     );
 
