@@ -77,6 +77,11 @@
 			global $wgLinkTitlesBlackList;
 			global $wgLinkTitlesSkipTemplates;
 			global $wgLinkTitlesFirstOnly;
+			global $wgLinkTitlesWordStartOnly;
+			global $wgLinkTitlesWordEndOnly;
+
+			( $wgLinkTitlesWordStartOnly ) ? $wordStartDelim = '\b' : $wordStartDelim = '';
+			( $wgLinkTitlesWordEndOnly ) ? $wordEndDelim = '\b' : $wordEndDelim = '';
 
 			// To prevent adding self-references, we now
 			// extract the current page's title.
@@ -142,8 +147,9 @@
 					( $wgLinkTitlesFirstOnly ) ? $loopLimit = 1 : $loopLimit = count( $arr );
 					for ( $i = 0; $i < $loopLimit; $i+=2 ) {
 						// even indexes will point to text that is not enclosed by brackets
-						$arr[$i] = preg_replace( '/(?<![\:\.\@\/\?\&])\b(' . $safeTitle . ')\b/i', 
-							'[[$1]]', $arr[$i], $limit );
+						$arr[$i] = preg_replace( '/(?<![\:\.\@\/\?\&])' .
+							$wordStartDelim . '(' . $safeTitle . ')' . 
+							$wordEndDelim . '/i', '[[$1]]', $arr[$i], $limit );
 					};
 					$text = implode( '', $arr );
 				}; // if $title != $myTitle
