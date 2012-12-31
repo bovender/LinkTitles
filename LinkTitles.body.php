@@ -144,12 +144,14 @@
 					$arr = preg_split( $delimiter, $text, -1, PREG_SPLIT_DELIM_CAPTURE );
 					// dump( $arr );
 					$safeTitle = str_replace( '/', '\/', $title );
-					( $wgLinkTitlesFirstOnly ) ? $loopLimit = 1 : $loopLimit = count( $arr );
-					for ( $i = 0; $i < $loopLimit; $i+=2 ) {
+					for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 						// even indexes will point to text that is not enclosed by brackets
 						$arr[$i] = preg_replace( '/(?<![\:\.\@\/\?\&])' .
 							$wordStartDelim . '(' . $safeTitle . ')' . 
-							$wordEndDelim . '/i', '[[$1]]', $arr[$i], $limit );
+							$wordEndDelim . '/i', '[[$1]]', $arr[$i], $limit, $count );
+						if (( $limit >= 0 ) && ( $count > 0  )) {
+							break; 
+						};
 					};
 					$text = implode( '', $arr );
 				}; // if $title != $myTitle
