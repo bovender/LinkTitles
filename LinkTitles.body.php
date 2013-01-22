@@ -79,9 +79,11 @@
 			global $wgLinkTitlesFirstOnly;
 			global $wgLinkTitlesWordStartOnly;
 			global $wgLinkTitlesWordEndOnly;
+			global $wgLinkTitlesIgnoreCase;
 
 			( $wgLinkTitlesWordStartOnly ) ? $wordStartDelim = '\b' : $wordStartDelim = '';
 			( $wgLinkTitlesWordEndOnly ) ? $wordEndDelim = '\b' : $wordEndDelim = '';
+			( $wgLinkTitlesIgnoreCase ) ? $regexModifier = 'i' : $regexModifier = '';
 
 			// To prevent adding self-references, we now
 			// extract the current page's title.
@@ -148,7 +150,7 @@
 						// even indexes will point to text that is not enclosed by brackets
 						$arr[$i] = preg_replace( '/(?<![\:\.\@\/\?\&])' .
 							$wordStartDelim . '(' . $safeTitle . ')' . 
-							$wordEndDelim . '/i', '[[$1]]', $arr[$i], $limit, $count );
+							$wordEndDelim . '/' . $regexModifier , '[[$1]]', $arr[$i], $limit, $count );
 						if (( $limit >= 0 ) && ( $count > 0  )) {
 							break; 
 						};
