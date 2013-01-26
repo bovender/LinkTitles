@@ -25,10 +25,12 @@
 	}
 
 	function dump($var) {
-			error_log(print_r($var, TRUE), 3, 'php://stderr');
+			error_log(print_r($var, TRUE) . "\n", 3, 'php://stderr');
 	};
 
 	class LinkTitles {
+		static $st;
+
 		/// Setup function, hooks the extension's functions to MediaWiki events.
 		public static function setup() {
 			global $wgLinkTitlesParseOnEdit;
@@ -79,11 +81,11 @@
 			global $wgLinkTitlesFirstOnly;
 			global $wgLinkTitlesWordStartOnly;
 			global $wgLinkTitlesWordEndOnly;
-			global $wgLinkTitlesIgnoreCase;
+			// global $wgLinkTitlesIgnoreCase;
 
 			( $wgLinkTitlesWordStartOnly ) ? $wordStartDelim = '\b' : $wordStartDelim = '';
 			( $wgLinkTitlesWordEndOnly ) ? $wordEndDelim = '\b' : $wordEndDelim = '';
-			( $wgLinkTitlesIgnoreCase ) ? $regexModifier = 'i' : $regexModifier = '';
+			// ( $wgLinkTitlesIgnoreCase ) ? $regexModifier = 'i' : $regexModifier = '';
 
 			// To prevent adding self-references, we now
 			// extract the current page's title.
@@ -146,11 +148,13 @@
 					$arr = preg_split( $delimiter, $text, -1, PREG_SPLIT_DELIM_CAPTURE );
 					// dump( $arr );
 					$safeTitle = str_replace( '/', '\/', $title );
+					LinkTitles::$st = $safeTitle;
 					for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 						// even indexes will point to text that is not enclosed by brackets
-						$arr[$i] = preg_replace( '/(?<![\:\.\@\/\?\&])' .
+						$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
 							$wordStartDelim . '(' . $safeTitle . ')' . 
-							$wordEndDelim . '/' . $regexModifier , '[[$1]]', $arr[$i], $limit, $count );
+							$wordEndDelim . '/i', 
+							"LinkTitles::CallBack", $arr[$i], $limit, $count );
 						if (( $limit >= 0 ) && ( $count > 0  )) {
 							break; 
 						};
@@ -159,6 +163,14 @@
 				}; // if $title != $myTitle
 			}; // foreach $res as $row
 			return true;
+		}
+
+		static function CallBack($matches) {
+			if ( strcmp(substr(LinkTitles::$st, 1), substr($matches[0], 1)) == 0 ) {
+				return '[[' . $matches[0] . ']]';
+			} else  {
+				return '[[' . LinkTitles::$st . '|' . $matches[0] . ']]';
+			}
 		}
 	}
 

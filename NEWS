@@ -1,3 +1,8 @@
+LinkTitles 1.8.1: 2013-01-26
+* The extension will now automatically generate aliases for case-mismatched
+  page titles.
+* Fix version number confusion (1.7.0 in the extension vs. 1.8.0 on GitHub).
+
 LinkTitles 1.7.0: 2013-01-22
 * Added new option to do exact searches of page titles; the default is to
   do __case-insensitive__ searches as before ($wgLinkTitlesIgnoreCase).
@@ -61,4 +66,4 @@ LinkTitles 0.0.2: 2012-05-20
 LinkTitles 0.0.1: 2012-05-20
 * Initial release.
 
-# vim: flp=\*\s 
+# vim: fo=tqn:flp=\*\s 
