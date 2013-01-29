@@ -1,3 +1,8 @@
+LinkTitles 2.0.0: 2013-01-29
+* Introduced a new 'smart mode' ($wgLinkTitlesSmartMode) which is enabled by
+  default and will automatically generate aliased links if there is a case
+  mismatch. To increase performance, this smart mode can be disabled.
+
 LinkTitles 1.8.1: 2013-01-26
 * The extension will now automatically generate aliases for case-mismatched
   page titles.
@@ -66,4 +71,4 @@ LinkTitles 0.0.2: 2012-05-20
 LinkTitles 0.0.1: 2012-05-20
 * Initial release.
 
-# vim: fo=tqn:flp=\*\s 
+# vim: tw=76:fo=tqn:flp=^\*\s 

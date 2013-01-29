@@ -29,7 +29,7 @@
 	};
 
 	class LinkTitles {
-		static $st;
+		static $safeTitle;
 
 		/// Setup function, hooks the extension's functions to MediaWiki events.
 		public static function setup() {
@@ -72,6 +72,7 @@
 
 		/// This function performs the actual parsing of the content.
 		static function parseContent( &$article, &$text ) {
+
 			// Configuration variables need to be defined here as globals.
 			global $wgLinkTitlesPreferShortTitles;
 			global $wgLinkTitlesMinimumTitleLength;
@@ -82,6 +83,7 @@
 			global $wgLinkTitlesWordStartOnly;
 			global $wgLinkTitlesWordEndOnly;
 			// global $wgLinkTitlesIgnoreCase;
+			global $wgLinkTitlesSmartMode;
 
 			( $wgLinkTitlesWordStartOnly ) ? $wordStartDelim = '\b' : $wordStartDelim = '';
 			( $wgLinkTitlesWordEndOnly ) ? $wordEndDelim = '\b' : $wordEndDelim = '';
@@ -142,34 +144,53 @@
 				$title = str_replace('_', ' ', $row->page_title);
 
 				if ( $title != $myTitle ) {
+					LinkTitles::$safeTitle = str_replace( '/', '\/', $title );
+
 					// split the string by [[...]] groups
 					// credits to inhan @ StackOverflow for suggesting preg_split
 					// see http://stackoverflow.com/questions/10672286
 					$arr = preg_split( $delimiter, $text, -1, PREG_SPLIT_DELIM_CAPTURE );
-					// dump( $arr );
-					$safeTitle = str_replace( '/', '\/', $title );
-					LinkTitles::$st = $safeTitle;
+
 					for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 						// even indexes will point to text that is not enclosed by brackets
-						$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
-							$wordStartDelim . '(' . $safeTitle . ')' . 
-							$wordEndDelim . '/i', 
-							"LinkTitles::CallBack", $arr[$i], $limit, $count );
+						$arr[$i] = preg_replace( '/(?<![\:\.\@\/\?\&])' .
+							$wordStartDelim . '((?i)' . LinkTitles::$safeTitle[0] . '(?-i)' . 
+							substr(LinkTitles::$safeTitle, 1) . ')' . $wordEndDelim . '/', 
+							'[[$1]]', $arr[$i], $limit, $count );
 						if (( $limit >= 0 ) && ( $count > 0  )) {
 							break; 
 						};
 					};
 					$text = implode( '', $arr );
+
+					if ($wgLinkTitlesSmartMode) {
+						// split the string by [[...]] groups
+						// credits to inhan @ StackOverflow for suggesting preg_split
+						// see http://stackoverflow.com/questions/10672286
+						$arr = preg_split( $delimiter, $text, -1, PREG_SPLIT_DELIM_CAPTURE );
+
+						for ( $i = 0; $i < count( $arr ); $i+=2 ) {
+							// even indexes will point to text that is not enclosed by brackets
+							$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
+								$wordStartDelim . '(' . LinkTitles::$safeTitle . ')' . 
+								$wordEndDelim . '/i', 
+								"LinkTitles::CallBack", $arr[$i], $limit, $count );
+							if (( $limit >= 0 ) && ( $count > 0  )) {
+								break; 
+							};
+						};
+						$text = implode( '', $arr );
+					}
 				}; // if $title != $myTitle
 			}; // foreach $res as $row
 			return true;
 		}
 
 		static function CallBack($matches) {
-			if ( strcmp(substr(LinkTitles::$st, 1), substr($matches[0], 1)) == 0 ) {
+			if ( strcmp(substr(LinkTitles::$safeTitle, 1), substr($matches[0], 1)) == 0 ) {
 				return '[[' . $matches[0] . ']]';
 			} else  {
-				return '[[' . LinkTitles::$st . '|' . $matches[0] . ']]';
+				return '[[' . LinkTitles::$safeTitle . '|' . $matches[0] . ']]';
 			}
 		}
 	}

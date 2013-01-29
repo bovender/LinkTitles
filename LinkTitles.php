@@ -43,13 +43,14 @@
 	$wgLinkTitlesWordStartOnly = true;
 	$wgLinkTitlesWordEndOnly = true;
 //	$wgLinkTitlesIgnoreCase = true;
+	$wgLinkTitlesSmartMode = true;
 
   $wgExtensionCredits['parserhook'][] = array(
     'path'           => __FILE__,
     'name'           => 'LinkTitles',
     'author'         => '[http://www.mediawiki.org/wiki/User:Bovender Daniel Kraus]', 
     'url'            => 'http://www.mediawiki.org/wiki/Extension:LinkTitles',
-    'version'        => '1.8.1',
+    'version'        => '2.0.0',
     'descriptionmsg' => 'linktitles-desc'
     );
 
