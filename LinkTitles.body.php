@@ -73,6 +73,12 @@
 		/// This function performs the actual parsing of the content.
 		static function parseContent( &$article, &$text ) {
 
+			// If the page contains the magic word '__NOAUTOLINKS__', do not parse
+			// the content.
+			if ( strpos( $text, '__NOAUTOLINKS__' ) !== false ) {
+				return true;
+			}
+
 			// Configuration variables need to be defined here as globals.
 			global $wgLinkTitlesPreferShortTitles;
 			global $wgLinkTitlesMinimumTitleLength;
