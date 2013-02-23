@@ -42,6 +42,7 @@
 			if ( $wgLinkTitlesParseOnRender ) { 
 				$wgHooks['ArticleAfterFetchContent'][] = 'LinkTitles::onArticleAfterFetchContent';
 			};
+			$wgHooks['ParserBeforeTidy'][] = 'LinkTitles::removeMagicWord';
 		}
 
 		/// This function is hooked to the ArticleSave event.
@@ -76,7 +77,7 @@
 			// If the page contains the magic word '__NOAUTOLINKS__', do not parse
 			// the content.
 			$mw = MagicWord::get('MAG_LINKTITLES_NOAUTOLINKS');
-			if ( $mw -> matchAndRemove( $text ) ) {
+			if ( $mw -> match( $text ) ) {
 				return true;
 			}
 
@@ -199,6 +200,12 @@
 			} else  {
 				return '[[' . LinkTitles::$safeTitle . '|' . $matches[0] . ']]';
 			}
+		}
+
+		function removeMagicWord( &$parser, &$text ) {
+			$mw = MagicWord::get('MAG_LINKTITLES_NOAUTOLINKS');
+			$mw -> matchAndRemove( $text );
+			return true;
 		}
 	}
 

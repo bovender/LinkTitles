@@ -5,6 +5,6 @@
 $magicWords = array();
 
 $magicWords['en'] = array(
-	'MAG_LINKTITLES_NOAUTOLINKS' => '__NOAUTOLINKS__',
+	'MAG_LINKTITLES_NOAUTOLINKS' => array(0, '__NOAUTOLINKS__')
 );
 
