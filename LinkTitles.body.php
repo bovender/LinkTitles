@@ -2,7 +2,7 @@
 /*
  *      \file LinkTitles.body.php
  *      
- *      Copyright 2012 Daniel Kraus <krada@gmx.net>
+ *      Copyright 2012-2013 Daniel Kraus <krada@gmx.net> ('bovender')
  *      
  *      This program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -75,7 +75,8 @@
 
 			// If the page contains the magic word '__NOAUTOLINKS__', do not parse
 			// the content.
-			if ( strpos( $text, '__NOAUTOLINKS__' ) !== false ) {
+			$mw = MagicWord::get('MAG_LINKTITLES_NOAUTOLINKS');
+			if ( $mw -> matchAndRemove( $text ) ) {
 				return true;
 			}
 

@@ -2,7 +2,7 @@
 /*
  *      \file LinkTitles.php
  *      
- *      Copyright 2012 Daniel Kraus <krada@gmx.net>
+ *      Copyright 2012-2013 Daniel Kraus <krada@gmx.net> ('bovender')
  *      
  *      This program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -42,20 +42,20 @@
 	$wgLinkTitlesFirstOnly = false;
 	$wgLinkTitlesWordStartOnly = true;
 	$wgLinkTitlesWordEndOnly = true;
-//	$wgLinkTitlesIgnoreCase = true;
 	$wgLinkTitlesSmartMode = true;
 
   $wgExtensionCredits['parserhook'][] = array(
     'path'           => __FILE__,
     'name'           => 'LinkTitles',
-    'author'         => '[http://www.mediawiki.org/wiki/User:Bovender Daniel Kraus]', 
-    'url'            => 'http://www.mediawiki.org/wiki/Extension:LinkTitles',
-    'version'        => '2.0.0',
+    'author'         => '[https://www.mediawiki.org/wiki/User:Bovender Daniel Kraus]', 
+    'url'            => 'https://www.mediawiki.org/wiki/Extension:LinkTitles',
+    'version'        => '2.1.0',
     'descriptionmsg' => 'linktitles-desc'
     );
 
-  $wgExtensionMessagesFiles['LinkTitles'] = dirname( __FILE__ ) . '/LinkTitles.i18n.php';
-  $wgAutoloadClasses['LinkTitles'] = dirname(__FILE__) . '/LinkTitles.body.php';
+  $wgExtensionMessagesFiles['LinkTitles'] = __DIR__ . '/LinkTitles.i18n.php';
+  $wgExtensionMessagesFiles['LinkTitlesMagic'] = __DIR__ . '/LinkTitles.i18n.magic.php';
+  $wgAutoloadClasses['LinkTitles'] = __DIR__ . '/LinkTitles.body.php';
 	$wgExtensionFunctions[] = 'LinkTitles::setup';
 
 	// vim: ts=2:sw=2:noet
