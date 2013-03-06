@@ -1,3 +1,6 @@
+LinkTitles 2.1.1: 2013-03-06
+* Fix crashing bugs that occurred with older PHP versions (prior to 5.3).
+
 LinkTitles 2.1.0: 2013-02-23
 * Introduced new 'magic word' __NOAUTOLINKS__, whose presence on a page will
   prevent the extension from adding links.
