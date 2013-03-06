@@ -202,7 +202,7 @@
 			}
 		}
 
-		function removeMagicWord( &$parser, &$text ) {
+		static function removeMagicWord( &$parser, &$text ) {
 			$mw = MagicWord::get('MAG_LINKTITLES_NOAUTOLINKS');
 			$mw -> matchAndRemove( $text );
 			return true;
