@@ -53,9 +53,9 @@
     'descriptionmsg' => 'linktitles-desc'
     );
 
-  $wgExtensionMessagesFiles['LinkTitles'] = __DIR__ . '/LinkTitles.i18n.php';
-  $wgExtensionMessagesFiles['LinkTitlesMagic'] = __DIR__ . '/LinkTitles.i18n.magic.php';
-  $wgAutoloadClasses['LinkTitles'] = __DIR__ . '/LinkTitles.body.php';
+  $wgExtensionMessagesFiles['LinkTitles'] = dirname( __FILE__ ) . '/LinkTitles.i18n.php';
+  $wgExtensionMessagesFiles['LinkTitlesMagic'] = dirname( __FILE__ ) . '/LinkTitles.i18n.magic.php';
+  $wgAutoloadClasses['LinkTitles'] = dirname( __FILE__ ) . '/LinkTitles.body.php';
 	$wgExtensionFunctions[] = 'LinkTitles::setup';
 
 	// vim: ts=2:sw=2:noet
