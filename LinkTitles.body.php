@@ -92,6 +92,7 @@
 			global $wgLinkTitlesWordEndOnly;
 			// global $wgLinkTitlesIgnoreCase;
 			global $wgLinkTitlesSmartMode;
+			global $wgCapitalLinks;
 
 			( $wgLinkTitlesWordStartOnly ) ? $wordStartDelim = '\b' : $wordStartDelim = '';
 			( $wgLinkTitlesWordEndOnly ) ? $wordEndDelim = '\b' : $wordEndDelim = '';
@@ -127,6 +128,14 @@
 			$black_list = str_replace( '_', ' ',
 				'("' . implode( '", "',$wgLinkTitlesBlackList ) . '")' );
 
+			// Depending on the global setting $wgCapitalLinks, we need
+			// different callback functions further down.
+			if ( $wgCapitalLinks ) {
+				$callBack = "LinkTitles::CallBackCaseInsensitive";
+			}	else {
+				$callBack = "LinkTitles::CallBackCaseSensitive";
+			}
+
 			// Build an SQL query and fetch all page titles ordered
 			// by length from shortest to longest.
 			// Only titles from 'normal' pages (namespace uid = 0)
@@ -159,11 +168,21 @@
 					// see http://stackoverflow.com/questions/10672286
 					$arr = preg_split( $delimiter, $text, -1, PREG_SPLIT_DELIM_CAPTURE );
 
+					// Depending on the global configuration setting $wgCapitalLinks,
+					// the title has to be searched for either in a strictly case-sensitive
+					// way, or in a 'fuzzy' way where the first letter of the title may
+					// be either case.
+					if ( $wgCapitalLinks ) {
+						$searchTerm = '((?i)' . LinkTitles::$safeTitle[0] . '(?-i)' . 
+							substr(LinkTitles::$safeTitle, 1) . ')';
+					}	else {
+						$searchTerm = '(' . LinkTitles::$safeTitle . ')';
+					}
+
 					for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 						// even indexes will point to text that is not enclosed by brackets
 						$arr[$i] = preg_replace( '/(?<![\:\.\@\/\?\&])' .
-							$wordStartDelim . '((?i)' . LinkTitles::$safeTitle[0] . '(?-i)' . 
-							substr(LinkTitles::$safeTitle, 1) . ')' . $wordEndDelim . '/', 
+							$wordStartDelim . $searchTerm . $wordEndDelim . '/',
 							'[[$1]]', $arr[$i], $limit, $count );
 						if (( $limit >= 0 ) && ( $count > 0  )) {
 							break; 
@@ -171,6 +190,9 @@
 					};
 					$text = implode( '', $arr );
 
+					// If smart mode is turned on, the extension will perform a second
+					// pass on the page and add links with aliases where the case does
+					// not match.
 					if ($wgLinkTitlesSmartMode) {
 						// split the string by [[...]] groups
 						// credits to inhan @ StackOverflow for suggesting preg_split
@@ -181,8 +203,7 @@
 							// even indexes will point to text that is not enclosed by brackets
 							$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
 								$wordStartDelim . '(' . LinkTitles::$safeTitle . ')' . 
-								$wordEndDelim . '/i', 
-								"LinkTitles::CallBack", $arr[$i], $limit, $count );
+								$wordEndDelim . '/i', $callBack, $arr[$i], $limit, $count );
 							if (( $limit >= 0 ) && ( $count > 0  )) {
 								break; 
 							};
@@ -194,8 +215,16 @@
 			return true;
 		}
 
-		static function CallBack($matches) {
+		static function CallBackCaseInsensitive($matches) {
 			if ( strcmp(substr(LinkTitles::$safeTitle, 1), substr($matches[0], 1)) == 0 ) {
+				return '[[' . $matches[0] . ']]';
+			} else  {
+				return '[[' . LinkTitles::$safeTitle . '|' . $matches[0] . ']]';
+			}
+		}
+
+		static function CallBackCaseSensitive($matches) {
+			if ( strcmp(substr(LinkTitles::$safeTitle, 0), substr($matches[0], 0)) == 0 ) {
 				return '[[' . $matches[0] . ']]';
 			} else  {
 				return '[[' . LinkTitles::$safeTitle . '|' . $matches[0] . ']]';
