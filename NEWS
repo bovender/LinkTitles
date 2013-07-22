@@ -1,3 +1,6 @@
+LinkTitles 2.2.1: 2013-07-22
+* Make the extension work with sqlite databases.
+
 LinkTitles 2.2.0: 2013-04-16
 * Fix case-sensitive linking when $wgCapitalLinks is false.
 

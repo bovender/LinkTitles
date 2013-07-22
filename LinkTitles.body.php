@@ -140,18 +140,34 @@
 			// by length from shortest to longest.
 			// Only titles from 'normal' pages (namespace uid = 0)
 			// are returned.
+			// Since the db may be sqlite, we need a try..catch structure
+			// because sqlite does not support the CHAR_LENGTH function.
 			$dbr = wfGetDB( DB_SLAVE );
-			$res = $dbr->select( 
-				'page', 
-				'page_title', 
-				array( 
-					'page_namespace = 0', 
-					'CHAR_LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
-					'page_title NOT IN ' . $black_list,
-				), 
-				__METHOD__, 
-				array( 'ORDER BY' => 'CHAR_LENGTH(page_title) ' . $sort_order )
-			);
+			try {
+				$res = $dbr->select( 
+					'page', 
+					'page_title', 
+					array( 
+						'page_namespace = 0', 
+						'CHAR_LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
+						'page_title NOT IN ' . $black_list,
+					), 
+					__METHOD__, 
+					array( 'ORDER BY' => 'CHAR_LENGTH(page_title) ' . $sort_order )
+				);
+			} catch (Exception $e) {
+				$res = $dbr->select( 
+					'page', 
+					'page_title', 
+					array( 
+						'page_namespace = 0', 
+						'LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
+						'page_title NOT IN ' . $black_list,
+					), 
+					__METHOD__, 
+					array( 'ORDER BY' => 'LENGTH(page_title) ' . $sort_order )
+				);
+			}
 
 			// Iterate through the page titles
 			foreach( $res as $row ) {
