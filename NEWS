@@ -1,3 +1,6 @@
+LinkTitles 2.2.2: 2013-08-09
+* Prevent crashes due to special characters in page titles.
+
 LinkTitles 2.2.1: 2013-07-22
 * Make the extension work with sqlite databases.
 
