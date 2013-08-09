@@ -184,15 +184,19 @@
 					// see http://stackoverflow.com/questions/10672286
 					$arr = preg_split( $delimiter, $text, -1, PREG_SPLIT_DELIM_CAPTURE );
 
+					// Escape certain special characters in the page title to prevent
+					// regexp compilation errors
+					$escapedTitle = preg_quote(LinkTitles::$safeTitle, '/');
+
 					// Depending on the global configuration setting $wgCapitalLinks,
 					// the title has to be searched for either in a strictly case-sensitive
 					// way, or in a 'fuzzy' way where the first letter of the title may
 					// be either case.
 					if ( $wgCapitalLinks ) {
-						$searchTerm = '((?i)' . LinkTitles::$safeTitle[0] . '(?-i)' . 
-							substr(LinkTitles::$safeTitle, 1) . ')';
+						$searchTerm = '((?i)' . $escapedTitle[0] . '(?-i)' . 
+							substr($escapedTitle, 1) . ')';
 					}	else {
-						$searchTerm = '(' . LinkTitles::$safeTitle . ')';
+						$searchTerm = '(' . $escapedTitle . ')';
 					}
 
 					for ( $i = 0; $i < count( $arr ); $i+=2 ) {
@@ -218,7 +222,7 @@
 						for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 							// even indexes will point to text that is not enclosed by brackets
 							$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
-								$wordStartDelim . '(' . LinkTitles::$safeTitle . ')' . 
+								$wordStartDelim . '(' . $escapedTitle . ')' . 
 								$wordEndDelim . '/i', $callBack, $arr[$i], $limit, $count );
 							if (( $limit >= 0 ) && ( $count > 0  )) {
 								break; 
