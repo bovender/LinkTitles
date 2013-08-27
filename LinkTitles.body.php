@@ -107,7 +107,7 @@
 
 			if ( $wgLinkTitlesSkipTemplates )
 			{
-				$templatesDelimiter = '{{.+}}';
+				$templatesDelimiter = '{{.+?}}';
 			} else {
 				$templatesDelimiter = '{{[^|]+?}}|{{.+\|';
 			};
@@ -122,8 +122,8 @@
 			( $wgLinkTitlesParseHeadings ) ? $delimiter = '' : $delimiter = '=+.+?=+|';
 			$urlPattern = '[a-z]+?\:\/\/(?:\S+\.)+\S+(?:\/.*)?';
 			$delimiter = '/(' . $delimiter . '\[\[.*?\]\]|' . $templatesDelimiter . 
-				'|\[' . $urlPattern . '\s.+?\]|'. $urlPattern . 
-				'(?=\s|$)|(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b))/i';
+				'|\[' . $urlPattern . '\s.+?\]|'. $urlPattern .  '(?=\s|$)' .
+				'|(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b))/i';
 
 			$black_list = str_replace( '_', ' ',
 				'("' . implode( '", "',$wgLinkTitlesBlackList ) . '")' );
@@ -177,7 +177,7 @@
 				$title = str_replace('_', ' ', $row->page_title);
 
 				if ( $title != $myTitle ) {
-					LinkTitles::$safeTitle = str_replace( '/', '\/', $title );
+					LinkTitles::$safeTitle = $title;
 
 					// split the string by [[...]] groups
 					// credits to inhan @ StackOverflow for suggesting preg_split
@@ -192,7 +192,7 @@
 					// the title has to be searched for either in a strictly case-sensitive
 					// way, or in a 'fuzzy' way where the first letter of the title may
 					// be either case.
-					if ( $wgCapitalLinks ) {
+					if ( $wgCapitalLinks && ( $escapedTitle[0] != '\\' )) {
 						$searchTerm = '((?i)' . $escapedTitle[0] . '(?-i)' . 
 							substr($escapedTitle, 1) . ')';
 					}	else {
