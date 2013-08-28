@@ -121,9 +121,15 @@
 			// capturing subpattern (which precludes the use of conditional subpatterns).
 			( $wgLinkTitlesParseHeadings ) ? $delimiter = '' : $delimiter = '=+.+?=+|';
 			$urlPattern = '[a-z]+?\:\/\/(?:\S+\.)+\S+(?:\/.*)?';
-			$delimiter = '/(' . $delimiter . '\[\[.*?\]\]|' . $templatesDelimiter . 
-				'|\[' . $urlPattern . '\s.+?\]|'. $urlPattern .  '(?=\s|$)' .
-				'|(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b))/i';
+			$delimiter = '/(' .                           // exclude from linking:
+				'\[\[.*?\]\]|' .                            // links
+				$delimiter .                                // titles (if requested)
+				$templatesDelimiter .                       // templates (if requested)
+				'^ .+?\n|\n .+?\n|\n .+?$|^ .+?$|' .        // preformatted text
+				'<nowiki>.*?<.nowiki>|<code>.*?<\/code>|' . // nowiki/code
+				'|\[' . $urlPattern . '\s.+?\]|'. $urlPattern .  '(?=\s|$)' . // urls
+				'|(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b)' .        // email addresses
+				')/i';
 
 			$black_list = str_replace( '_', ' ',
 				'("' . implode( '", "',$wgLinkTitlesBlackList ) . '")' );
