@@ -1,3 +1,8 @@
+LinkTitles 2.3.0: 2013-08-28
+* No longer mess up pages if a page title started with a slash.
+* Do not link preformatted text and text enclosed in <nowiki> or <code>
+  tags.
+
 LinkTitles 2.2.2: 2013-08-09
 * Prevent crashes due to special characters in page titles.
 
