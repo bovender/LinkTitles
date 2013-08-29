@@ -107,9 +107,9 @@
 
 			if ( $wgLinkTitlesSkipTemplates )
 			{
-				$templatesDelimiter = '{{.+?}}';
+				$templatesDelimiter = '{{.+?}}|';
 			} else {
-				$templatesDelimiter = '{{[^|]+?}}|{{.+\|';
+				$templatesDelimiter = '{{[^|]+?}}|{{.+\||';
 			};
 
 			// Build a regular expression that will capture existing wiki links ("[[...]]"),
@@ -127,8 +127,8 @@
 				$templatesDelimiter .                       // templates (if requested)
 				'^ .+?\n|\n .+?\n|\n .+?$|^ .+?$|' .        // preformatted text
 				'<nowiki>.*?<.nowiki>|<code>.*?<\/code>|' . // nowiki/code
-				'|\[' . $urlPattern . '\s.+?\]|'. $urlPattern .  '(?=\s|$)' . // urls
-				'|(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b)' .        // email addresses
+				'\[' . $urlPattern . '\s.+?\]|'. $urlPattern .  '(?=\s|$)|' . // urls
+				'(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b)' .        // email addresses
 				')/i';
 
 			$black_list = str_replace( '_', ' ',

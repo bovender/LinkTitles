@@ -1,3 +1,6 @@
+LinkTitles 2.3.1: 2013-08-29
+* Fix bug introduced with 2.3.0 that prevented the extension from working...
+
 LinkTitles 2.3.0: 2013-08-28
 * No longer mess up pages if a page title started with a slash.
 * Do not link preformatted text and text enclosed in <nowiki> or <code>
