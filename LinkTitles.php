@@ -2,7 +2,7 @@
 /*
  *      \file LinkTitles.php
  *      
- *      Copyright 2012-2013 Daniel Kraus <krada@gmx.net> ('bovender')
+ *      Copyright 2012-2014 Daniel Kraus <krada@gmx.net> ('bovender')
  *      
  *      This program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
