@@ -29,7 +29,7 @@
 	};
 
 	class LinkTitles {
-		static $safeTitle;
+		static $targetTitleText;
 
 		/// Setup function, hooks the extension's functions to MediaWiki events.
 		public static function setup() {
@@ -76,10 +76,11 @@
 
 			// If the page contains the magic word '__NOAUTOLINKS__', do not parse
 			// the content.
-			$mw = MagicWord::get('MAG_LINKTITLES_NOAUTOLINKS');
-			if ( $mw -> match( $text ) ) {
+			$noAutoLinks = MagicWord::get('MAG_LINKTITLES_NOAUTOLINKS');
+			if ( $noAutoLinks -> match( $text ) ) {
 				return true;
 			}
+			$noAutoLinkTarget = MagicWord::get('MAG_LINKTITLES_NOTARGET');
 
 			// Configuration variables need to be defined here as globals.
 			global $wgLinkTitlesPreferShortTitles;
@@ -100,7 +101,7 @@
 
 			// To prevent adding self-references, we now
 			// extract the current page's title.
-			$myTitle = $article->getTitle()->getText();
+			$myTitle = $article->getTitle();
 
 			( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'ASC' : $sort_order = 'DESC';
 			( $wgLinkTitlesFirstOnly ) ? $limit = 1 : $limit = -1;
@@ -177,13 +178,21 @@
 
 			// Iterate through the page titles
 			foreach( $res as $row ) {
-				// Page titles are stored in the database with spaces
-				// replaced by underscores. Therefore we now convert
-				// the underscores back to spaces.
-				$title = str_replace('_', ' ', $row->page_title);
+				// Obtain an instance of a Title class for the current database 
+				// row.
+				$targetTitle = Title::makeTitle(NS_MAIN, $row->page_title);
 
-				if ( $title != $myTitle ) {
-					LinkTitles::$safeTitle = $title;
+				$targetPage = WikiPage::factory($targetTitle);
+				$targetText = $targetPage->getText();
+
+				// Only proceed if we're not operating on the very same page
+				if ( ! ( $myTitle->equals($targetTitle) || 
+						$noAutoLinkTarget->match($targetText) ) ) {
+					// The bare text of the $targetTitle must be stored in a static 
+					// class variable, so that it can be accessed by the 
+					// preg_replace_callback callback functions. There is no other way 
+					// to hand over state information.
+					LinkTitles::$targetTitleText = $targetTitle->getText();
 
 					// split the string by [[...]] groups
 					// credits to inhan @ StackOverflow for suggesting preg_split
@@ -192,7 +201,7 @@
 
 					// Escape certain special characters in the page title to prevent
 					// regexp compilation errors
-					$escapedTitle = preg_quote(LinkTitles::$safeTitle, '/');
+					$escapedTitle = preg_quote($targetTitle->getText(), '/');
 
 					// Depending on the global configuration setting $wgCapitalLinks,
 					// the title has to be searched for either in a strictly case-sensitive
@@ -236,30 +245,34 @@
 						};
 						$text = implode( '', $arr );
 					}
-				}; // if $title != $myTitle
+				}; // if ! $myTitle.equals($targetTitle)
 			}; // foreach $res as $row
 			return true;
 		}
 
 		static function CallBackCaseInsensitive($matches) {
-			if ( strcmp(substr(LinkTitles::$safeTitle, 1), substr($matches[0], 1)) == 0 ) {
+			if ( strcmp(substr(LinkTitles::$targetTitleText, 1), substr($matches[0], 1)) == 0 ) {
 				return '[[' . $matches[0] . ']]';
 			} else  {
-				return '[[' . LinkTitles::$safeTitle . '|' . $matches[0] . ']]';
+				return '[[' . LinkTitles::$targetTitleText . '|' . $matches[0] . ']]';
 			}
 		}
 
 		static function CallBackCaseSensitive($matches) {
-			if ( strcmp(substr(LinkTitles::$safeTitle, 0), substr($matches[0], 0)) == 0 ) {
+			if ( strcmp(substr(LinkTitles::$targetTitleText, 0), substr($matches[0], 0)) == 0 ) {
 				return '[[' . $matches[0] . ']]';
 			} else  {
-				return '[[' . LinkTitles::$safeTitle . '|' . $matches[0] . ']]';
+				return '[[' . LinkTitles::$targetTitleText . '|' . $matches[0] . ']]';
 			}
 		}
 
 		static function removeMagicWord( &$parser, &$text ) {
-			$mw = MagicWord::get('MAG_LINKTITLES_NOAUTOLINKS');
-			$mw -> matchAndRemove( $text );
+			$mwa = new MagicWordArray(array(
+				'MAG_LINKTITLES_NOAUTOLINKS',
+				'MAG_LINKTITLES_NOTARGET'
+				)
+			);
+			$mwa->matchAndRemove( $text );
 			return true;
 		}
 	}
