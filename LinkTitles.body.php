@@ -135,13 +135,6 @@
 			$black_list = str_replace( '_', ' ',
 				'("' . implode( '", "',$wgLinkTitlesBlackList ) . '")' );
 
-			// Depending on the global setting $wgCapitalLinks, we need
-			// different callback functions further down.
-			if ( $wgCapitalLinks ) {
-				$callBack = "LinkTitles::CallBackCaseInsensitive";
-			}	else {
-				$callBack = "LinkTitles::CallBackCaseSensitive";
-			}
 
 			// Build an SQL query and fetch all page titles ordered
 			// by length from shortest to longest.
@@ -181,18 +174,16 @@
 				// Obtain an instance of a Title class for the current database 
 				// row.
 				$targetTitle = Title::makeTitle(NS_MAIN, $row->page_title);
+				$targetTitleText = $targetTitle->getText();
 
+				// Obtain a page object for the current title, so we can check for 
+				// the presence of the __NOAUTOLINKTARGET__ magic keyword.
 				$targetPage = WikiPage::factory($targetTitle);
 				$targetText = $targetPage->getText();
 
 				// Only proceed if we're not operating on the very same page
 				if ( ! ( $myTitle->equals($targetTitle) || 
 						$noAutoLinkTarget->match($targetText) ) ) {
-					// The bare text of the $targetTitle must be stored in a static 
-					// class variable, so that it can be accessed by the 
-					// preg_replace_callback callback functions. There is no other way 
-					// to hand over state information.
-					LinkTitles::$targetTitleText = $targetTitle->getText();
 
 					// split the string by [[...]] groups
 					// credits to inhan @ StackOverflow for suggesting preg_split
@@ -201,7 +192,7 @@
 
 					// Escape certain special characters in the page title to prevent
 					// regexp compilation errors
-					$escapedTitle = preg_quote($targetTitle->getText(), '/');
+					$escapedTitle = preg_quote($targetTitleText, '/');
 
 					// Depending on the global configuration setting $wgCapitalLinks,
 					// the title has to be searched for either in a strictly case-sensitive
@@ -229,16 +220,52 @@
 					// pass on the page and add links with aliases where the case does
 					// not match.
 					if ($wgLinkTitlesSmartMode) {
-						// split the string by [[...]] groups
-						// credits to inhan @ StackOverflow for suggesting preg_split
-						// see http://stackoverflow.com/questions/10672286
+						// Build a callback function for use with preg_replace_callback.
+						// This essentially performs a case-sensitive comparison of the 
+						// current page title and the occurrence found on the page; if 
+						// the cases do not match, it builds an aliased (piped) link.
+						// If $wgCapitalLinks is set to true, the case of the first 
+						// letter is ignored by MediaWiki and we don't need to build a 
+						// piped link if only the case of the first letter is different.
+						// For good performance, we use two different callback 
+						// functions.
+						if ( $wgCapitalLinks ) {
+							// With $wgCapitalLinks set to true we have a slightly more 
+							// complicated version of the callback than if it were false; 
+							// we need to ignore the first letter of the page titles, as 
+							// it does not matter for linking.
+							$callback = function ($matches) use ($targetTitleText) {
+								if ( strcmp(substr($targetTitleText, 1), substr($matches[0], 1)) == 0 ) {
+									// Case-sensitive match: no need to bulid piped link.
+									return '[[' . $matches[0] . ']]';
+								} else  {
+									// Case-insensitive match: build piped link.
+									return '[[' . $targetTitleText . '|' . $matches[0] . ']]';
+								}
+							};
+						}
+						else
+						{
+							// If $wgCapitalLinks is false, we can use the simple variant 
+							// of the callback function.
+							$callback = function ($matches) use ($targetTitleText) {
+								if ( strcmp($targetTitleText, $matches[0]) == 0 ) {
+									// Case-sensitive match: no need to bulid piped link.
+									return '[[' . $matches[0] . ']]';
+								} else  {
+									// Case-insensitive match: build piped link.
+									return '[[' . $targetTitleText . '|' . $matches[0] . ']]';
+								}
+							};
+						}
+
 						$arr = preg_split( $delimiter, $text, -1, PREG_SPLIT_DELIM_CAPTURE );
 
 						for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 							// even indexes will point to text that is not enclosed by brackets
 							$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
 								$wordStartDelim . '(' . $escapedTitle . ')' . 
-								$wordEndDelim . '/i', $callBack, $arr[$i], $limit, $count );
+								$wordEndDelim . '/i', $callback, $arr[$i], $limit, $count );
 							if (( $limit >= 0 ) && ( $count > 0  )) {
 								break; 
 							};
@@ -250,22 +277,8 @@
 			return true;
 		}
 
-		static function CallBackCaseInsensitive($matches) {
-			if ( strcmp(substr(LinkTitles::$targetTitleText, 1), substr($matches[0], 1)) == 0 ) {
-				return '[[' . $matches[0] . ']]';
-			} else  {
-				return '[[' . LinkTitles::$targetTitleText . '|' . $matches[0] . ']]';
-			}
-		}
-
-		static function CallBackCaseSensitive($matches) {
-			if ( strcmp(substr(LinkTitles::$targetTitleText, 0), substr($matches[0], 0)) == 0 ) {
-				return '[[' . $matches[0] . ']]';
-			} else  {
-				return '[[' . LinkTitles::$targetTitleText . '|' . $matches[0] . ']]';
-			}
-		}
-
+		/// Remove the magic words that this extension introduces from the 
+		/// $text, so that they do not appear on the rendered page.
 		static function removeMagicWord( &$parser, &$text ) {
 			$mwa = new MagicWordArray(array(
 				'MAG_LINKTITLES_NOAUTOLINKS',
