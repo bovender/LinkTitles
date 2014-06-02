@@ -130,6 +130,9 @@
 				'<nowiki>.*?<.nowiki>|<code>.*?<\/code>|' . // nowiki/code
 				'<pre>.*?<\/pre>|<html>.*?<\/html>|' .      // pre/html
 				'<script>.*?<\/script>|' .                  // script
+				'<div.+?>|<\/div>|' .                       // attributes of div elements
+				'<span.+?>|<\/span>|' .                     // attributes of span elements
+				'style=".+?"|class=".+?"|' .                // styles and classes (e.g. of wikitables)
 				'\[' . $urlPattern . '\s.+?\]|'. $urlPattern .  '(?=\s|$)|' . // urls
 				'(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b)' .        // email addresses
 				')/i';
