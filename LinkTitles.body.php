@@ -183,10 +183,26 @@
 				$targetPage = WikiPage::factory($targetTitle);
 				$targetText = $targetPage->getText();
 
-				// Only proceed if we're not operating on the very same page
-				if ( ! ( $myTitle->equals($targetTitle) || 
-						$noAutoLinkTarget->match($targetText) ) ) {
+				// To prevent linking to pages that redirect to the current page,
+				// obtain the title that the target page redirects to. Will be null 
+				// if there is no redirect.
+				$redirectTitle = $targetPage->getRedirectTarget();
+				if ( $redirectTitle ) {
+					// If the target page redirects to the current page, exit the 
+					// function.
+					if ( $redirectTitle->equals($myTitle) ) {
+						continue;
+					}
+				}
 
+				if ( $noAutoLinkTarget->match($targetText) ) {
+					continue;
+				}
+
+				// Only proceed if we're not operating on the very same page, if the 
+				// target page does not have the __NOAUTOLINKTARGET__ magic word in 
+				// it, and if the target page does not redirect to the current page.
+				if ( !  $myTitle->equals($targetTitle) ) {
 					// split the string by [[...]] groups
 					// credits to inhan @ StackOverflow for suggesting preg_split
 					// see http://stackoverflow.com/questions/10672286
