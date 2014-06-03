@@ -119,7 +119,7 @@ class SpecialLinkTitles extends SpecialPage {
 		// Iterate through the pages; break if a time limit is exceeded.
 		foreach ( $res as $row ) {
 			$curTitle = $row->page_title;
-			$this->processPage($curTitle);
+			LinkTitles::processPage($curTitle, $this->getContext());
 			$start += 1;
 			
 			// Check if the time limit is exceeded
@@ -147,21 +147,6 @@ class SpecialLinkTitles extends SpecialPage {
 		}
 	}
 
-	/// Processes a single page, given a $title Title object.
-	private function processPage($title) {
-		// TODO: make this namespace-aware
-		$titleObj = Title::makeTitle(0, $title);
-		$page = WikiPage::factory($titleObj);
-		$article = Article::newFromWikiPage($page, $this->getContext());
-		$text = $article->getContent();
-		LinkTitles::parseContent($article, $text);
-		$content = new WikitextContent($text);
-		$page->doEditContent($content,
-			"Parsed for page titles by LinkTitles bot.",
-			EDIT_MINOR | EDIT_FORCE_BOT
-		);
-
-	}
 
 	/// Adds WikiText to the output containing information about the extension 
 	/// and a form and button to start linking.

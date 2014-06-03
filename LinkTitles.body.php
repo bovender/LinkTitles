@@ -298,6 +298,23 @@
 			}; // foreach $res as $row
 			return true;
 		}
+		
+		/// Automatically processes a single page, given a $title Title object.
+		/// This function is called by the SpecialLinkTitles class and the 
+		/// LinkTitlesJob class.
+		public static function processPage($title, $context) {
+			// TODO: make this namespace-aware
+			$titleObj = Title::makeTitle(0, $title);
+			$page = WikiPage::factory($titleObj);
+			$article = Article::newFromWikiPage($page, $context);
+			$text = $article->getContent();
+			LinkTitles::parseContent($article, $text);
+			$content = new WikitextContent($text);
+			$page->doEditContent($content,
+				"Parsed for page titles by LinkTitles bot.",
+				EDIT_MINOR | EDIT_FORCE_BOT
+			);
+		}
 
 		/// Remove the magic words that this extension introduces from the 
 		/// $text, so that they do not appear on the rendered page.
