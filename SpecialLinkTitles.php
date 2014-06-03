@@ -96,12 +96,16 @@ class SpecialLinkTitles extends SpecialPage {
 
 		// If we have not reached the last page yet, produce code to reload
 		// the extension's special page.
-		if ( $start <= $end )
+		if ( $start < $end )
 	 	{
 			// Build a form with hidden values and output JavaScript code that 
 			// immediately submits the form in order to continue the process.
 			$output->addHTML($this->getReloaderForm($request->getRequestURL(), 
 				$start, $end, $reloads));
+		}
+		else // Last page has been processed
+		{
+			$this->addCompletedInfo($output, $start, $end, $reloads);
 		}
 	}
 
@@ -152,7 +156,7 @@ EOF
 	}
 
 	/// Produces informative output in WikiText format to show while working.
-	private function addProgressInfo($output, $curTitle, $start, $end) {
+	private function addProgressInfo(&$output, $curTitle, $start, $end) {
 		$progress = $start / $end * 100;
 		$percent = sprintf("%01.1f", $progress);
 
@@ -160,7 +164,7 @@ EOF
 <<<EOF
 == Processing pages... ==
 The [http://www.mediawiki.org/wiki/Extension:LinkTitles LinkTitles] 
-extension is currently going through very page of your wiki, adding links to 
+extension is currently going through every page of your wiki, adding links to 
 existing pages as appropriate.
 
 === Current page: $curTitle ===
@@ -201,6 +205,27 @@ EOF
 </script>
 EOF
 		;
+	}
+
+	/// Adds statistics to the page when all processing is done.
+	private function addCompletedInfo(&$output, $start, $end, $reloads) {
+		global $wgLinkTitlesTimeLimit;
+		$pagesPerReload = sprintf('%0.1f', $end / $reloads);
+		$output->addWikiText(
+<<<EOF
+== Batch processing completed! ==
+{| class="wikitable"
+|-
+| total number of pages: || ${end}
+|-
+| timeout setting [s]: || ${wgLinkTitlesTimeLimit}
+|-
+| webpage reloads: || ${reloads}
+|-
+| pages scanned per reload interval: || ${pagesPerReload}
+|}
+EOF
+			);
 	}
 
 	/// Counts the number of pages in a read-access wiki database ($dbr).
