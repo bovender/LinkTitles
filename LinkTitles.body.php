@@ -311,8 +311,9 @@
 			LinkTitles::parseContent($article, $text);
 			$content = new WikitextContent($text);
 			$page->doEditContent($content,
-				"Parsed for page titles by LinkTitles bot.",
-				EDIT_MINOR | EDIT_FORCE_BOT
+				"Links to existing pages added by LinkTitles bot.",
+				EDIT_MINOR | EDIT_FORCE_BOT,
+				$context->getUser()
 			);
 		}
 
