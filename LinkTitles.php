@@ -43,6 +43,7 @@
 	$wgLinkTitlesWordStartOnly = true;
 	$wgLinkTitlesWordEndOnly = true;
 	$wgLinkTitlesSmartMode = true;
+	$wgLinkTitlesTimeLimit = 0.2;
 
   $wgExtensionCredits['parserhook'][] = array(
     'path'           => __FILE__,
@@ -56,7 +57,10 @@
   $wgExtensionMessagesFiles['LinkTitles'] = dirname( __FILE__ ) . '/LinkTitles.i18n.php';
   $wgExtensionMessagesFiles['LinkTitlesMagic'] = dirname( __FILE__ ) . '/LinkTitles.i18n.magic.php';
   $wgAutoloadClasses['LinkTitles'] = dirname( __FILE__ ) . '/LinkTitles.body.php';
+  $wgAutoloadClasses['SpecialLinkTitles'] = dirname( __FILE__ ) . '/SpecialLinkTitles.php';
 	$wgExtensionFunctions[] = 'LinkTitles::setup';
+	$wgSpecialPages['LinkTitles'] = 'SpecialLinkTitles';
+	$wgSpecialPageGroups['LinkTitles'] = 'other';
 
 	// vim: ts=2:sw=2:noet
 
