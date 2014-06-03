@@ -20,10 +20,6 @@
  *      MA 02110-1301, USA.
  */
  
-  if ( !defined( 'MEDIAWIKI' ) ) {
-    die( 'Not an entry point.' );
-	}
-
 	function dump($var) {
 			error_log(print_r($var, TRUE) . "\n", 3, 'php://stderr');
 	};
