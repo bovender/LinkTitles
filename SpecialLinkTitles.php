@@ -111,8 +111,8 @@ class SpecialLinkTitles extends SpecialPage {
 			), 
 			__METHOD__, 
 			array(
-				'OFFSET' => $start,
-		 		'LIMIT' => '1'
+		 		'LIMIT' => 999999999,
+				'OFFSET' => $start
 			)
 		);
 
@@ -125,7 +125,6 @@ class SpecialLinkTitles extends SpecialPage {
 			// Check if the time limit is exceeded
 			if ( microtime(true)-$startTime > $wgLinkTitlesTimeLimit )
 			{
-				$reloads += 1;
 				break;
 			}
 		}
@@ -136,6 +135,7 @@ class SpecialLinkTitles extends SpecialPage {
 		// the extension's special page.
 		if ( $start < $end )
 	 	{
+			$reloads += 1;
 			// Build a form with hidden values and output JavaScript code that 
 			// immediately submits the form in order to continue the process.
 			$output->addHTML($this->getReloaderForm($request->getRequestURL(), 

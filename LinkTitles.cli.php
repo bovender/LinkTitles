@@ -28,7 +28,24 @@ require_once( "/home/daniel/Documents/Kommunikation/Wiki/maintenance/Maintenance
 require_once( dirname( __FILE__ ) . "/LinkTitles.body.php" );
  
 class LinkTitlesCli extends Maintenance {
+	public function __construct() {
+		parent::__construct();
+		$this->addDescription("Iterates over wiki pages and automatically adds links to other pages.");
+		$this->addOption(
+			"start",
+			"Set start index.",
+			false, // not required
+			true,  // requires argument
+			"s"
+		);
+	}
+
 	public function execute() {
+		$index = intval($this->getOption('start', 0));
+		if ( $index < 0 ) {
+			$this->error('FATAL: Start index must be 0 or greater.', 1);
+		};
+
 		// Connect to the database
 		$dbr = $this->getDB( DB_SLAVE );
 
@@ -39,20 +56,27 @@ class LinkTitlesCli extends Maintenance {
 			array( 
 				'page_namespace = 0', 
 			), 
-			__METHOD__
+			__METHOD__,
+			array(
+				'LIMIT' => 999999999,
+				'OFFSET' => $index
+			)
 		);
-		$index = 0;
 		$numPages = $res->numRows();
 		$context = RequestContext::getMain();
-		$this->output("Processing ${numPages} pages...\n");
+		$this->output("Processing ${numPages} pages, starting at index ${index}...\n");
 
 		// Iterate through the pages; break if a time limit is exceeded.
 		foreach ( $res as $row ) {
 			$index += 1;
 			$curTitle = $row->page_title;
-			$this->output( sprintf("\r%02.0f%%", $index / $numPages * 100) );
+			$this->output( 
+				sprintf("\rPage #%d (%02.0f%%)", $index, $index / $numPages * 100)
+		 	);
 			LinkTitles::processPage($curTitle, $context);
 		}
+
+		$this->output("Finished parsing.");
 	}
 }
  
