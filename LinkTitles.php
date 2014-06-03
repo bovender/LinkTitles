@@ -59,8 +59,12 @@
   $wgAutoloadClasses['LinkTitles'] = dirname( __FILE__ ) . '/LinkTitles.body.php';
   $wgAutoloadClasses['SpecialLinkTitles'] = dirname( __FILE__ ) . '/SpecialLinkTitles.php';
 	$wgExtensionFunctions[] = 'LinkTitles::setup';
+
+	// Settings for the batch-processing special page
 	$wgSpecialPages['LinkTitles'] = 'SpecialLinkTitles';
 	$wgSpecialPageGroups['LinkTitles'] = 'other';
+	$wgGroupPermissions['sysop']['linktitles-batch'] = true;
+	$wgAvailableRights[] = 'linktitles-batch';
 
 	// vim: ts=2:sw=2:noet
 

@@ -2,10 +2,19 @@
 class SpecialLinkTitles extends SpecialPage {
 
 	function __construct() {
-		parent::__construct('LinkTitles');
+		// the second parameter in the following function call ensures that only 
+		// users who have the 'linktitles-batch' right get to see this page (by 
+		// default, this are all sysop users).
+		parent::__construct('LinkTitles', 'linktitles-batch');
 	}
 
 	function execute($par) {
+		// Prevent non-authorized users from executing the batch processing.
+		if (  !$this->userCanExecute( $this->getUser() )  ) {
+					$this->displayRestrictionError();
+							return;
+		}
+
 		$request = $this->getRequest();
 		$output = $this->getOutput();
 		$this->setHeaders();
