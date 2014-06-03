@@ -28,9 +28,10 @@
 			error_log(print_r($var, TRUE) . "\n", 3, 'php://stderr');
 	};
 
+	/// Main function of the extensions. Sets up parser hooks and performs the 
+	/// actual parsing.
+	/// TODO: Use the current PageContentSave hook rather than the deprecated ArticleSave hook.
 	class LinkTitles {
-		static $targetTitleText;
-
 		/// Setup function, hooks the extension's functions to MediaWiki events.
 		public static function setup() {
 			global $wgLinkTitlesParseOnEdit;

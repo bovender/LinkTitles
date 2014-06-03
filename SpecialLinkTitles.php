@@ -24,6 +24,8 @@
     die( 'Not an entry point.' );
 	}
  
+/// Provides a special page that can be used to batch-process all pages in 
+/// the wiki. By default, this can only be performed by sysops.
 class SpecialLinkTitles extends SpecialPage {
 
 	function __construct() {
@@ -33,6 +35,8 @@ class SpecialLinkTitles extends SpecialPage {
 		parent::__construct('LinkTitles', 'linktitles-batch');
 	}
 
+	/// Entry function of the special page class. Will abort if the user does 
+	/// not have appropriate permissions ('linktitles-batch').
 	function execute($par) {
 		// Prevent non-authorized users from executing the batch processing.
 		if (  !$this->userCanExecute( $this->getUser() )  ) {
