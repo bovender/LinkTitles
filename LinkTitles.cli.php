@@ -1,7 +1,5 @@
 <?php
 /*
- *      \file LinkTitles.cli.php
- *      
  *      Copyright 2012-2014 Daniel Kraus <krada@gmx.net> ('bovender')
  *      
  *      This program is free software; you can redistribute it and/or modify
@@ -47,7 +45,15 @@ else
 
 require_once( dirname( __FILE__ ) . "/LinkTitles.body.php" );
  
+/// Core class of the maintanance script.
+/// @note Note that the execution of maintenance scripts is prohibited for 
+/// an Apache web server due to a `.htaccess` file that declares `deny from 
+/// all`. Other webservers may exhibit different behavior. Be aware that 
+/// anybody who is able to execute this script may place a high load on the 
+/// server.
+/// @ingroup batch
 class LinkTitlesCli extends Maintenance {
+	/// The constructor adds a description and one option.
 	public function __construct() {
 		parent::__construct();
 		$this->addDescription("Iterates over wiki pages and automatically adds links to other pages.");
@@ -60,6 +66,10 @@ class LinkTitlesCli extends Maintenance {
 		);
 	}
 
+	/// Main function of the maintenance script.
+	/// Will iterate over all pages in the wiki (starting at a certain index, 
+	/// if the `--start` option is given) and call LinkTitles::processPage() for 
+	/// each page.
 	public function execute() {
 		$index = intval($this->getOption('start', 0));
 		if ( $index < 0 ) {
@@ -107,5 +117,4 @@ if( defined('RUN_MAINTENANCE_IF_MAIN') ) {
 	require_once( DO_MAINTENANCE ); # Make this work on versions before 1.17
 }
 
-// vim: ts=2:sw=2:noet
-
+// vim: ts=2:sw=2:noet:comments^=\:///

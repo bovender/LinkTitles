@@ -1,7 +1,5 @@
 <?php
 /*
- *      \file SpecialLinkTitles.php
- *
  *      Copyright 2012-2014 Daniel Kraus <krada@gmx.net> ('bovender')
  *
  *      This program is free software; you can redistribute it and/or modify
@@ -19,15 +17,21 @@
  *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  *      MA 02110-1301, USA.
  */
- 
+/// @defgroup batch Batch processing
+
+	/// @cond
   if ( !defined( 'MEDIAWIKI' ) ) {
     die( 'Not an entry point.' );
 	}
+	/// @endcond
  
 /// Provides a special page that can be used to batch-process all pages in 
 /// the wiki. By default, this can only be performed by sysops.
+/// @ingroup batch
 class SpecialLinkTitles extends SpecialPage {
 
+	/// Constructor. Announces the special page title and required user right 
+	/// to the parent constructor.
 	function __construct() {
 		// the second parameter in the following function call ensures that only 
 		// users who have the 'linktitles-batch' right get to see this page (by 
@@ -37,6 +41,7 @@ class SpecialLinkTitles extends SpecialPage {
 
 	/// Entry function of the special page class. Will abort if the user does 
 	/// not have appropriate permissions ('linktitles-batch').
+	/// @returns undefined
 	function execute($par) {
 		// Prevent non-authorized users from executing the batch processing.
 		if (  !$this->userCanExecute( $this->getUser() )  ) {
@@ -64,13 +69,15 @@ class SpecialLinkTitles extends SpecialPage {
 		{
 			$this->buildInfoPage($request, $output);
 		}
-
 	}
 
 
 	/// Processes wiki articles, starting at the page indicated by 
 	/// $startTitle. If $wgLinkTitlesTimeLimit is reached before all pages are 
 	/// processed, returns the title of the next page that needs processing.
+	/// @param $request WebRequest object that is associated with the special 
+	///                 page.
+	/// @param $output  Output object that the special page is equipped with.
 	private function process(&$request, &$output) {
 		global $wgLinkTitlesTimeLimit;
 
@@ -147,7 +154,6 @@ class SpecialLinkTitles extends SpecialPage {
 		}
 	}
 
-
 	/// Adds WikiText to the output containing information about the extension 
 	/// and a form and button to start linking.
 	private function buildInfoPage(&$request, &$output) {
@@ -179,8 +185,13 @@ EOF
 	}
 
 	/// Produces informative output in WikiText format to show while working.
-	private function addProgressInfo(&$output, $curTitle, $start, $end) {
-		$progress = $start / $end * 100;
+	/// @param $output    Output object.
+	/// @param $curTitle  Title of the currently processed page.
+	/// @param $index     Index of the currently processed page.     
+	/// @param $end       Last index that will be processed (i.e., number of 
+	///                   pages).
+	private function addProgressInfo(&$output, $curTitle, $index, $end) {
+		$progress = $index / $end * 100;
 		$percent = sprintf("%01.1f", $progress);
 
 		$output->addWikiText(
@@ -195,7 +206,7 @@ EOF
 		);
 		$output->addHTML(
 <<<EOF
-<p>Page ${start} of ${end}.</p>
+<p>Page ${index} of ${end}.</p>
 <div style="width:100%; padding:2px; border:1px solid #000; position: relative;
 		margin-bottom:16px;">
 	<span style="position: absolute; left: 50%; font-weight:bold; color:#555;">
@@ -215,6 +226,12 @@ EOF
 
 	/// Generates an HTML form and JavaScript to automatically submit the 
 	/// form.
+	/// @param $url     URL to reload with a POST request.
+	/// @param $start   Index of the next page that shall be processed.
+	/// @param $end     Index of the last page to be processed.
+	/// @param $reloads Counter that holds the number of reloads so far.
+	/// @returns        String that holds the HTML for a form and a
+	///                 JavaScript command.
 	private function getReloaderForm($url, $start, $end, $reloads) {
 		return
 <<<EOF
@@ -231,6 +248,11 @@ EOF
 	}
 
 	/// Adds statistics to the page when all processing is done.
+	/// @param $output  Output object
+	/// @param $start   Index of the first page that was processed.
+	/// @param $end     Index of the last processed page.
+	/// @param $reloads Number of reloads of the page.
+	/// @returns undefined
 	private function addCompletedInfo(&$output, $start, $end, $reloads) {
 		global $wgLinkTitlesTimeLimit;
 		$pagesPerReload = sprintf('%0.1f', $end / $reloads);
@@ -252,7 +274,9 @@ EOF
 	}
 
 	/// Counts the number of pages in a read-access wiki database ($dbr).
-	private function countPages($dbr) {
+	/// @param $dbr Read-only `Database` object.
+	/// @returns Number of pages in the default namespace (0) of the wiki.
+	private function countPages(&$dbr) {
 		$res = $dbr->select(
 			'page',
 			'page_id', 
@@ -264,4 +288,5 @@ EOF
 		return $res->numRows();
 	}
 }
-// vim: ts=2:sw=2:noet
+
+// vim: ts=2:sw=2:noet:comments^=\:///

@@ -1,7 +1,5 @@
 <?php
 /*
- *      \file LinkTitles.body.php
- *      
  *      Copyright 2012-2014 Daniel Kraus <krada@gmx.net> ('bovender')
  *      
  *      This program is free software; you can redistribute it and/or modify
@@ -19,14 +17,18 @@
  *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  *      MA 02110-1301, USA.
  */
+	/// @file
  
+	/// Helper function for development and debugging.
+  /// @param $var Any variable. Raw content will be dumped to stderr.
+	/// @return undefined
 	function dump($var) {
 			error_log(print_r($var, TRUE) . "\n", 3, 'php://stderr');
 	};
 
-	/// Main function of the extensions. Sets up parser hooks and performs the 
-	/// actual parsing.
-	/// TODO: Use the current PageContentSave hook rather than the deprecated ArticleSave hook.
+	/// Central class of the extension. Sets up parser hooks.
+	/// This class contains only static functions; do not instantiate.
+	/// @todo Use the current PageContentSave hook rather than the deprecated ArticleSave hook.
 	class LinkTitles {
 		/// Setup function, hooks the extension's functions to MediaWiki events.
 		public static function setup() {
@@ -42,9 +44,7 @@
 			$wgHooks['ParserBeforeTidy'][] = 'LinkTitles::removeMagicWord';
 		}
 
-		/// This function is hooked to the ArticleSave event.
-		/// It will be called whenever a page is about to be 
-		/// saved.
+		/// Event handler that is hooked to the ArticleSave event.
 		public static function onArticleSave( &$article, &$user, &$text, &$summary,
 				$minor, $watchthis, $sectionanchor, &$flags, &$status ) {
 
@@ -54,8 +54,9 @@
 			return $minor or self::parseContent( $article, $text );
 		}
 
-		/// Called when an ArticleAfterFetchContent event occurs; this requires the
-		/// $wgLinkTitlesParseOnRender option to be set to 'true'
+		/// Event handler that is hooked to the ArticleAfterFetchContent event.
+		/// @param $article Article object
+		/// @param $content String that holds the article content
 		public static function onArticleAfterFetchContent( &$article, &$content ) {
 			// The ArticleAfterFetchContent event is triggered whenever page content
 			// is retrieved from the database, i.e. also for editing etc.
@@ -68,7 +69,10 @@
 			return true;
 		}
 
-		/// This function performs the actual parsing of the content.
+		/// Core function of the extension, performs the actual parsing of the content.
+		/// @param $article Article object
+		/// @param $text    String that holds the article content
+		/// @returns true
 		static function parseContent( &$article, &$text ) {
 
 			// If the page contains the magic word '__NOAUTOLINKS__', do not parse
@@ -138,8 +142,8 @@
 				'("' . implode( '", "',$wgLinkTitlesBlackList ) . '")' );
 
 
-			// Build an SQL query and fetch all page titles ordered
-			// by length from shortest to longest.
+			// Build an SQL query and fetch all page titles ordered by length from 
+			// shortest to longest.
 			// Only titles from 'normal' pages (namespace uid = 0)
 			// are returned.
 			// Since the db may be sqlite, we need a try..catch structure
@@ -298,6 +302,11 @@
 		/// Automatically processes a single page, given a $title Title object.
 		/// This function is called by the SpecialLinkTitles class and the 
 		/// LinkTitlesJob class.
+		/// @param $title    `Title` object that identifies the page.
+		/// @param $context  Object that implements IContextProvider.
+		///                  If in doubt, call MediaWiki's `RequestContext::getMain()`
+		///                  to obtain such an object.
+		/// @returns undefined
 		public static function processPage($title, $context) {
 			// TODO: make this namespace-aware
 			$titleObj = Title::makeTitle(0, $title);
@@ -315,6 +324,9 @@
 
 		/// Remove the magic words that this extension introduces from the 
 		/// $text, so that they do not appear on the rendered page.
+		/// @param $parser Parser object
+		/// @param $text   String that contains the page content.
+		/// @returns true
 		static function removeMagicWord( &$parser, &$text ) {
 			$mwa = new MagicWordArray(array(
 				'MAG_LINKTITLES_NOAUTOLINKS',
@@ -326,4 +338,4 @@
 		}
 	}
 
-	// vim: ts=2:sw=2:noet
+// vim: ts=2:sw=2:noet:comments^=\:///
