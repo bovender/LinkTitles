@@ -1,3 +1,13 @@
+LinkTitles 2.4.0: 2014-06-06
+* Prevent linking to self via redirects.
+* Prevent linking inside <pre>, <html>, and <script> tags.
+* Prevent linking inside attributes of div and span tags as well as in style
+  and class tags (e.g., in Wiki tables).
+* Increase performance in smart mode.
+* Implement batch-processing features (special page for sysops and
+  maintenance script)
+* Source code is now fully documented.
+
 LinkTitles 2.3.1: 2013-08-29
 * Fix bug introduced with 2.3.0 that prevented the extension from working...
 
@@ -95,4 +105,4 @@ LinkTitles 0.0.2: 2012-05-20
 LinkTitles 0.0.1: 2012-05-20
 * Initial release.
 
-# vim: tw=76:fo=tqn:flp=^\*\s 
+# vim: tw=76:fo=tqn:flp=^\\*\\s+ 

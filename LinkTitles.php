@@ -155,7 +155,7 @@
     'name'           => 'LinkTitles',
     'author'         => '[https://www.mediawiki.org/wiki/User:Bovender Daniel Kraus]', 
     'url'            => 'https://www.mediawiki.org/wiki/Extension:LinkTitles',
-    'version'        => '2.3.1',
+    'version'        => '2.4.0',
     'descriptionmsg' => 'linktitles-desc'
     );
 
