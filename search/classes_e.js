@@ -1,0 +1,23 @@
+var searchData=
+[
+  ['objectcache',['ObjectCache',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classObjectCache.html',1,'']]],
+  ['objectcachesessionhandler',['ObjectCacheSessionHandler',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classObjectCacheSessionHandler.html',1,'']]],
+  ['objectfilecache',['ObjectFileCache',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classObjectFileCache.html',1,'']]],
+  ['oldchangeslist',['OldChangesList',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classOldChangesList.html',1,'']]],
+  ['oldlocalfile',['OldLocalFile',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classOldLocalFile.html',1,'']]],
+  ['oracleinstaller',['OracleInstaller',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classOracleInstaller.html',1,'']]],
+  ['oracleinstallertest',['OracleInstallerTest',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classOracleInstallerTest.html',1,'']]],
+  ['oracleupdater',['OracleUpdater',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classOracleUpdater.html',1,'']]],
+  ['orafield',['ORAField',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classORAField.html',1,'']]],
+  ['oraresult',['ORAResult',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classORAResult.html',1,'']]],
+  ['ormiterator',['ORMIterator',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/interfaceORMIterator.html',1,'']]],
+  ['ormresult',['ORMResult',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classORMResult.html',1,'']]],
+  ['ormrow',['ORMRow',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classORMRow.html',1,'']]],
+  ['ormrowtest',['ORMRowTest',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classORMRowTest.html',1,'']]],
+  ['ormtable',['ORMTable',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classORMTable.html',1,'']]],
+  ['ormtabletest',['ORMTableTest',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classORMTableTest.html',1,'']]],
+  ['orphans',['Orphans',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classOrphans.html',1,'']]],
+  ['orphanstats',['OrphanStats',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classOrphanStats.html',1,'']]],
+  ['outputpage',['OutputPage',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classOutputPage.html',1,'']]],
+  ['outputpagetest',['OutputPageTest',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classOutputPageTest.html',1,'']]]
+];

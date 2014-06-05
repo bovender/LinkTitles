@@ -1,0 +1,23 @@
+var searchData=
+[
+  ['lang_5ffull_5fmatch',['LANG_FULL_MATCH',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classSVGReader.html#ab1464f119c8080a8fdc8e9e884f75869',1,'SVGReader']]],
+  ['lang_5fprefix_5fmatch',['LANG_PREFIX_MATCH',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classSVGReader.html#a2dbcc9a79da3fc26f3b6da61789207a3',1,'SVGReader']]],
+  ['last',['LAST',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classDateFormatter.html#a6d4ee54409d83c0cfed7a6ed12ee7feb',1,'DateFormatter']]],
+  ['lastpref',['LASTPREF',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classDateFormatter.html#adf42013630201b21e906b1a97d9af1e8',1,'DateFormatter']]],
+  ['limit_5fbig1',['LIMIT_BIG1',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classApiBase.html#a722ea25f959c66c7ceafabec83d44980',1,'ApiBase']]],
+  ['limit_5fbig2',['LIMIT_BIG2',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classApiBase.html#abb0bd1f62168ebdca12ace6263a5d16d',1,'ApiBase']]],
+  ['limit_5fsml1',['LIMIT_SML1',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classApiBase.html#aab89461df0fd97ac84a42640553862a1',1,'ApiBase']]],
+  ['limit_5fsml2',['LIMIT_SML2',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classApiBase.html#a78ac84665b6af85822554a7a78c0c611',1,'ApiBase']]],
+  ['links',['LINKS',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classApiQueryLinks.html#a595480c718a740b2b2fe1d0cf92fcae5',1,'ApiQueryLinks']]],
+  ['load_5fall',['LOAD_ALL',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classLocalFile.html#a627efc5e3f2e3bbb0cd0daa373536c0f',1,'LocalFile']]],
+  ['load_5fvia_5fslave',['LOAD_VIA_SLAVE',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classLocalFile.html#aa7103b8d94904c460bccb1e34144d360',1,'LocalFile']]],
+  ['lock_5fex',['LOCK_EX',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classLockManager.html#aa60a093957340d969e5eeb447bf59f51',1,'LockManager']]],
+  ['lock_5fheld',['LOCK_HELD',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classPoolCounter.html#af07ca189d69e795b36b457a8eaff64f9',1,'PoolCounter']]],
+  ['lock_5fsh',['LOCK_SH',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classLockManager.html#a752833c3e086a0f0154a448edde8135b',1,'LockManager']]],
+  ['lock_5fuw',['LOCK_UW',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classLockManager.html#aac14bcd2f5016e4eb52e7114b9c07285',1,'LockManager']]],
+  ['locked',['LOCKED',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classPoolCounter.html#a2d5ebf567f88cc098e8548816878b7c1',1,'PoolCounter']]],
+  ['logs',['LOGS',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classWikiExporter.html#a2bec8f6601688baf95741fcd48fb7d2e',1,'WikiExporter']]],
+  ['long',['LONG',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classExif.html#a7ccecfdf6801b44d89e647c0e46a8c7e',1,'Exif']]],
+  ['ls_5fchunked',['LS_CHUNKED',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classCompressOld.html#a4d0c45b844e37dc559a0bf816fdf16d4',1,'CompressOld']]],
+  ['ls_5findividual',['LS_INDIVIDUAL',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/classCompressOld.html#aa602c56d5a26872104dca8e2d3d01844',1,'CompressOld']]]
+];

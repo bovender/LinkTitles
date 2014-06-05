@@ -1,0 +1,23 @@
+var searchData=
+[
+  ['ns_5fcategory',['NS_CATEGORY',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#gac2555cd13ae40e9ab156f6e67b098e38',1,]]],
+  ['ns_5fcategory_5ftalk',['NS_CATEGORY_TALK',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#gac0872022b546817b3ca8131a8b195311',1,]]],
+  ['ns_5ffile',['NS_FILE',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#ga164add362808666c90a7ea4c638d16f6',1,]]],
+  ['ns_5ffile_5ftalk',['NS_FILE_TALK',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#ga3997499e4eba61c0298a52ab6e1555d0',1,]]],
+  ['ns_5fhelp',['NS_HELP',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#ga512470a8993ed0524d591c81d28aa91f',1,]]],
+  ['ns_5fhelp_5ftalk',['NS_HELP_TALK',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#ga5b3e6bf175939836e21e7e2bb6815249',1,]]],
+  ['ns_5fimage',['NS_IMAGE',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#gaa09658d7e231dccf7a4901a54f8676bc',1,]]],
+  ['ns_5fimage_5ftalk',['NS_IMAGE_TALK',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#gae08debc266478c6abb1f3c7a687f753a',1,]]],
+  ['ns_5fmain',['NS_MAIN',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#ga0791c2301b90651bc2b1e5e561d7c117',1,]]],
+  ['ns_5fmedia',['NS_MEDIA',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#ga2a13b5944c4a091e14ecf9d61eae9034',1,]]],
+  ['ns_5fmediawiki',['NS_MEDIAWIKI',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#gacd6f2b07c9469ebb98b0541ecab39a8c',1,]]],
+  ['ns_5fmediawiki_5ftalk',['NS_MEDIAWIKI_TALK',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#ga4a87b6f9606a93f008370f895e216bb5',1,]]],
+  ['ns_5fproject',['NS_PROJECT',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#gaf785a261fcb10ad220dfdb9c70442317',1,]]],
+  ['ns_5fproject_5ftalk',['NS_PROJECT_TALK',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#ga187155833c2717e3030e5660adf43664',1,]]],
+  ['ns_5fspecial',['NS_SPECIAL',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#ga8c288f66ab9411b446adbddefb948d06',1,]]],
+  ['ns_5ftalk',['NS_TALK',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#ga10bd96144f861980d98d5d5929cef999',1,]]],
+  ['ns_5ftemplate',['NS_TEMPLATE',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#ga241c92f5e42b7d064fe881f880680c56',1,]]],
+  ['ns_5ftemplate_5ftalk',['NS_TEMPLATE_TALK',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#ga53094ccf3c2be58694536b9e75dc1268',1,]]],
+  ['ns_5fuser',['NS_USER',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#ga359c81ad509677ad467b8bdb391885f5',1,]]],
+  ['ns_5fuser_5ftalk',['NS_USER_TALK',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Constants.html#ga6cae5bd18b5baffbd44e48f9b71a7e45',1,]]]
+];

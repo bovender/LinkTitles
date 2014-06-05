@@ -7,11 +7,13 @@
 
 var indexSectionsWithContent =
 {
-  0: "eloprs",
+  0: "$_bcdeloprst",
   1: "ls",
   2: "l",
-  3: "eoprs",
-  4: "l"
+  3: "_deoprs",
+  4: "$",
+  5: "bc",
+  6: "lrt"
 };
 
 var indexSectionNames =
@@ -20,7 +22,9 @@ var indexSectionNames =
   1: "classes",
   2: "files",
   3: "functions",
-  4: "pages"
+  4: "variables",
+  5: "groups",
+  6: "pages"
 };
 
 function convertToId(search)
