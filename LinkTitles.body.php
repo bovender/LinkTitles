@@ -28,7 +28,6 @@
 
 	/// Central class of the extension. Sets up parser hooks.
 	/// This class contains only static functions; do not instantiate.
-	/// @todo Use the current PageContentSave hook rather than the deprecated ArticleSave hook.
 	class LinkTitles {
 		/// Setup function, hooks the extension's functions to MediaWiki events.
 		public static function setup() {
@@ -36,7 +35,7 @@
 			global $wgLinkTitlesParseOnRender;
 			global $wgHooks;
 			if ( $wgLinkTitlesParseOnEdit ) {
-				$wgHooks['ArticleSave'][] = 'LinkTitles::onArticleSave';
+				$wgHooks['PageContentSave'][] = 'LinkTitles::onPageContentSave';
 			};
 			if ( $wgLinkTitlesParseOnRender ) { 
 				$wgHooks['ArticleAfterFetchContent'][] = 'LinkTitles::onArticleAfterFetchContent';
@@ -45,18 +44,18 @@
 		}
 
 		/// Event handler that is hooked to the ArticleSave event.
-		public static function onArticleSave( &$article, &$user, &$text, &$summary,
-				$minor, $watchthis, $sectionanchor, &$flags, &$status ) {
+		public static function onPageContentSave( &$wikiPage, &$user, &$content, &$summary,
+				$isMinor, $isWatch, $section, &$flags, &$status ) {
 
 			// To prevent time-consuming parsing of the page whenever
 			// it is edited and saved, we only parse it if the flag
 			// 'minor edits' is not set.
-			return $minor or self::parseContent( $article, $text );
+			return $isMinor or self::parseContent( $wikiPage, $content );
 		}
 
 		/// Event handler that is hooked to the ArticleAfterFetchContent event.
 		/// @param $article Article object
-		/// @param $content String that holds the article content
+		/// @param $content Content object that holds the article content
 		public static function onArticleAfterFetchContent( &$article, &$content ) {
 			// The ArticleAfterFetchContent event is triggered whenever page content
 			// is retrieved from the database, i.e. also for editing etc.
@@ -71,17 +70,16 @@
 
 		/// Core function of the extension, performs the actual parsing of the content.
 		/// @param $article Article object
-		/// @param $text    String that holds the article content
+		/// @param $content Content object that holds the article content
 		/// @returns true
-		static function parseContent( &$article, &$text ) {
+		static function parseContent( &$article, &$content ) {
 
 			// If the page contains the magic word '__NOAUTOLINKS__', do not parse
 			// the content.
-			$noAutoLinks = MagicWord::get('MAG_LINKTITLES_NOAUTOLINKS');
-			if ( $noAutoLinks -> match( $text ) ) {
+			if ( $content->matchMagicWord(
+					MagicWord::get('MAG_LINKTITLES_NOAUTOLINKS') ) ) {
 				return true;
 			}
-			$noAutoLinkTarget = MagicWord::get('MAG_LINKTITLES_NOTARGET');
 
 			// Configuration variables need to be defined here as globals.
 			global $wgLinkTitlesPreferShortTitles;
@@ -138,8 +136,11 @@
 				'(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b)' .        // email addresses
 				')/i';
 
+			// Build a blacklist of pages that are not supposed to be link 
+			// targets. This includes the current page.
 			$black_list = str_replace( '_', ' ',
-				'("' . implode( '", "',$wgLinkTitlesBlackList ) . '")' );
+				'("' . implode( '", "',$wgLinkTitlesBlackList ) . 
+				$myTitle->getDbKey() . '")' );
 
 
 			// Build an SQL query and fetch all page titles ordered by length from 
@@ -175,6 +176,8 @@
 				);
 			}
 
+			$text = $content->getContentHandler()->serializeContent($content);
+
 			// Iterate through the page titles
 			foreach( $res as $row ) {
 				// Obtain an instance of a Title class for the current database 
@@ -190,41 +193,33 @@
 				// To prevent linking to pages that redirect to the current page,
 				// obtain the title that the target page redirects to. Will be null 
 				// if there is no redirect.
-				$redirectTitle = $targetPage->getRedirectTarget();
-				if ( $redirectTitle ) {
-					// If the target page redirects to the current page, exit the 
-					// function.
-					if ( $redirectTitle->equals($myTitle) ) {
-						continue;
-					}
-				}
+				$redirectTitle = $targetPage->getContent()->getUltimateRedirectTarget();
 
-				if ( $noAutoLinkTarget->match($targetText) ) {
-					continue;
-				}
+				// Proceed only if the currently examined page does not redirect to 
+				// our page and does not contain the no-target magic word
+				if (
+						!( $redirectTitle && $redirectTitle->equals($myTitle) ) &&
+						!( $targetPage->getContent()->matchMagicWord(
+							MagicWord::get('MAG_LINKTITLES_NOTARGET') ) ) ) {
 
-				// Only proceed if we're not operating on the very same page, if the 
-				// target page does not have the __NOAUTOLINKTARGET__ magic word in 
-				// it, and if the target page does not redirect to the current page.
-				if ( !  $myTitle->equals($targetTitle) ) {
-					// split the string by [[...]] groups
+					// split the page content by [[...]] groups
 					// credits to inhan @ StackOverflow for suggesting preg_split
 					// see http://stackoverflow.com/questions/10672286
 					$arr = preg_split( $delimiter, $text, -1, PREG_SPLIT_DELIM_CAPTURE );
 
 					// Escape certain special characters in the page title to prevent
 					// regexp compilation errors
-					$escapedTitle = preg_quote($targetTitleText, '/');
+					$quotedTitle = preg_quote($targetTitleText, '/');
 
 					// Depending on the global configuration setting $wgCapitalLinks,
 					// the title has to be searched for either in a strictly case-sensitive
 					// way, or in a 'fuzzy' way where the first letter of the title may
 					// be either case.
-					if ( $wgCapitalLinks && ( $escapedTitle[0] != '\\' )) {
-						$searchTerm = '((?i)' . $escapedTitle[0] . '(?-i)' . 
-							substr($escapedTitle, 1) . ')';
+					if ( $wgCapitalLinks && ( $quotedTitle[0] != '\\' )) {
+						$searchTerm = '((?i)' . $quotedTitle[0] . '(?-i)' . 
+							substr($quotedTitle, 1) . ')';
 					}	else {
-						$searchTerm = '(' . $escapedTitle . ')';
+						$searchTerm = '(' . $quotedTitle . ')';
 					}
 
 					for ( $i = 0; $i < count( $arr ); $i+=2 ) {
@@ -286,15 +281,17 @@
 						for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 							// even indexes will point to text that is not enclosed by brackets
 							$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
-								$wordStartDelim . '(' . $escapedTitle . ')' . 
+								$wordStartDelim . '(' . $quotedTitle . ')' . 
 								$wordEndDelim . '/i', $callback, $arr[$i], $limit, $count );
 							if (( $limit >= 0 ) && ( $count > 0  )) {
 								break; 
 							};
 						};
 						$text = implode( '', $arr );
-					}
-				}; // if ! $myTitle.equals($targetTitle)
+						// @todo check if text was changed
+						$content = $content->getContentHandler()->unserializeContent( $text );
+					} // $wgLinkTitlesSmartMode
+				}
 			}; // foreach $res as $row
 			return true;
 		}
@@ -311,10 +308,9 @@
 			// TODO: make this namespace-aware
 			$titleObj = Title::makeTitle(0, $title);
 			$page = WikiPage::factory($titleObj);
+			$content = $page->getContent();
 			$article = Article::newFromWikiPage($page, $context);
-			$text = $article->getContent();
-			LinkTitles::parseContent($article, $text);
-			$content = new WikitextContent($text);
+			LinkTitles::parseContent($article, $content);
 			$page->doEditContent($content,
 				"Links to existing pages added by LinkTitles bot.",
 				EDIT_MINOR | EDIT_FORCE_BOT,
