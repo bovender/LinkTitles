@@ -38,7 +38,8 @@
 				$wgHooks['PageContentSave'][] = 'LinkTitles::onPageContentSave';
 			};
 			if ( $wgLinkTitlesParseOnRender ) { 
-				$wgHooks['ArticleAfterFetchContent'][] = 'LinkTitles::onArticleAfterFetchContent';
+				$wgHooks['ArticleAfterFetchContentObject'][] =
+				 		'LinkTitles::onArticleAfterFetchContentObject';
 			};
 			$wgHooks['ParserBeforeTidy'][] = 'LinkTitles::removeMagicWord';
 		}
@@ -56,9 +57,9 @@
 		/// Event handler that is hooked to the ArticleAfterFetchContent event.
 		/// @param $article Article object
 		/// @param $content Content object that holds the article content
-		public static function onArticleAfterFetchContent( &$article, &$content ) {
-			// The ArticleAfterFetchContent event is triggered whenever page content
-			// is retrieved from the database, i.e. also for editing etc.
+		public static function onArticleAfterFetchContentObject( &$article, &$content ) {
+			// The ArticleAfterFetchContentObject event is triggered whenever page 
+			// content is retrieved from the database, i.e. also for editing etc.
 			// Therefore we access the global $action variabl to only parse the 
 			// content when the page is viewed.
 			global $action;
