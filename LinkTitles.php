@@ -143,6 +143,38 @@
 	/// @ingroup config
 	$wgLinkTitlesSmartMode = true;
 
+	/// Determines whether or not to check if a page redirects to the current 
+	/// page. Normally one would want to have the default behavior (true), but 
+	/// this check requires a time-consuming database query for every page in 
+	/// the wiki.
+	/// @note For maximum performance, set both $wgLinkTitlesCheckRedirect and 
+	/// $wgLinkTitlesEnableNoTargetMagicWord to false in LocalSettings.php.
+	/// On the developer's machine, fetching the target page content increased 
+	/// the run time from about 50 ms to about 500 ms on a wiki with 90 pages 
+	/// (Intel Core i5-3320M, 2x 2.6 GHz, 16 GB RAM, PHP 5.5.9, Apache 2.4.7, 
+	/// MySQL 5.5.37, MediaWiki 1.23.0). If any of the two mentioned variables 
+	/// is set to true, a page content request will be performed for every 
+	/// page in the wiki whenever a single page is edited or parsed in batch 
+	/// mode.
+	/// @ingroup config
+	$wgLinkTitlesCheckRedirect = true;
+
+	/// Determines whether or not the magic word __NOAUTOLINKTARGET__ is 
+	/// enabled or not. If __NOAUTOLINKTARGET__ is included in a page, this 
+	/// page will never be linked to by the extension. The default is enabled 
+	/// (true), but it comes at the cost of performance.
+	/// @note For maximum performance, set both $wgLinkTitlesCheckRedirect and 
+	/// $wgLinkTitlesEnableNoTargetMagicWord to false in LocalSettings.php.
+	/// On the developer's machine, fetching the target page content increased 
+	/// the run time from about 50 ms to about 500 ms on a wiki with 90 pages 
+	/// (Intel Core i5-3320M, 2x 2.6 GHz, 16 GB RAM, PHP 5.5.9, Apache 2.4.7, 
+	/// MySQL 5.5.37, MediaWiki 1.23.0). If any of the two mentioned variables 
+	/// is set to true, a page content request will be performed for every 
+	/// page in the wiki whenever a single page is edited or parsed in batch 
+	/// mode.
+	/// @ingroup config
+	$wgLinkTitlesEnableNoTargetMagicWord = true;
+
 	/// Time limit for online batch processing. This determines the maximum 
 	/// amount of time in seconds that page processing will take before a 
 	/// refresh of the special page is issued.

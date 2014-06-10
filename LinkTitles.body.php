@@ -91,9 +91,10 @@
 			global $wgLinkTitlesFirstOnly;
 			global $wgLinkTitlesWordStartOnly;
 			global $wgLinkTitlesWordEndOnly;
-			// global $wgLinkTitlesIgnoreCase;
 			global $wgLinkTitlesSmartMode;
 			global $wgCapitalLinks;
+			global $wgLinkTitlesEnableNoTargetMagicWord;
+			global $wgLinkTitlesCheckRedirect;
 
 			( $wgLinkTitlesWordStartOnly ) ? $wordStartDelim = '\b' : $wordStartDelim = '';
 			( $wgLinkTitlesWordEndOnly ) ? $wordEndDelim = '\b' : $wordEndDelim = '';
@@ -180,28 +181,47 @@
 
 			// Iterate through the page titles
 			foreach( $res as $row ) {
-				// Obtain an instance of a Title class for the current database 
-				// row.
+				// Obtain an instance of a Title class for the current database row.
 				$targetTitle = Title::makeTitle(NS_MAIN, $row->page_title);
-				$targetTitleText = $targetTitle->getText();
 
-				// Obtain a page object for the current title, so we can check for 
-				// the presence of the __NOAUTOLINKTARGET__ magic keyword.
-				$targetPage = WikiPage::factory($targetTitle);
-				$targetText = $targetPage->getText();
+				if ( $wgLinkTitlesCheckRedirect || $wgLinkTitlesEnableNoTargetMagicWord ) {
+					// Obtain a page object for the current title, so we can check for 
+					// the presence of the __NOAUTOLINKTARGET__ magic keyword.
+					$targetPageContent = WikiPage::factory($targetTitle)->getContent();
 
-				// To prevent linking to pages that redirect to the current page,
-				// obtain the title that the target page redirects to. Will be null 
-				// if there is no redirect.
-				$redirectTitle = $targetPage->getContent()->getUltimateRedirectTarget();
+					// To prevent linking to pages that redirect to the current page,
+					// obtain the title that the target page redirects to. Will be null 
+					// if there is no redirect.
+					if ( $wgLinkTitlesCheckRedirect ) {
+						$redirectTitle = $targetPageContent->getUltimateRedirectTarget();
+						$redirectCheck = !( $redirectTitle && $redirectTitle->equals($myTitle) );
+					}
+					else
+					{
+						$redirectCheck = true;
+					};
+
+					if ( $wgLinkTitlesEnableNoTargetMagicWord ) {
+						$magicWordCheck = ! $targetPageContent->matchMagicWord(
+							MagicWord::get('MAG_LINKTITLES_NOTARGET') ); 
+					}
+					else 
+					{
+						$magicWordCheck = true;
+					};
+				}
+				else
+				{
+					$redirectCheck = true;
+					$magicWordCheck = true;
+				}
 
 				// Proceed only if the currently examined page does not redirect to 
-				// our page and does not contain the no-target magic word
-				if (
-						!( $redirectTitle && $redirectTitle->equals($myTitle) ) &&
-						!( $targetPage->getContent()->matchMagicWord(
-							MagicWord::get('MAG_LINKTITLES_NOTARGET') ) ) ) {
-
+				// our page and does not contain the no-target magic word.
+				// If the corresponding configuration variables are set to false,
+				// both 'check' variables below will be set to true by the code 
+				// above.
+				if ( $redirectCheck && $magicWordCheck ) {
 					// split the page content by [[...]] groups
 					// credits to inhan @ StackOverflow for suggesting preg_split
 					// see http://stackoverflow.com/questions/10672286
@@ -209,6 +229,7 @@
 
 					// Escape certain special characters in the page title to prevent
 					// regexp compilation errors
+					$targetTitleText = $targetTitle->getText();
 					$quotedTitle = preg_quote($targetTitleText, '/');
 
 					// Depending on the global configuration setting $wgCapitalLinks,
