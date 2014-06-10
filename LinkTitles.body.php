@@ -102,6 +102,7 @@
 			// To prevent adding self-references, we now
 			// extract the current page's title.
 			$myTitle = $article->getTitle();
+			$myTitleText = $myTitle->GetText();
 
 			( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'ASC' : $sort_order = 'DESC';
 			( $wgLinkTitlesFirstOnly ) ? $limit = 1 : $limit = -1;
@@ -145,11 +146,9 @@
 
 
 			// Build an SQL query and fetch all page titles ordered by length from 
-			// shortest to longest.
-			// Only titles from 'normal' pages (namespace uid = 0)
-			// are returned.
-			// Since the db may be sqlite, we need a try..catch structure
-			// because sqlite does not support the CHAR_LENGTH function.
+			// shortest to longest. Only titles from 'normal' pages (namespace uid 
+			// = 0) are returned. Since the db may be sqlite, we need a try..catch 
+			// structure because sqlite does not support the CHAR_LENGTH function.
 			$dbr = wfGetDB( DB_SLAVE );
 			try {
 				$res = $dbr->select( 
@@ -288,9 +287,10 @@
 								break; 
 							};
 						};
-						$text = implode( '', $arr );
-						// @todo check if text was changed
-						$content = $content->getContentHandler()->unserializeContent( $text );
+						$newText = implode( '', $arr );
+						if ( $newText != $text ) {
+							$content = $content->getContentHandler()->unserializeContent( $newText );
+						}
 					} // $wgLinkTitlesSmartMode
 				}
 			}; // foreach $res as $row
