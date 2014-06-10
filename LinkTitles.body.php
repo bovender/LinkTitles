@@ -56,7 +56,7 @@
 				$wgHooks['ArticleAfterFetchContentObject'][] =
 				 		'LinkTitles::onArticleAfterFetchContentObject';
 			};
-			$wgHooks['ParserBeforeTidy'][] = 'LinkTitles::removeMagicWord';
+			$wgHooks['GetDoubleUnderscoreIDs'][] = 'LinkTitles::onGetDoubleUnderscoreIDs';
 		}
 
 		/// Event handler that is hooked to the ArticleSave event.
@@ -269,18 +269,14 @@
 			);
 		}
 
-		/// Remove the magic words that this extension introduces from the 
-		/// $text, so that they do not appear on the rendered page.
-		/// @param $parser Parser object
-		/// @param $text   String that contains the page content.
+		/// Adds the two magic words defined by this extension to the list of 
+		/// 'double-underscore' terms that are automatically removed before a 
+		/// page is displayed.
+		/// @param $doubleUnderscoreIDs Array of magic word IDs.
 		/// @returns true
-		static function removeMagicWord( &$parser, &$text ) {
-			$mwa = new MagicWordArray(array(
-				'MAG_LINKTITLES_NOAUTOLINKS',
-				'MAG_LINKTITLES_NOTARGET'
-				)
-			);
-			$mwa->matchAndRemove( $text );
+		public static function onGetDoubleUnderscoreIDs( &$doubleUnderscoreIDs ) {
+			$doubleUnderscoreIDs[] = 'MAG_LINKTITLES_NOTARGET';
+			$doubleUnderscoreIDs[] = 'MAG_LINKTITLES_NOAUTOLINKS';
 			return true;
 		}
 
