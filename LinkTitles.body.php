@@ -30,15 +30,15 @@
 	/// This class contains only static functions; do not instantiate.
 	class LinkTitles {
 		/// A Title object for the page that is being parsed.
-		private static $mCurrentTitle;
+		private static $currentTitle;
 
 		/// A Title object for the target page currently being examined.
-		private static $mTargetTitle;
+		private static $targetTitle;
 
 		/// The content object for the currently processed target page.
 		/// This variable is necessary to be able to prevent loading the target 
 		/// content twice.
-		private static $mTargetContent;
+		private static $targetContent;
 
 		/// Holds the page title of the currently processed target page
 		/// as a string.
@@ -121,7 +121,7 @@
 				$templatesDelimiter = '{{[^|]+?}}|{{.+\||';
 			};
 
-			LinkTitles::$mCurrentTitle = $article->getTitle();
+			LinkTitles::$currentTitle = $article->getTitle();
 			$text = $content->getContentHandler()->serializeContent($content);
 			$newText = $text;
 
@@ -153,7 +153,7 @@
 			// targets. This includes the current page.
 			$black_list = str_replace( '_', ' ',
 				'("' . implode( '", "',$wgLinkTitlesBlackList ) . 
-				LinkTitles::$mCurrentTitle->getDbKey() . '")' );
+				LinkTitles::$currentTitle->getDbKey() . '")' );
 
 			// Build an SQL query and fetch all page titles ordered by length from 
 			// shortest to longest. Only titles from 'normal' pages (namespace uid 
@@ -197,7 +197,7 @@
 
 				// Escape certain special characters in the page title to prevent
 				// regexp compilation errors
-				LinkTitles::$targetTitleText = LinkTitles::$mTargetTitle->getText();
+				LinkTitles::$targetTitleText = LinkTitles::$targetTitle->getText();
 				$quotedTitle = preg_quote(LinkTitles::$targetTitleText, '/');
 
 				// Depending on the global configuration setting $wgCapitalLinks,
@@ -341,8 +341,8 @@
 		/// Sets member variables for the current target page.
 		private static function newTarget( $titleString ) {
 			// @todo Make this wiki namespace aware.
-			LinkTitles::$mTargetTitle = Title::makeTitle( NS_MAIN, $titleString );
-			LinkTitles::$mTargetContent = null;
+			LinkTitles::$targetTitle = Title::makeTitle( NS_MAIN, $titleString );
+			LinkTitles::$targetContent = null;
 		}
 
 		/// Returns the content of the current target page.
@@ -352,11 +352,11 @@
 		/// @note It is absolutely necessary that the newTarget() 
 		/// function is called for every new page.
 		private static function getTargetContent() {
-			if ( ! isset( $mTargetContent ) ) {
-				LinkTitles::$mTargetContent = WikiPage::factory(
-					LinkTitles::$mTargetTitle)->getContent();
+			if ( ! isset( $targetContent ) ) {
+				LinkTitles::$targetContent = WikiPage::factory(
+					LinkTitles::$targetTitle)->getContent();
 			};
-			return LinkTitles::$mTargetContent;
+			return LinkTitles::$targetContent;
 		}
 
 		/// Examines the current target page. Returns true if it may be linked; 
@@ -374,7 +374,7 @@
 			// (unlinked).
 			if ( $wgLinkTitlesCheckRedirect ) {
 				$redirectTitle = LinkTitles::getTargetContent()->getUltimateRedirectTarget();
-				if ( $redirectTitle && $redirectTitle->equals(LinkTitles::$mCurrentTitle) ) {
+				if ( $redirectTitle && $redirectTitle->equals(LinkTitles::$currentTitle) ) {
 					return false;
 				}
 			};
