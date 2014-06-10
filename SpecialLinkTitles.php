@@ -74,10 +74,10 @@ class SpecialLinkTitles extends SpecialPage {
 	/// Processes wiki articles, starting at the page indicated by 
 	/// $startTitle. If $wgLinkTitlesTimeLimit is reached before all pages are 
 	/// processed, returns the title of the next page that needs processing.
-	/// @param $request WebRequest object that is associated with the special 
-	///                 page.
-	/// @param $output  Output object that the special page is equipped with.
-	private function process(&$request, &$output) {
+	/// @param WebRequest $request WebRequest object that is associated with the special 
+	///                            page.
+	/// @param Output $output      Output object that the special page is equipped with.
+	private function process( WebRequest &$request, Output &$output) {
 		global $wgLinkTitlesTimeLimit;
 
 		// Start the stopwatch
