@@ -252,7 +252,7 @@
 							break; 
 						};
 					};
-					$text = implode( '', $arr );
+					$newText = implode( '', $arr );
 
 					// If smart mode is turned on, the extension will perform a second
 					// pass on the page and add links with aliases where the case does
@@ -297,7 +297,7 @@
 							};
 						}
 
-						$arr = preg_split( $delimiter, $text, -1, PREG_SPLIT_DELIM_CAPTURE );
+						$arr = preg_split( $delimiter, $newText, -1, PREG_SPLIT_DELIM_CAPTURE );
 
 						for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 							// even indexes will point to text that is not enclosed by brackets
@@ -309,9 +309,9 @@
 							};
 						};
 						$newText = implode( '', $arr );
-						if ( $newText != $text ) {
-							$content = $content->getContentHandler()->unserializeContent( $newText );
-						}
+ 						if ( $newText != $text ) {
+ 							$content = $content->getContentHandler()->unserializeContent( $newText );
+ 						}
 					} // $wgLinkTitlesSmartMode
 				}
 			}; // foreach $res as $row
