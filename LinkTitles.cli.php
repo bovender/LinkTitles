@@ -106,7 +106,7 @@ class LinkTitlesCli extends Maintenance {
 			LinkTitles::processPage($curTitle, $context);
 		}
 
-		$this->output("Finished parsing.");
+		$this->output("\nFinished parsing.\n");
 	}
 }
  
