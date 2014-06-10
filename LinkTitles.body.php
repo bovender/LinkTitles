@@ -88,7 +88,7 @@
 		/// @param $article Article object
 		/// @param $content Content object that holds the article content
 		/// @returns true
-		static function parseContent( &$article, &$content ) {
+		static function parseContent( WikiPage &$wikiPage, Content &$content ) {
 			// If the page contains the magic word '__NOAUTOLINKS__', do not parse
 			// the content.
 			if ( $content->matchMagicWord(
@@ -121,7 +121,7 @@
 				$templatesDelimiter = '{{[^|]+?}}|{{.+\||';
 			};
 
-			LinkTitles::$currentTitle = $article->getTitle();
+			LinkTitles::$currentTitle = $wikiPage->getTitle();
 			$text = $content->getContentHandler()->serializeContent($content);
 			$newText = $text;
 
@@ -250,18 +250,17 @@
 		/// Automatically processes a single page, given a $title Title object.
 		/// This function is called by the SpecialLinkTitles class and the 
 		/// LinkTitlesJob class.
-		/// @param $title    `Title` object that identifies the page.
-		/// @param $context  Object that implements IContextProvider.
+		/// @param string $title            Page title.
+		/// @param RequestContext $context  Current context. 
 		///                  If in doubt, call MediaWiki's `RequestContext::getMain()`
 		///                  to obtain such an object.
 		/// @returns undefined
-		public static function processPage($title, $context) {
+		public static function processPage($title, RequestContext $context) {
 			// TODO: make this namespace-aware
 			$titleObj = Title::makeTitle(0, $title);
 			$page = WikiPage::factory($titleObj);
 			$content = $page->getContent();
-			$article = Article::newFromWikiPage($page, $context);
-			LinkTitles::parseContent($article, $content);
+			LinkTitles::parseContent($page, $content);
 			$page->doQuickEditContent($content,
 				$context->getUser(),
 				"Links to existing pages added by LinkTitles bot.",
@@ -274,14 +273,14 @@
 		/// page is displayed.
 		/// @param $doubleUnderscoreIDs Array of magic word IDs.
 		/// @returns true
-		public static function onGetDoubleUnderscoreIDs( &$doubleUnderscoreIDs ) {
+		public static function onGetDoubleUnderscoreIDs( array &$doubleUnderscoreIDs ) {
 			$doubleUnderscoreIDs[] = 'MAG_LINKTITLES_NOTARGET';
 			$doubleUnderscoreIDs[] = 'MAG_LINKTITLES_NOAUTOLINKS';
 			return true;
 		}
 
 		// Build an anonymous callback function to be used in simple mode.
-		private static function simpleModeCallback( $matches ) {
+		private static function simpleModeCallback( array $matches ) {
 			if ( LinkTitles::checkTargetPage() ) {
 				return '[[' . $matches[0] . ']]';
 			}
@@ -298,7 +297,7 @@
 		// If $wgCapitalLinks is set to true, the case of the first 
 		// letter is ignored by MediaWiki and we don't need to build a 
 		// piped link if only the case of the first letter is different.
-		private static function smartModeCallback( $matches ) {
+		private static function smartModeCallback( array $matches ) {
 			global $wgCapitalLinks;
 
 			if ( $wgCapitalLinks ) {
@@ -339,9 +338,9 @@
 		}
 
 		/// Sets member variables for the current target page.
-		private static function newTarget( $titleString ) {
+		private static function newTarget( $title ) {
 			// @todo Make this wiki namespace aware.
-			LinkTitles::$targetTitle = Title::makeTitle( NS_MAIN, $titleString );
+			LinkTitles::$targetTitle = Title::makeTitle( NS_MAIN, $title);
 			LinkTitles::$targetContent = null;
 		}
 
