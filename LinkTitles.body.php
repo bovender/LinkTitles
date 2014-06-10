@@ -29,6 +29,17 @@
 	/// Central class of the extension. Sets up parser hooks.
 	/// This class contains only static functions; do not instantiate.
 	class LinkTitles {
+		/// A Title object for the page that is being parsed.
+		private static $mCurrentTitle;
+
+		/// A Title object for the target page currently being examined.
+		private static $mTargetTitle;
+
+		/// The content object for the currently processed target page.
+		/// This variable is necessary to be able to prevent loading the target 
+		/// content twice.
+		private static $mTargetContent;
+
 		/// Setup function, hooks the extension's functions to MediaWiki events.
 		public static function setup() {
 			global $wgLinkTitlesParseOnEdit;
@@ -74,6 +85,7 @@
 		/// @param $content Content object that holds the article content
 		/// @returns true
 		static function parseContent( &$article, &$content ) {
+			wfProfileIn( __METHOD__ );
 
 			// If the page contains the magic word '__NOAUTOLINKS__', do not parse
 			// the content.
@@ -93,17 +105,9 @@
 			global $wgLinkTitlesWordEndOnly;
 			global $wgLinkTitlesSmartMode;
 			global $wgCapitalLinks;
-			global $wgLinkTitlesEnableNoTargetMagicWord;
-			global $wgLinkTitlesCheckRedirect;
 
 			( $wgLinkTitlesWordStartOnly ) ? $wordStartDelim = '\b' : $wordStartDelim = '';
 			( $wgLinkTitlesWordEndOnly ) ? $wordEndDelim = '\b' : $wordEndDelim = '';
-			// ( $wgLinkTitlesIgnoreCase ) ? $regexModifier = 'i' : $regexModifier = '';
-
-			// To prevent adding self-references, we now
-			// extract the current page's title.
-			$myTitle = $article->getTitle();
-			$myTitleText = $myTitle->GetText();
 
 			( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'ASC' : $sort_order = 'DESC';
 			( $wgLinkTitlesFirstOnly ) ? $limit = 1 : $limit = -1;
@@ -114,6 +118,10 @@
 			} else {
 				$templatesDelimiter = '{{[^|]+?}}|{{.+\||';
 			};
+
+			LinkTitles::$mCurrentTitle = $article->getTitle();
+			$text = $content->getContentHandler()->serializeContent($content);
+			$newText = $text;
 
 			// Build a regular expression that will capture existing wiki links ("[[...]]"),
 			// wiki headings ("= ... =", "== ... ==" etc.),  
@@ -143,8 +151,7 @@
 			// targets. This includes the current page.
 			$black_list = str_replace( '_', ' ',
 				'("' . implode( '", "',$wgLinkTitlesBlackList ) . 
-				$myTitle->getDbKey() . '")' );
-
+				LinkTitles::$mCurrentTitle->getDbKey() . '")' );
 
 			// Build an SQL query and fetch all page titles ordered by length from 
 			// shortest to longest. Only titles from 'normal' pages (namespace uid 
@@ -177,102 +184,74 @@
 				);
 			}
 
-			$text = $content->getContentHandler()->serializeContent($content);
-
-			// Iterate through the page titles
-			foreach( $res as $row ) {
-				// Obtain an instance of a Title class for the current database row.
-				$targetTitle = Title::makeTitle(NS_MAIN, $row->page_title);
-
-				if ( $wgLinkTitlesCheckRedirect || $wgLinkTitlesEnableNoTargetMagicWord ) {
-					// Obtain a page object for the current title, so we can check for 
-					// the presence of the __NOAUTOLINKTARGET__ magic keyword.
-					$targetPageContent = WikiPage::factory($targetTitle)->getContent();
-
-					// To prevent linking to pages that redirect to the current page,
-					// obtain the title that the target page redirects to. Will be null 
-					// if there is no redirect.
-					if ( $wgLinkTitlesCheckRedirect ) {
-						$redirectTitle = $targetPageContent->getUltimateRedirectTarget();
-						$redirectCheck = !( $redirectTitle && $redirectTitle->equals($myTitle) );
-					}
-					else
-					{
-						$redirectCheck = true;
-					};
-
-					if ( $wgLinkTitlesEnableNoTargetMagicWord ) {
-						$magicWordCheck = ! $targetPageContent->matchMagicWord(
-							MagicWord::get('MAG_LINKTITLES_NOTARGET') ); 
-					}
-					else 
-					{
-						$magicWordCheck = true;
-					};
+			// Build an anonymous callback function to be used in simple mode.
+			$simpleModeCallback = function( $matches ) {
+				if ( LinkTitles::checkTargetPage() ) {
+					return '[[' . $matches[0] . ']]';
 				}
 				else
 				{
-					$redirectCheck = true;
-					$magicWordCheck = true;
+					return $matches[0];
+				}
+			};
+
+			// Iterate through the page titles
+			wfProfileIn('LinkTitles::parseContent-row_iterator');
+			foreach( $res as $row ) {
+				LinkTitles::newTarget( $row->page_title );
+
+				// split the page content by [[...]] groups
+				// credits to inhan @ StackOverflow for suggesting preg_split
+				// see http://stackoverflow.com/questions/10672286
+				$arr = preg_split( $delimiter, $newText, -1, PREG_SPLIT_DELIM_CAPTURE );
+
+				// Escape certain special characters in the page title to prevent
+				// regexp compilation errors
+				$targetTitleText = LinkTitles::$mTargetTitle->getText();
+				$quotedTitle = preg_quote($targetTitleText, '/');
+
+				// Depending on the global configuration setting $wgCapitalLinks,
+				// the title has to be searched for either in a strictly case-sensitive
+				// way, or in a 'fuzzy' way where the first letter of the title may
+				// be either case.
+				if ( $wgCapitalLinks && ( $quotedTitle[0] != '\\' )) {
+					$searchTerm = '((?i)' . $quotedTitle[0] . '(?-i)' . 
+						substr($quotedTitle, 1) . ')';
+				}	else {
+					$searchTerm = '(' . $quotedTitle . ')';
 				}
 
-				// Proceed only if the currently examined page does not redirect to 
-				// our page and does not contain the no-target magic word.
-				// If the corresponding configuration variables are set to false,
-				// both 'check' variables below will be set to true by the code 
-				// above.
-				if ( $redirectCheck && $magicWordCheck ) {
-					// split the page content by [[...]] groups
-					// credits to inhan @ StackOverflow for suggesting preg_split
-					// see http://stackoverflow.com/questions/10672286
-					$arr = preg_split( $delimiter, $text, -1, PREG_SPLIT_DELIM_CAPTURE );
-
-					// Escape certain special characters in the page title to prevent
-					// regexp compilation errors
-					$targetTitleText = $targetTitle->getText();
-					$quotedTitle = preg_quote($targetTitleText, '/');
-
-					// Depending on the global configuration setting $wgCapitalLinks,
-					// the title has to be searched for either in a strictly case-sensitive
-					// way, or in a 'fuzzy' way where the first letter of the title may
-					// be either case.
-					if ( $wgCapitalLinks && ( $quotedTitle[0] != '\\' )) {
-						$searchTerm = '((?i)' . $quotedTitle[0] . '(?-i)' . 
-							substr($quotedTitle, 1) . ')';
-					}	else {
-						$searchTerm = '(' . $quotedTitle . ')';
-					}
-
-					for ( $i = 0; $i < count( $arr ); $i+=2 ) {
-						// even indexes will point to text that is not enclosed by brackets
-						$arr[$i] = preg_replace( '/(?<![\:\.\@\/\?\&])' .
-							$wordStartDelim . $searchTerm . $wordEndDelim . '/',
-							'[[$1]]', $arr[$i], $limit, $count );
-						if (( $limit >= 0 ) && ( $count > 0  )) {
-							break; 
-						};
+				for ( $i = 0; $i < count( $arr ); $i+=2 ) {
+					// even indexes will point to text that is not enclosed by brackets
+					$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
+						$wordStartDelim . $searchTerm . $wordEndDelim . '/',
+						$simpleModeCallback, $arr[$i], $limit, $count );
+					if (( $limit >= 0 ) && ( $count > 0  )) {
+						break; 
 					};
-					$newText = implode( '', $arr );
+				};
+				$newText = implode( '', $arr );
 
-					// If smart mode is turned on, the extension will perform a second
-					// pass on the page and add links with aliases where the case does
-					// not match.
-					if ($wgLinkTitlesSmartMode) {
-						// Build a callback function for use with preg_replace_callback.
-						// This essentially performs a case-sensitive comparison of the 
-						// current page title and the occurrence found on the page; if 
-						// the cases do not match, it builds an aliased (piped) link.
-						// If $wgCapitalLinks is set to true, the case of the first 
-						// letter is ignored by MediaWiki and we don't need to build a 
-						// piped link if only the case of the first letter is different.
-						// For good performance, we use two different callback 
-						// functions.
-						if ( $wgCapitalLinks ) {
-							// With $wgCapitalLinks set to true we have a slightly more 
-							// complicated version of the callback than if it were false; 
-							// we need to ignore the first letter of the page titles, as 
-							// it does not matter for linking.
-							$callback = function ($matches) use ($targetTitleText) {
+				// If smart mode is turned on, the extension will perform a second
+				// pass on the page and add links with aliases where the case does
+				// not match.
+				if ($wgLinkTitlesSmartMode) {
+					// Build a callback function for use with preg_replace_callback.
+					// This essentially performs a case-sensitive comparison of the 
+					// current page title and the occurrence found on the page; if 
+					// the cases do not match, it builds an aliased (piped) link.
+					// If $wgCapitalLinks is set to true, the case of the first 
+					// letter is ignored by MediaWiki and we don't need to build a 
+					// piped link if only the case of the first letter is different.
+					// For good performance, we use two different callback 
+					// functions.
+					if ( $wgCapitalLinks ) {
+						// With $wgCapitalLinks set to true we have a slightly more 
+						// complicated version of the callback than if it were false; 
+						// we need to ignore the first letter of the page titles, as 
+						// it does not matter for linking.
+						$callback = function ($matches) use ($targetTitleText) {
+							if ( LinkTitles::checkTargetPage() ) {
 								if ( strcmp(substr($targetTitleText, 1), substr($matches[0], 1)) == 0 ) {
 									// Case-sensitive match: no need to bulid piped link.
 									return '[[' . $matches[0] . ']]';
@@ -280,13 +259,19 @@
 									// Case-insensitive match: build piped link.
 									return '[[' . $targetTitleText . '|' . $matches[0] . ']]';
 								}
-							};
-						}
-						else
-						{
-							// If $wgCapitalLinks is false, we can use the simple variant 
-							// of the callback function.
-							$callback = function ($matches) use ($targetTitleText) {
+							}
+							else
+							{
+								return $matches[0];
+							}
+						};
+					}
+					else
+					{
+						// If $wgCapitalLinks is false, we can use the simple variant 
+						// of the callback function.
+						$callback = function ($matches) use ($targetTitleText) {
+							if ( LinkTitles::checkTargetPage() ) {
 								if ( strcmp($targetTitleText, $matches[0]) == 0 ) {
 									// Case-sensitive match: no need to bulid piped link.
 									return '[[' . $matches[0] . ']]';
@@ -294,27 +279,33 @@
 									// Case-insensitive match: build piped link.
 									return '[[' . $targetTitleText . '|' . $matches[0] . ']]';
 								}
-							};
-						}
-
-						$arr = preg_split( $delimiter, $newText, -1, PREG_SPLIT_DELIM_CAPTURE );
-
-						for ( $i = 0; $i < count( $arr ); $i+=2 ) {
-							// even indexes will point to text that is not enclosed by brackets
-							$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
-								$wordStartDelim . '(' . $quotedTitle . ')' . 
-								$wordEndDelim . '/i', $callback, $arr[$i], $limit, $count );
-							if (( $limit >= 0 ) && ( $count > 0  )) {
-								break; 
-							};
+							}
+							else
+							{
+								return $matches[0];
+							}
 						};
-						$newText = implode( '', $arr );
- 						if ( $newText != $text ) {
- 							$content = $content->getContentHandler()->unserializeContent( $newText );
- 						}
-					} // $wgLinkTitlesSmartMode
-				}
+					}
+
+					$arr = preg_split( $delimiter, $newText, -1, PREG_SPLIT_DELIM_CAPTURE );
+
+					for ( $i = 0; $i < count( $arr ); $i+=2 ) {
+						// even indexes will point to text that is not enclosed by brackets
+						$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
+							$wordStartDelim . '(' . $quotedTitle . ')' . 
+							$wordEndDelim . '/i', $callback, $arr[$i], $limit, $count );
+						if (( $limit >= 0 ) && ( $count > 0  )) {
+							break; 
+						};
+					};
+					$newText = implode( '', $arr );
+				} // $wgLinkTitlesSmartMode
 			}; // foreach $res as $row
+			wfProfileOut('LinkTitles::parseContent-row_iterator');
+			if ( $newText != $text ) {
+				$content = $content->getContentHandler()->unserializeContent( $newText );
+			}
+			wfProfileOut( __METHOD__ );
 			return true;
 		}
 		
@@ -352,6 +343,63 @@
 				)
 			);
 			$mwa->matchAndRemove( $text );
+			return true;
+		}
+
+		/// Sets member variables for the current target page.
+		private function newTarget( $titleString ) {
+			// @todo Make this wiki namespace aware.
+			LinkTitles::$mTargetTitle = Title::makeTitle( NS_MAIN, $titleString );
+			LinkTitles::$mTargetContent = null;
+		}
+
+		/// Returns the content of the current target page.
+		/// This function serves to be used in preg_replace_callback callback 
+		/// functions, in order to load the target page content from the 
+		/// database only when needed.
+		/// @note It is absolutely necessary that the newTarget() 
+		/// function is called for every new page.
+		private function getTargetContent() {
+			if ( ! isset( $mTargetContent ) ) {
+				LinkTitles::$mTargetContent = WikiPage::factory(
+					LinkTitles::$mTargetTitle)->getContent();
+			};
+			return LinkTitles::$mTargetContent;
+		}
+
+		/// Examines the current target page. Returns true if it may be linked; 
+		/// false if not. This depends on the settings 
+		/// $wgLinkTitlesCheckRedirect and $wgLinkTitlesEnableNoTargetMagicWord 
+		/// and whether the target page is a redirect or contains the 
+		/// __NOAUTOLINKTARGET__ magic word.
+		/// @returns boolean
+		private function checkTargetPage() {
+			wfProfileIn( __METHOD__ );
+			global $wgLinkTitlesEnableNoTargetMagicWord;
+			global $wgLinkTitlesCheckRedirect;
+
+			// If checking for redirects is enabled and the target page does 
+			// indeed redirect to the current page, return the page title as-is 
+			// (unlinked).
+			if ( $wgLinkTitlesCheckRedirect ) {
+				$redirectTitle = LinkTitles::getTargetContent()->getUltimateRedirectTarget();
+				if ( $redirectTitle && $redirectTitle->equals(LinkTitles::$mCurrentTitle) ) {
+					wfProfileOut( __METHOD__ );
+					return false;
+				}
+			};
+
+			// If the magic word __NOAUTOLINKTARGET__ is enabled and the target 
+			// page does indeed contain this magic word, return the page title 
+			// as-is (unlinked).
+			if ( $wgLinkTitlesEnableNoTargetMagicWord ) {
+				if ( LinkTitles::getTargetContent()->matchMagicWord(
+						MagicWord::get('MAG_LINKTITLES_NOTARGET') ) ) {
+					wfProfileOut( __METHOD__ );
+					return false;
+				}
+			};
+			wfProfileOut( __METHOD__ );
 			return true;
 		}
 	}
