@@ -324,10 +324,10 @@
 			$content = $page->getContent();
 			$article = Article::newFromWikiPage($page, $context);
 			LinkTitles::parseContent($article, $content);
-			$page->doEditContent($content,
+			$page->doQuickEditContent($content,
+				$context->getUser(),
 				"Links to existing pages added by LinkTitles bot.",
-				EDIT_MINOR | EDIT_FORCE_BOT,
-				$context->getUser()
+				true // minor modification
 			);
 		}
 

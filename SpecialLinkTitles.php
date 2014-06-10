@@ -71,7 +71,6 @@ class SpecialLinkTitles extends SpecialPage {
 		}
 	}
 
-
 	/// Processes wiki articles, starting at the page indicated by 
 	/// $startTitle. If $wgLinkTitlesTimeLimit is reached before all pages are 
 	/// processed, returns the title of the next page that needs processing.
