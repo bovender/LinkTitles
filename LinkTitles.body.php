@@ -53,13 +53,12 @@
 				$wgHooks['PageContentSave'][] = 'LinkTitles::onPageContentSave';
 			};
 			if ( $wgLinkTitlesParseOnRender ) { 
-				$wgHooks['ArticleAfterFetchContentObject'][] =
-				 		'LinkTitles::onArticleAfterFetchContentObject';
+				$wgHooks['InternalParseBeforeLinks'][] = 'LinkTitles::onInternalParseBeforeLinks';
 			};
 			$wgHooks['GetDoubleUnderscoreIDs'][] = 'LinkTitles::onGetDoubleUnderscoreIDs';
 		}
 
-		/// Event handler that is hooked to the ArticleSave event.
+		/// Event handler that is hooked to the PageContentSave event.
 		public static function onPageContentSave( &$wikiPage, &$user, &$content, &$summary,
 				$isMinor, $isWatch, $section, &$flags, &$status ) {
 
@@ -74,18 +73,12 @@
 			return true;
 		}
 
-		/// Event handler that is hooked to the ArticleAfterFetchContent event.
-		/// @param $article Article object
-		/// @param $content Content object that holds the article content
-		public static function onArticleAfterFetchContentObject( &$article, &$content ) {
-			// The ArticleAfterFetchContentObject event is triggered whenever page 
-			// content is retrieved from the database, i.e. also for editing etc.
-			// Therefore we access the global $action variabl to only parse the 
-			// content when the page is viewed.
-			global $action;
-			if ( in_array( $action, array('view', 'render', 'purge') ) ) {
-				self::parseContent( $article, $content );
-			};
+		/// Event handler that is hooked to the InternalParseBeforeLinks event.
+		/// @param Parser $parser Parser that raised the event.
+		/// @param $text          Preprocessed text of the page.
+		public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
+			$title = $parser->getTitle();
+			$text = self::parseContent( $title, $text );
 			return true;
 		}
 
