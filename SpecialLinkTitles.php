@@ -76,8 +76,8 @@ class SpecialLinkTitles extends SpecialPage {
 	/// processed, returns the title of the next page that needs processing.
 	/// @param WebRequest $request WebRequest object that is associated with the special 
 	///                            page.
-	/// @param Output $output      Output object that the special page is equipped with.
-	private function process( WebRequest &$request, Output &$output) {
+	/// @param OutputPage $output  Output page for the special page.
+	private function process( WebRequest &$request, OutputPage &$output) {
 		global $wgLinkTitlesTimeLimit;
 
 		// Start the stopwatch

@@ -53,46 +53,42 @@
 				$wgHooks['PageContentSave'][] = 'LinkTitles::onPageContentSave';
 			};
 			if ( $wgLinkTitlesParseOnRender ) { 
-				$wgHooks['ArticleAfterFetchContentObject'][] =
-				 		'LinkTitles::onArticleAfterFetchContentObject';
+				$wgHooks['InternalParseBeforeLinks'][] = 'LinkTitles::onInternalParseBeforeLinks';
 			};
 			$wgHooks['GetDoubleUnderscoreIDs'][] = 'LinkTitles::onGetDoubleUnderscoreIDs';
 		}
 
-		/// Event handler that is hooked to the ArticleSave event.
+		/// Event handler that is hooked to the PageContentSave event.
 		public static function onPageContentSave( &$wikiPage, &$user, &$content, &$summary,
 				$isMinor, $isWatch, $section, &$flags, &$status ) {
 
-			// To prevent time-consuming parsing of the page whenever
-			// it is edited and saved, we only parse it if the flag
-			// 'minor edits' is not set.
-			return $isMinor or self::parseContent( $wikiPage, $content );
-		}
-
-		/// Event handler that is hooked to the ArticleAfterFetchContent event.
-		/// @param $article Article object
-		/// @param $content Content object that holds the article content
-		public static function onArticleAfterFetchContentObject( &$article, &$content ) {
-			// The ArticleAfterFetchContentObject event is triggered whenever page 
-			// content is retrieved from the database, i.e. also for editing etc.
-			// Therefore we access the global $action variabl to only parse the 
-			// content when the page is viewed.
-			global $action;
-			if ( in_array( $action, array('view', 'render', 'purge') ) ) {
-				self::parseContent( $article, $content );
+			if ( ! $isMinor ) {
+				$title = $wikiPage->getTitle();
+				$text = $content->getContentHandler()->serializeContent($content);
+				$newText = self::parseContent( $title, $text );
+				if ( $newText != $text ) {
+					$content = $content->getContentHandler()->unserializeContent( $newText );
+				}
 			};
 			return true;
 		}
 
+		/// Event handler that is hooked to the InternalParseBeforeLinks event.
+		/// @param Parser $parser Parser that raised the event.
+		/// @param $text          Preprocessed text of the page.
+		public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
+			$title = $parser->getTitle();
+			$text = self::parseContent( $title, $text );
+			return true;
+		}
+
 		/// Core function of the extension, performs the actual parsing of the content.
-		/// @param $article Article object
-		/// @param $content Content object that holds the article content
-		/// @returns true
-		static function parseContent( WikiPage &$wikiPage, Content &$content ) {
-			// If the page contains the magic word '__NOAUTOLINKS__', do not parse
-			// the content.
-			if ( $content->matchMagicWord(
-					MagicWord::get('MAG_LINKTITLES_NOAUTOLINKS') ) ) {
+		/// @param Title $title   Title of the page being parsed
+		/// @param $text          String that holds the article content
+		/// @returns string: parsed text with links added if needed
+		private static function parseContent( Title &$title, &$text ) {
+			// If the page contains the magic word '__NOAUTOLINKS__', do not parse it.
+			if ( MagicWord::get('MAG_LINKTITLES_NOAUTOLINKS')->match( $text ) ) {
 				return true;
 			}
 
@@ -121,8 +117,7 @@
 				$templatesDelimiter = '{{[^|]+?}}|{{.+\||';
 			};
 
-			LinkTitles::$currentTitle = $wikiPage->getTitle();
-			$text = $content->getContentHandler()->serializeContent($content);
+			LinkTitles::$currentTitle = $title;
 			$newText = $text;
 
 			// Build a regular expression that will capture existing wiki links ("[[...]]"),
@@ -151,8 +146,8 @@
 
 			// Build a blacklist of pages that are not supposed to be link 
 			// targets. This includes the current page.
-			$black_list = str_replace( '_', ' ',
-				'("' . implode( '", "',$wgLinkTitlesBlackList ) . 
+			$blackList = str_replace( '_', ' ',
+				'("' . implode( '", "',$wgLinkTitlesBlackList ) . '", "' .
 				LinkTitles::$currentTitle->getDbKey() . '")' );
 
 			// Build an SQL query and fetch all page titles ordered by length from 
@@ -167,7 +162,7 @@
 					array( 
 						'page_namespace = 0', 
 						'CHAR_LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
-						'page_title NOT IN ' . $black_list,
+						'page_title NOT IN ' . $blackList,
 					), 
 					__METHOD__, 
 					array( 'ORDER BY' => 'CHAR_LENGTH(page_title) ' . $sort_order )
@@ -179,7 +174,7 @@
 					array( 
 						'page_namespace = 0', 
 						'LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
-						'page_title NOT IN ' . $black_list,
+						'page_title NOT IN ' . $blackList,
 					), 
 					__METHOD__, 
 					array( 'ORDER BY' => 'LENGTH(page_title) ' . $sort_order )
@@ -241,31 +236,32 @@
 					$newText = implode( '', $arr );
 				} // $wgLinkTitlesSmartMode
 			}; // foreach $res as $row
-			if ( $newText != $text ) {
-				$content = $content->getContentHandler()->unserializeContent( $newText );
-			}
-			return true;
+			return $newText;
 		}
 		
 		/// Automatically processes a single page, given a $title Title object.
 		/// This function is called by the SpecialLinkTitles class and the 
 		/// LinkTitlesJob class.
-		/// @param string           $title    Page title.
-		/// @param IContextProvider $context  Object that implements IContextProvider.
+		/// @param string $title            Page title.
+		/// @param RequestContext $context  Current context. 
 		///                  If in doubt, call MediaWiki's `RequestContext::getMain()`
 		///                  to obtain such an object.
 		/// @returns undefined
-		public static function processPage($title, IContextProvider $context) {
+		public static function processPage($title, RequestContext $context) {
 			// TODO: make this namespace-aware
 			$titleObj = Title::makeTitle(0, $title);
 			$page = WikiPage::factory($titleObj);
 			$content = $page->getContent();
-			LinkTitles::parseContent($page, $content);
-			$page->doQuickEditContent($content,
-				$context->getUser(),
-				"Links to existing pages added by LinkTitles bot.",
-				true // minor modification
-			);
+			$text = $content->getContentHandler()->serializeContent($content);
+			$newText = LinkTitles::parseContent($titleObj, $text);
+			if ( $text != $newText ) {
+				$content = $content->getContentHandler()->unserializeContent( $newText );
+				$page->doQuickEditContent($content,
+					$context->getUser(),
+					"Links to existing pages added by LinkTitles bot.",
+					true // minor modification
+				);
+			};
 		}
 
 		/// Adds the two magic words defined by this extension to the list of 
