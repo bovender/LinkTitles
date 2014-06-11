@@ -63,10 +63,15 @@
 		public static function onPageContentSave( &$wikiPage, &$user, &$content, &$summary,
 				$isMinor, $isWatch, $section, &$flags, &$status ) {
 
-			// To prevent time-consuming parsing of the page whenever
-			// it is edited and saved, we only parse it if the flag
-			// 'minor edits' is not set.
-			return $isMinor or self::parseContent( $wikiPage, $content );
+			if ( ! $isMinor ) {
+				$title = $wikiPage->getTitle();
+				$text = $content->getContentHandler()->serializeContent($content);
+				$newText = self::parseContent( $title, $text );
+				if ( $newText != $text ) {
+					$content = $content->getContentHandler()->unserializeContent( $newText );
+				}
+			};
+			return true;
 		}
 
 		/// Event handler that is hooked to the ArticleAfterFetchContent event.
@@ -85,14 +90,12 @@
 		}
 
 		/// Core function of the extension, performs the actual parsing of the content.
-		/// @param $article Article object
-		/// @param $content Content object that holds the article content
-		/// @returns true
-		static function parseContent( WikiPage &$wikiPage, Content &$content ) {
-			// If the page contains the magic word '__NOAUTOLINKS__', do not parse
-			// the content.
-			if ( $content->matchMagicWord(
-					MagicWord::get('MAG_LINKTITLES_NOAUTOLINKS') ) ) {
+		/// @param Title $title   Title of the page being parsed
+		/// @param $text          String that holds the article content
+		/// @returns string: parsed text with links added if needed
+		private static function parseContent( Title &$title, &$text ) {
+			// If the page contains the magic word '__NOAUTOLINKS__', do not parse it.
+			if ( MagicWord::get('MAG_LINKTITLES_NOAUTOLINKS')->match( $text ) ) {
 				return true;
 			}
 
@@ -121,8 +124,7 @@
 				$templatesDelimiter = '{{[^|]+?}}|{{.+\||';
 			};
 
-			LinkTitles::$currentTitle = $wikiPage->getTitle();
-			$text = $content->getContentHandler()->serializeContent($content);
+			LinkTitles::$currentTitle = $title;
 			$newText = $text;
 
 			// Build a regular expression that will capture existing wiki links ("[[...]]"),
@@ -241,10 +243,7 @@
 					$newText = implode( '', $arr );
 				} // $wgLinkTitlesSmartMode
 			}; // foreach $res as $row
-			if ( $newText != $text ) {
-				$content = $content->getContentHandler()->unserializeContent( $newText );
-			}
-			return true;
+			return $newText;
 		}
 		
 		/// Automatically processes a single page, given a $title Title object.
@@ -260,12 +259,16 @@
 			$titleObj = Title::makeTitle(0, $title);
 			$page = WikiPage::factory($titleObj);
 			$content = $page->getContent();
-			LinkTitles::parseContent($page, $content);
-			$page->doQuickEditContent($content,
-				$context->getUser(),
-				"Links to existing pages added by LinkTitles bot.",
-				true // minor modification
-			);
+			$text = $content->getContentHandler()->serializeContent($content);
+			$newText = LinkTitles::parseContent($titleObj, $text);
+			if ( $text != $newText ) {
+				$content = $content->getContentHandler()->unserializeContent( $newText );
+				$page->doQuickEditContent($content,
+					$context->getUser(),
+					"Links to existing pages added by LinkTitles bot.",
+					true // minor modification
+				);
+			};
 		}
 
 		/// Adds the two magic words defined by this extension to the list of 
