@@ -146,8 +146,8 @@
 
 			// Build a blacklist of pages that are not supposed to be link 
 			// targets. This includes the current page.
-			$black_list = str_replace( '_', ' ',
-				'("' . implode( '", "',$wgLinkTitlesBlackList ) . 
+			$blackList = str_replace( '_', ' ',
+				'("' . implode( '", "',$wgLinkTitlesBlackList ) . '", "' .
 				LinkTitles::$currentTitle->getDbKey() . '")' );
 
 			// Build an SQL query and fetch all page titles ordered by length from 
@@ -162,7 +162,7 @@
 					array( 
 						'page_namespace = 0', 
 						'CHAR_LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
-						'page_title NOT IN ' . $black_list,
+						'page_title NOT IN ' . $blackList,
 					), 
 					__METHOD__, 
 					array( 'ORDER BY' => 'CHAR_LENGTH(page_title) ' . $sort_order )
@@ -174,7 +174,7 @@
 					array( 
 						'page_namespace = 0', 
 						'LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
-						'page_title NOT IN ' . $black_list,
+						'page_title NOT IN ' . $blackList,
 					), 
 					__METHOD__, 
 					array( 'ORDER BY' => 'LENGTH(page_title) ' . $sort_order )
