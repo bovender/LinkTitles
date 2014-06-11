@@ -89,7 +89,7 @@
 		private static function parseContent( Title &$title, &$text ) {
 			// If the page contains the magic word '__NOAUTOLINKS__', do not parse it.
 			if ( MagicWord::get('MAG_LINKTITLES_NOAUTOLINKS')->match( $text ) ) {
-				return true;
+				return $text;
 			}
 
 			// Configuration variables need to be defined here as globals.
