@@ -5,6 +5,8 @@ var searchData=
   ['_24wgavailablerights',['$wgAvailableRights',['../LinkTitles_8php.html#ab40ac1d74e352864e05c0e53677498b3',1,'LinkTitles.php']]],
   ['_24wggrouppermissions',['$wgGroupPermissions',['../group__config.html#ga313254c25496be97aef8795023ae712c',1,'LinkTitles.php']]],
   ['_24wglinktitlesblacklist',['$wgLinkTitlesBlackList',['../group__config.html#ga0d9f38fac47f498ed419c70c6dabdfeb',1,'LinkTitles.php']]],
+  ['_24wglinktitlescheckredirect',['$wgLinkTitlesCheckRedirect',['../group__config.html#ga4f5913ca08f309713292503b61590ab0',1,'LinkTitles.php']]],
+  ['_24wglinktitlesenablenotargetmagicword',['$wgLinkTitlesEnableNoTargetMagicWord',['../group__config.html#ga388853f699fe99906c6f2a94bedd35bb',1,'LinkTitles.php']]],
   ['_24wglinktitlesfirstonly',['$wgLinkTitlesFirstOnly',['../group__config.html#ga1e1552e4d5423318ac53655c68d4344e',1,'LinkTitles.php']]],
   ['_24wglinktitlesminimumtitlelength',['$wgLinkTitlesMinimumTitleLength',['../group__config.html#ga2abf76e7280690227955ae9b8ccf998c',1,'LinkTitles.php']]],
   ['_24wglinktitlesparseheadings',['$wgLinkTitlesParseHeadings',['../group__config.html#ga32ed07ff79e66fdb069384acd2ab000c',1,'LinkTitles.php']]],

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['cache',['Cache',['https://doc.wikimedia.org/mediawiki-core/REL1_23/php/html/group__Cache.html',1,'']]],
-  ['configuration',['Configuration',['../group__config.html',1,'']]]
+  ['maintenance',['Maintenance',['../group__Maintenance.html',1,'']]],
+  ['maintenance_20archives',['Maintenance archives',['../group__MaintenanceArchive.html',1,'']]]
 ];

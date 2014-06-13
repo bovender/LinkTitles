@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['configuration',['Configuration',['../group__config.html',1,'']]]
+  ['batch_20processing',['Batch processing',['../group__batch.html',1,'']]]
 ];

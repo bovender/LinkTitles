@@ -92,9 +92,11 @@ $(document).ready(function(){initNavTree('modules.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock">Here is a list of all modules:</div><div class="directory">
-<table class="directory">
+<div class="levels">[detail level <span onclick="javascript:toggleLevel(1);">1</span><span onclick="javascript:toggleLevel(2);">2</span>]</div><table class="directory">
 <tr id="row_0_" class="even"><td class="entry"><img src="ftv2node.png" alt="o" width="16" height="22" /><a class="el" href="group__config.html" target="_self">Configuration</a></td><td class="desc">The global configuration variables can be overriden in the local <code>LocalSettings.php</code> file just like with any other extension </td></tr>
-<tr id="row_1_"><td class="entry"><img src="ftv2lastnode.png" alt="\" width="16" height="22" /><a class="el" href="group__batch.html" target="_self">Batch processing</a></td><td class="desc"></td></tr>
+<tr id="row_1_"><td class="entry"><img id="arr_1_" src="ftv2mnode.png" alt="o" width="16" height="22" onclick="toggleFolder('1_')"/><a class="el" href="group__Maintenance.html" target="_self">Maintenance</a></td><td class="desc"></td></tr>
+<tr id="row_1_0_" class="even"><td class="entry"><img src="ftv2vertline.png" alt="|" width="16" height="22" /><img src="ftv2lastnode.png" alt="\" width="16" height="22" /><a class="el" href="group__MaintenanceArchive.html" target="_self">Maintenance archives</a></td><td class="desc"></td></tr>
+<tr id="row_2_"><td class="entry"><img src="ftv2lastnode.png" alt="\" width="16" height="22" /><a class="el" href="group__batch.html" target="_self">Batch processing</a></td><td class="desc"></td></tr>
 </table>
 </div><!-- directory -->
 </div><!-- contents -->
@@ -102,7 +104,7 @@ $(document).ready(function(){initNavTree('modules.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Jun 5 2014 22:44:29 for LinkTitles extension for MediaWiki by
+    <li class="footer">Generated on Fri Jun 13 2014 10:24:44 for LinkTitles extension for MediaWiki by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

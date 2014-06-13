@@ -135,6 +135,12 @@ Variables</h2></td></tr>
 <tr class="memitem:ga50824ee447f4575735566cbbe8516c1f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__config.html#ga50824ee447f4575735566cbbe8516c1f">$wgLinkTitlesSmartMode</a> = true</td></tr>
 <tr class="memdesc:ga50824ee447f4575735566cbbe8516c1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Important setting that controls the extension's smart mode of operation.  <a href="#ga50824ee447f4575735566cbbe8516c1f">More...</a><br/></td></tr>
 <tr class="separator:ga50824ee447f4575735566cbbe8516c1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4f5913ca08f309713292503b61590ab0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__config.html#ga4f5913ca08f309713292503b61590ab0">$wgLinkTitlesCheckRedirect</a> = true</td></tr>
+<tr class="memdesc:ga4f5913ca08f309713292503b61590ab0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether or not to check if a page redirects to the current page.  <a href="#ga4f5913ca08f309713292503b61590ab0">More...</a><br/></td></tr>
+<tr class="separator:ga4f5913ca08f309713292503b61590ab0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga388853f699fe99906c6f2a94bedd35bb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__config.html#ga388853f699fe99906c6f2a94bedd35bb">$wgLinkTitlesEnableNoTargetMagicWord</a> = true</td></tr>
+<tr class="memdesc:ga388853f699fe99906c6f2a94bedd35bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether or not the magic word <b>NOAUTOLINKTARGET</b> is enabled or not.  <a href="#ga388853f699fe99906c6f2a94bedd35bb">More...</a><br/></td></tr>
+<tr class="separator:ga388853f699fe99906c6f2a94bedd35bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3a4aa5bafa71a93b463048e15ebc3d7d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__config.html#ga3a4aa5bafa71a93b463048e15ebc3d7d">$wgLinkTitlesTimeLimit</a> = 0.2</td></tr>
 <tr class="memdesc:ga3a4aa5bafa71a93b463048e15ebc3d7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time limit for online batch processing.  <a href="#ga3a4aa5bafa71a93b463048e15ebc3d7d">More...</a><br/></td></tr>
 <tr class="separator:ga3a4aa5bafa71a93b463048e15ebc3d7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -159,7 +165,43 @@ Variables</h2></td></tr>
 <p>Grants the <code>linktitles-batch</code> right to sysops by default. </p>
 <p>Override this only with care. If anybody can execute the <a class="el" href="classSpecialLinkTitles.html">special page </a> the server might experience high loads. </p>
 
-<p>Definition at line <a class="el" href="LinkTitles_8php_source.html#l00183">183</a> of file <a class="el" href="LinkTitles_8php_source.html">LinkTitles.php</a>.</p>
+<p>Definition at line <a class="el" href="LinkTitles_8php_source.html#l00215">215</a> of file <a class="el" href="LinkTitles_8php_source.html">LinkTitles.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga4f5913ca08f309713292503b61590ab0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$wgLinkTitlesCheckRedirect = true</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determines whether or not to check if a page redirects to the current page. </p>
+<p>Normally one would want to have the default behavior (true), but this check requires a time-consuming database query for every page in the wiki. </p>
+<dl class="section note"><dt>Note</dt><dd>For maximum performance, set both $wgLinkTitlesCheckRedirect and $wgLinkTitlesEnableNoTargetMagicWord to false in LocalSettings.php. On the developer's machine, fetching the target page content increased the run time from about 50 ms to about 500 ms on a wiki with 90 pages (Intel Core i5-3320M, 2x 2.6 GHz, 16 GB RAM, PHP 5.5.9, Apache 2.4.7, MySQL 5.5.37, MediaWiki 1.23.0). If any of the two mentioned variables is set to true, a page content request will be performed for every page in the wiki whenever a single page is edited or parsed in batch mode. </dd></dl>
+
+<p>Definition at line <a class="el" href="LinkTitles_8php_source.html#l00160">160</a> of file <a class="el" href="LinkTitles_8php_source.html">LinkTitles.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga388853f699fe99906c6f2a94bedd35bb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$wgLinkTitlesEnableNoTargetMagicWord = true</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determines whether or not the magic word <b>NOAUTOLINKTARGET</b> is enabled or not. </p>
+<p>If <b>NOAUTOLINKTARGET</b> is included in a page, this page will never be linked to by the extension. The default is enabled (true), but it comes at the cost of performance. </p>
+<dl class="section note"><dt>Note</dt><dd>For maximum performance, set both $wgLinkTitlesCheckRedirect and $wgLinkTitlesEnableNoTargetMagicWord to false in LocalSettings.php. On the developer's machine, fetching the target page content increased the run time from about 50 ms to about 500 ms on a wiki with 90 pages (Intel Core i5-3320M, 2x 2.6 GHz, 16 GB RAM, PHP 5.5.9, Apache 2.4.7, MySQL 5.5.37, MediaWiki 1.23.0). If any of the two mentioned variables is set to true, a page content request will be performed for every page in the wiki whenever a single page is edited or parsed in batch mode. </dd></dl>
+
+<p>Definition at line <a class="el" href="LinkTitles_8php_source.html#l00176">176</a> of file <a class="el" href="LinkTitles_8php_source.html">LinkTitles.php</a>.</p>
 
 </div>
 </div>
@@ -281,7 +323,7 @@ Variables</h2></td></tr>
 <p>Time limit for online batch processing. </p>
 <p>This determines the maximum amount of time in seconds that page processing will take before a refresh of the special page is issued. </p>
 
-<p>Definition at line <a class="el" href="LinkTitles_8php_source.html#l00150">150</a> of file <a class="el" href="LinkTitles_8php_source.html">LinkTitles.php</a>.</p>
+<p>Definition at line <a class="el" href="LinkTitles_8php_source.html#l00182">182</a> of file <a class="el" href="LinkTitles_8php_source.html">LinkTitles.php</a>.</p>
 
 </div>
 </div>
@@ -328,7 +370,7 @@ If both $wgLinkTitlesWordStartOnly and $wgLinkTitlesWordEndOnly are overriden to
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Jun 5 2014 22:44:29 for LinkTitles extension for MediaWiki by
+    <li class="footer">Generated on Fri Jun 13 2014 10:24:44 for LinkTitles extension for MediaWiki by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

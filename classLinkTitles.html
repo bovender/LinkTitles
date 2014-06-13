@@ -104,31 +104,27 @@ Static Public Member Functions</h2></td></tr>
 static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles.html#ac0c6ffe5255b656357999753718a731c">setup</a> ()</td></tr>
 <tr class="memdesc:ac0c6ffe5255b656357999753718a731c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setup function, hooks the extension's functions to MediaWiki events. <br/></td></tr>
 <tr class="separator:ac0c6ffe5255b656357999753718a731c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ef3dbe8d5b227758a25e6d45aaf909a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3ef3dbe8d5b227758a25e6d45aaf909a"></a>
-static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles.html#a3ef3dbe8d5b227758a25e6d45aaf909a">onArticleSave</a> (&amp;$article, &amp;$user, &amp;$text, &amp;$summary, $minor, $watchthis, $sectionanchor, &amp;$flags, &amp;$status)</td></tr>
-<tr class="memdesc:a3ef3dbe8d5b227758a25e6d45aaf909a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event handler that is hooked to the ArticleSave event. <br/></td></tr>
-<tr class="separator:a3ef3dbe8d5b227758a25e6d45aaf909a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af75683ee6d8c1a7a69021772806fd56a"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles.html#af75683ee6d8c1a7a69021772806fd56a">onArticleAfterFetchContent</a> (&amp;$article, &amp;$content)</td></tr>
-<tr class="memdesc:af75683ee6d8c1a7a69021772806fd56a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event handler that is hooked to the ArticleAfterFetchContent event.  <a href="#af75683ee6d8c1a7a69021772806fd56a">More...</a><br/></td></tr>
-<tr class="separator:af75683ee6d8c1a7a69021772806fd56a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa65ded149bc0103b1abe8a4dcdb19bff"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles.html#aa65ded149bc0103b1abe8a4dcdb19bff">parseContent</a> (&amp;$article, &amp;$text)</td></tr>
-<tr class="memdesc:aa65ded149bc0103b1abe8a4dcdb19bff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Core function of the extension, performs the actual parsing of the content.  <a href="#aa65ded149bc0103b1abe8a4dcdb19bff">More...</a><br/></td></tr>
-<tr class="separator:aa65ded149bc0103b1abe8a4dcdb19bff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4cb69d1dd39da0f7146552f3d8a0c224"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles.html#a4cb69d1dd39da0f7146552f3d8a0c224">processPage</a> ($title, $context)</td></tr>
-<tr class="memdesc:a4cb69d1dd39da0f7146552f3d8a0c224"><td class="mdescLeft">&#160;</td><td class="mdescRight">Automatically processes a single page, given a $title Title object.  <a href="#a4cb69d1dd39da0f7146552f3d8a0c224">More...</a><br/></td></tr>
-<tr class="separator:a4cb69d1dd39da0f7146552f3d8a0c224"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9db979935849d4cfd3d724c3ce995dce"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles.html#a9db979935849d4cfd3d724c3ce995dce">removeMagicWord</a> (&amp;$parser, &amp;$text)</td></tr>
-<tr class="memdesc:a9db979935849d4cfd3d724c3ce995dce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove the magic words that this extension introduces from the $text, so that they do not appear on the rendered page.  <a href="#a9db979935849d4cfd3d724c3ce995dce">More...</a><br/></td></tr>
-<tr class="separator:a9db979935849d4cfd3d724c3ce995dce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad57f8513754abd69fdff865008a77635"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad57f8513754abd69fdff865008a77635"></a>
+static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles.html#ad57f8513754abd69fdff865008a77635">onPageContentSave</a> (&amp;$wikiPage, &amp;$user, &amp;$content, &amp;$summary, $isMinor, $isWatch, $section, &amp;$flags, &amp;$status)</td></tr>
+<tr class="memdesc:ad57f8513754abd69fdff865008a77635"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event handler that is hooked to the PageContentSave event. <br/></td></tr>
+<tr class="separator:ad57f8513754abd69fdff865008a77635"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f52e2cf47552dfd53cb447a3c37acd9"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles.html#a4f52e2cf47552dfd53cb447a3c37acd9">onInternalParseBeforeLinks</a> (Parser &amp;$parser, &amp;$text)</td></tr>
+<tr class="memdesc:a4f52e2cf47552dfd53cb447a3c37acd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event handler that is hooked to the InternalParseBeforeLinks event.  <a href="#a4f52e2cf47552dfd53cb447a3c37acd9">More...</a><br/></td></tr>
+<tr class="separator:a4f52e2cf47552dfd53cb447a3c37acd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13236641df92f938aa050eddca7c00f5"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles.html#a13236641df92f938aa050eddca7c00f5">processPage</a> ($title, RequestContext $context)</td></tr>
+<tr class="memdesc:a13236641df92f938aa050eddca7c00f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Automatically processes a single page, given a $title Title object.  <a href="#a13236641df92f938aa050eddca7c00f5">More...</a><br/></td></tr>
+<tr class="separator:a13236641df92f938aa050eddca7c00f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9839cce7cf9977b44e7c890b8df3472a"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles.html#a9839cce7cf9977b44e7c890b8df3472a">onGetDoubleUnderscoreIDs</a> (array &amp;$doubleUnderscoreIDs)</td></tr>
+<tr class="memdesc:a9839cce7cf9977b44e7c890b8df3472a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds the two magic words defined by this extension to the list of 'double-underscore' terms that are automatically removed before a page is displayed.  <a href="#a9839cce7cf9977b44e7c890b8df3472a">More...</a><br/></td></tr>
+<tr class="separator:a9839cce7cf9977b44e7c890b8df3472a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Central class of the extension. </p>
 <p>Sets up parser hooks. This class contains only static functions; do not instantiate. </p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>Use the current PageContentSave hook rather than the deprecated ArticleSave hook. </dd></dl>
 
-<p>Definition at line <a class="el" href="LinkTitles_8body_8php_source.html#l00032">32</a> of file <a class="el" href="LinkTitles_8body_8php_source.html">LinkTitles.body.php</a>.</p>
+<p>Definition at line <a class="el" href="LinkTitles_8body_8php_source.html#l00031">31</a> of file <a class="el" href="LinkTitles_8body_8php_source.html">LinkTitles.body.php</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="af75683ee6d8c1a7a69021772806fd56a"></a>
+<a class="anchor" id="a9839cce7cf9977b44e7c890b8df3472a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -136,21 +132,11 @@ static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static LinkTitles::onArticleAfterFetchContent </td>
+          <td class="memname">static LinkTitles::onGetDoubleUnderscoreIDs </td>
           <td>(</td>
-          <td class="paramtype">&amp;&#160;</td>
-          <td class="paramname"><em>$article</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">array &amp;&#160;</td>
+          <td class="paramname"><em>$doubleUnderscoreIDs</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">&amp;&#160;</td>
-          <td class="paramname"><em>$content</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -160,66 +146,20 @@ static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </table>
 </div><div class="memdoc">
 
-<p>Event handler that is hooked to the ArticleAfterFetchContent event. </p>
+<p>Adds the two magic words defined by this extension to the list of 'double-underscore' terms that are automatically removed before a page is displayed. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">$article</td><td>Article object </td></tr>
-    <tr><td class="paramname">$content</td><td>String that holds the article content </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Definition at line <a class="el" href="LinkTitles_8body_8php_source.html#l00060">60</a> of file <a class="el" href="LinkTitles_8body_8php_source.html">LinkTitles.body.php</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="aa65ded149bc0103b1abe8a4dcdb19bff"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static LinkTitles::parseContent </td>
-          <td>(</td>
-          <td class="paramtype">&amp;&#160;</td>
-          <td class="paramname"><em>$article</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&amp;&#160;</td>
-          <td class="paramname"><em>$text</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Core function of the extension, performs the actual parsing of the content. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">$article</td><td>Article object </td></tr>
-    <tr><td class="paramname">$text</td><td>String that holds the article content </td></tr>
+    <tr><td class="paramname">$doubleUnderscoreIDs</td><td>Array of magic word IDs. </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true </dd></dl>
 
-<p>Definition at line <a class="el" href="LinkTitles_8body_8php_source.html#l00076">76</a> of file <a class="el" href="LinkTitles_8body_8php_source.html">LinkTitles.body.php</a>.</p>
+<p>Definition at line <a class="el" href="LinkTitles_8body_8php_source.html#l00272">272</a> of file <a class="el" href="LinkTitles_8body_8php_source.html">LinkTitles.body.php</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a4cb69d1dd39da0f7146552f3d8a0c224"></a>
+<a class="anchor" id="a4f52e2cf47552dfd53cb447a3c37acd9"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -227,56 +167,9 @@ static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static LinkTitles::processPage </td>
+          <td class="memname">static LinkTitles::onInternalParseBeforeLinks </td>
           <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>$title</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>$context</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Automatically processes a single page, given a $title Title object. </p>
-<p>This function is called by the <a class="el" href="classSpecialLinkTitles.html" title="Provides a special page that can be used to batch-process all pages in the wiki. ">SpecialLinkTitles</a> class and the LinkTitlesJob class. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">$title</td><td><code>Title</code> object that identifies the page. </td></tr>
-    <tr><td class="paramname">$context</td><td>Object that implements IContextProvider. If in doubt, call MediaWiki's <code>RequestContext::getMain()</code> to obtain such an object. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>undefined </dd></dl>
-
-<p>Definition at line <a class="el" href="LinkTitles_8body_8php_source.html#l00310">310</a> of file <a class="el" href="LinkTitles_8body_8php_source.html">LinkTitles.body.php</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a9db979935849d4cfd3d724c3ce995dce"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static LinkTitles::removeMagicWord </td>
-          <td>(</td>
-          <td class="paramtype">&amp;&#160;</td>
+          <td class="paramtype">Parser &amp;&#160;</td>
           <td class="paramname"><em>$parser</em>, </td>
         </tr>
         <tr>
@@ -298,17 +191,63 @@ static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </table>
 </div><div class="memdoc">
 
-<p>Remove the magic words that this extension introduces from the $text, so that they do not appear on the rendered page. </p>
+<p>Event handler that is hooked to the InternalParseBeforeLinks event. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">$parser</td><td>Parser object </td></tr>
-    <tr><td class="paramname">$text</td><td>String that contains the page content. </td></tr>
+    <tr><td class="paramtype">Parser</td><td class="paramname">$parser</td><td>Parser that raised the event. </td></tr>
+    <tr><td class="paramtype"></td><td class="paramname">$text</td><td>Preprocessed text of the page. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>true </dd></dl>
 
-<p>Definition at line <a class="el" href="LinkTitles_8body_8php_source.html#l00330">330</a> of file <a class="el" href="LinkTitles_8body_8php_source.html">LinkTitles.body.php</a>.</p>
+<p>Definition at line <a class="el" href="LinkTitles_8body_8php_source.html#l00079">79</a> of file <a class="el" href="LinkTitles_8body_8php_source.html">LinkTitles.body.php</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a13236641df92f938aa050eddca7c00f5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static LinkTitles::processPage </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$title</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">RequestContext&#160;</td>
+          <td class="paramname"><em>$context</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Automatically processes a single page, given a $title Title object. </p>
+<p>This function is called by the <a class="el" href="classSpecialLinkTitles.html" title="Provides a special page that can be used to batch-process all pages in the wiki. ">SpecialLinkTitles</a> class and the LinkTitlesJob class. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">string</td><td class="paramname">$title</td><td>Page title. </td></tr>
+    <tr><td class="paramtype">RequestContext</td><td class="paramname">$context</td><td>Current context. If in doubt, call MediaWiki's <code>RequestContext::getMain()</code> to obtain such an object. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>undefined </dd></dl>
+
+<p>Definition at line <a class="el" href="LinkTitles_8body_8php_source.html#l00250">250</a> of file <a class="el" href="LinkTitles_8body_8php_source.html">LinkTitles.body.php</a>.</p>
 
 </div>
 </div>
@@ -321,7 +260,7 @@ static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="classLinkTitles.html">LinkTitles</a></li>
-    <li class="footer">Generated on Thu Jun 5 2014 22:44:29 for LinkTitles extension for MediaWiki by
+    <li class="footer">Generated on Fri Jun 13 2014 10:24:44 for LinkTitles extension for MediaWiki by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

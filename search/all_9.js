@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['readme_5fdoc',['README_DOC',['../md_README_DOC.html',1,'']]],
-  ['removemagicword',['removeMagicWord',['../classLinkTitles.html#a9db979935849d4cfd3d724c3ce995dce',1,'LinkTitles']]]
+  ['hasarg',['hasArg',['../classMaintenance.html#a07801d21bf613c106684fdc500268e2d',1,'Maintenance']]],
+  ['hasoption',['hasOption',['../classMaintenance.html#ad8cdb92c05971efc50e25d4887a539e5',1,'Maintenance']]]
 ];

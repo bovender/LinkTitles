@@ -2,6 +2,8 @@ var group__config =
 [
     [ "$wgGroupPermissions", "group__config.html#ga313254c25496be97aef8795023ae712c", null ],
     [ "$wgLinkTitlesBlackList", "group__config.html#ga0d9f38fac47f498ed419c70c6dabdfeb", null ],
+    [ "$wgLinkTitlesCheckRedirect", "group__config.html#ga4f5913ca08f309713292503b61590ab0", null ],
+    [ "$wgLinkTitlesEnableNoTargetMagicWord", "group__config.html#ga388853f699fe99906c6f2a94bedd35bb", null ],
     [ "$wgLinkTitlesFirstOnly", "group__config.html#ga1e1552e4d5423318ac53655c68d4344e", null ],
     [ "$wgLinkTitlesMinimumTitleLength", "group__config.html#ga2abf76e7280690227955ae9b8ccf998c", null ],
     [ "$wgLinkTitlesParseHeadings", "group__config.html#ga32ed07ff79e66fdb069384acd2ab000c", null ],
