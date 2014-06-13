@@ -1,3 +1,11 @@
+LinkTitles 3.0.0: 2014-06-13
+* Dramatically improved performance (especially apparent during batch
+  processing).
+* Change algorithm for parse-on-render so that it also adds links to
+  expanded templates. 
+* Make code fully compatible with the current MediaWiki version 1.23 by
+  removing deprecated hooks. Minimum required MediaWiki version is now 1.21.
+
 LinkTitles 2.4.1: 2014-06-06
 * The ZIP file for 2.4.0 had missing files.
 
@@ -108,4 +116,4 @@ LinkTitles 0.0.2: 2012-05-20
 LinkTitles 0.0.1: 2012-05-20
 * Initial release.
 
-# vim: tw=76:fo=tqn:flp=^\\*\\s+ 
+# vim: tw=76:fo=tqn:fo=tcroqn:flp=^\\*\\s+:comments=\:#

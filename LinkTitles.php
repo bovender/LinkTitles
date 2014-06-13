@@ -64,28 +64,39 @@
 	/// will process a page. If set to true in `LocalSettings.php`, links will 
 	/// be inserted whenever a page is edited and saved (unless 'minor 
 	/// modifications' is checked). If set to false, the extension will not do 
-	/// anything when a page is edited 
-	/// and saved.
+	/// anything when a page is edited and saved. Because saving a page 
+	/// automatically invalidates the cache, the next time the page is 
+	/// displayed (i.e., immediately after saving it), the extension might add 
+	/// links if $wgLinkTitlesParseOnRender is set to true.
 	/// @ingroup config
 	$wgLinkTitlesParseOnEdit = true;
 
-	/// Less important configuration variable that determines when the 
+	/// Important configuration variable that determines when the 
 	/// extension will process a page. If set to true in LocalSettings.php, 
-	/// links will be inserted when a page is rendered for viewing.
-	/// @note Whether a page will be rendered or just fetched from the page 
-	/// cache is unpredictable. Therefore, pages may not always be parsed for 
-	/// possible links when this variable is set to true.
-	/// @warning Setting this to true has the potential to affect lots of page 
-	/// views (but see note regarding cached pages).
+	/// links will be added whenever a page is rendered for viewing, after 
+	/// templates have been expanded.
+	/// @note Since pages are cached, links may not appear immediately.
+	/// When links are added during the rendering process, they do not appear 
+	/// as markup when the page is edited. This may or may not be the behavior 
+	/// that you desire. Also note that if lots of templates or parser 
+	/// functions are included, processing time may increase quite a bit, 
+	/// causing gateway time-out errors of the web server.
 	/// @ingroup config
 	$wgLinkTitlesParseOnRender = false;
 
 	/// Determines whether to parse text inside templates. If this is set to 
-	/// true in LocalSettings.php, 
+	/// true in LocalSettings.php, the parameters in a template will be parsed 
+	/// (e.g., {{myTemplate|template parameter that may contain a page 
+	/// title}}).
+	/// @note If pages are parsed when they are rendered (see 
+	/// $wgLinkTitlesParseOnRender setting), this setting does not take 
+	/// effect.
 	/// @ingroup config
 	$wgLinkTitlesSkipTemplates = false;
 
 	/// Blacklist of page titles that should never be linked. 
+	/// @note See also: __NOAUTOLINKTARGET__ magic word to allow wiki users to 
+	/// blacklist a page dynamically.
 	/// @ingroup config
 	$wgLinkTitlesBlackList = array();
 
@@ -93,7 +104,6 @@
 	/// title on a page or all occurrences. Default is false: All occurrences 
 	/// on a page are linked.
 	/// @ingroup config
-
 	$wgLinkTitlesFirstOnly = false;
 
 	/// Determines whether a page title must occur at the start of a word in 
@@ -144,9 +154,8 @@
 	$wgLinkTitlesSmartMode = true;
 
 	/// Determines whether or not to check if a page redirects to the current 
-	/// page. Normally one would want to have the default behavior (true), but 
-	/// this check requires a time-consuming database query for every page in 
-	/// the wiki.
+	/// page. This check requires that the extension fetches the page content 
+	/// of a potential target page from the database, which costs time.
 	/// @note For maximum performance, set both $wgLinkTitlesCheckRedirect and 
 	/// $wgLinkTitlesEnableNoTargetMagicWord to false in LocalSettings.php.
 	/// On the developer's machine, fetching the target page content increased 
@@ -154,8 +163,7 @@
 	/// (Intel Core i5-3320M, 2x 2.6 GHz, 16 GB RAM, PHP 5.5.9, Apache 2.4.7, 
 	/// MySQL 5.5.37, MediaWiki 1.23.0). If any of the two mentioned variables 
 	/// is set to true, a page content request will be performed for every 
-	/// page in the wiki whenever a single page is edited or parsed in batch 
-	/// mode.
+	/// page whose title occurs on a given page.
 	/// @ingroup config
 	$wgLinkTitlesCheckRedirect = true;
 
@@ -170,14 +178,14 @@
 	/// (Intel Core i5-3320M, 2x 2.6 GHz, 16 GB RAM, PHP 5.5.9, Apache 2.4.7, 
 	/// MySQL 5.5.37, MediaWiki 1.23.0). If any of the two mentioned variables 
 	/// is set to true, a page content request will be performed for every 
-	/// page in the wiki whenever a single page is edited or parsed in batch 
-	/// mode.
+	/// page whose title occurs on a given page.
 	/// @ingroup config
 	$wgLinkTitlesEnableNoTargetMagicWord = true;
 
 	/// Time limit for online batch processing. This determines the maximum 
 	/// amount of time in seconds that page processing will take before a 
 	/// refresh of the special page is issued.
+	/// @note See SpecialLinkTitles class.
 	/// @ingroup config
 	$wgLinkTitlesTimeLimit = 0.2;
 
@@ -187,7 +195,7 @@
     'name'           => 'LinkTitles',
     'author'         => '[https://www.mediawiki.org/wiki/User:Bovender Daniel Kraus]', 
     'url'            => 'https://www.mediawiki.org/wiki/Extension:LinkTitles',
-    'version'        => '2.4.2',
+    'version'        => '3.0.0',
     'descriptionmsg' => 'linktitles-desc'
     );
 
