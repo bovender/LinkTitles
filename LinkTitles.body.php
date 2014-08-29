@@ -117,9 +117,9 @@
 
 			if ( $wgLinkTitlesSkipTemplates )
 			{
-				$templatesDelimiter = '{{.+?}}|';
+				$templatesDelimiter = '{{[^}]+}}|';
 			} else {
-				$templatesDelimiter = '{{[^|]+?}}|{{.+\||';
+				$templatesDelimiter = '{{[^|}]+}}|{{[^|]+\||';
 			};
 
 			LinkTitles::$currentTitle = $title;
