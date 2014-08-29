@@ -119,7 +119,7 @@
 			{
 				$templatesDelimiter = '{{[^}]+}}|';
 			} else {
-				$templatesDelimiter = '{{[^|}]+}}|{{[^|]+\||';
+				$templatesDelimiter = '{{[^|]*?(?:(?:\[\[[^]]+]])?)[^|]*?(?:\||(?:}}))|';
 			};
 
 			LinkTitles::$currentTitle = $title;
