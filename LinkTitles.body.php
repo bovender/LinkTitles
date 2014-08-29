@@ -147,7 +147,7 @@
 				'style=".+?"|class=".+?"|' .                // styles and classes (e.g. of wikitables)
 				'\[' . $urlPattern . '\s.+?\]|'. $urlPattern .  '(?=\s|$)|' . // urls
 				'(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b)' .        // email addresses
-				')/is';
+				')/ism';
 
 			// Build a blacklist of pages that are not supposed to be link 
 			// targets. This includes the current page.
