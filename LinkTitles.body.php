@@ -119,7 +119,15 @@
 			{
 				$templatesDelimiter = '{{[^}]+}}|';
 			} else {
-				$templatesDelimiter = '{{[^|]*?(?:(?:\[\[[^]]+]])?)[^|]*?(?:\||(?:}}))|';
+				// Match template names (ignoring any piped [[]] links in them) 
+				// along with the trailing pipe and parameter name or closing 
+				// braces; also match sequences of '|wordcharacters=' (without 
+				// spaces in them) that usually only occur as parameter names in 
+				// transclusions (but could also occur as wiki table cell contents).
+				// TODO: Find a way to match parameter names in transclusions, but 
+				// not in table cells or other sequences involving a pipe character 
+				// and equal sign.
+				$templatesDelimiter = '{{[^|]*?(?:(?:\[\[[^]]+]])?)[^|]*?(?:\|(?:\w+=)?|(?:}}))|\|\w+=|';
 			};
 
 			LinkTitles::$currentTitle = $title;
