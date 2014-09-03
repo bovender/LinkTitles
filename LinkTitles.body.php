@@ -104,17 +104,30 @@
 			global $wgLinkTitlesSmartMode;
 			global $wgCapitalLinks;
 
-			( $wgLinkTitlesWordStartOnly ) ? $wordStartDelim = '\b' : $wordStartDelim = '';
-			( $wgLinkTitlesWordEndOnly ) ? $wordEndDelim = '\b' : $wordEndDelim = '';
+			// Use unicode character properties rather than \b escape sequences
+			// to detect whole words containing non-ASCII characters as well.
+			// Note that this requires the use of the '/u' switch, and you need
+			// to have PHP with a PCRE library that was compiled with 
+			// --enable-unicode-properties
+			( $wgLinkTitlesWordStartOnly ) ? $wordStartDelim = '(?<!\pL)' : $wordStartDelim = '';
+			( $wgLinkTitlesWordEndOnly ) ? $wordEndDelim = '(?!\pL)' : $wordEndDelim = '';
 
 			( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'ASC' : $sort_order = 'DESC';
 			( $wgLinkTitlesFirstOnly ) ? $limit = 1 : $limit = -1;
 
 			if ( $wgLinkTitlesSkipTemplates )
 			{
-				$templatesDelimiter = '{{.+?}}|';
+				$templatesDelimiter = '{{[^}]+}}|';
 			} else {
-				$templatesDelimiter = '{{[^|]+?}}|{{.+\||';
+				// Match template names (ignoring any piped [[]] links in them) 
+				// along with the trailing pipe and parameter name or closing 
+				// braces; also match sequences of '|wordcharacters=' (without 
+				// spaces in them) that usually only occur as parameter names in 
+				// transclusions (but could also occur as wiki table cell contents).
+				// TODO: Find a way to match parameter names in transclusions, but 
+				// not in table cells or other sequences involving a pipe character 
+				// and equal sign.
+				$templatesDelimiter = '{{[^|]*?(?:(?:\[\[[^]]+]])?)[^|]*?(?:\|(?:\w+=)?|(?:}}))|\|\w+=|';
 			};
 
 			LinkTitles::$currentTitle = $title;
@@ -142,7 +155,7 @@
 				'style=".+?"|class=".+?"|' .                // styles and classes (e.g. of wikitables)
 				'\[' . $urlPattern . '\s.+?\]|'. $urlPattern .  '(?=\s|$)|' . // urls
 				'(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b)' .        // email addresses
-				')/i';
+				')/ism';
 
 			// Build a blacklist of pages that are not supposed to be link 
 			// targets. This includes the current page.
@@ -209,7 +222,7 @@
 				for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 					// even indexes will point to text that is not enclosed by brackets
 					$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
-						$wordStartDelim . $searchTerm . $wordEndDelim . '/',
+						$wordStartDelim . $searchTerm . $wordEndDelim . '/u',
 						array('LinkTitles', 'simpleModeCallback'), $arr[$i], $limit, $count );
 					if (( $limit >= 0 ) && ( $count > 0  )) {
 						break; 
@@ -227,7 +240,7 @@
 						// even indexes will point to text that is not enclosed by brackets
 						$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
 							$wordStartDelim . '(' . $quotedTitle . ')' . 
-							$wordEndDelim . '/i', array('LinkTitles', 'smartModeCallback'),
+							$wordEndDelim . '/iu', array('LinkTitles', 'smartModeCallback'),
 							$arr[$i], $limit, $count );
 						if (( $limit >= 0 ) && ( $count > 0  )) {
 							break; 

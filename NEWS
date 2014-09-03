@@ -1,3 +1,7 @@
+LinkTitles 3.0.1: 2014-09-03
+* Fix several bugs in template handling.
+* Ignore <pre> and similar sections that span multiple lines.
+
 LinkTitles 3.0.0: 2014-06-13
 * Dramatically improved performance (especially apparent during batch
   processing).
