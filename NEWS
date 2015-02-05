@@ -1,3 +1,6 @@
+LinkTitles 3.1.0: 2015-02-05
+- IMPROVEMENT: Do not link inside <file>...</file> tags.
+
 LinkTitles 3.0.1: 2014-09-03
 * Fix several bugs in template handling.
 * Ignore <pre> and similar sections that span multiple lines.
