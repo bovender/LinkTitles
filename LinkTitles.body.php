@@ -152,6 +152,7 @@
 				'<script>.*?<\/script>|' .                  // script
 				'<div.+?>|<\/div>|' .                       // attributes of div elements
 				'<span.+?>|<\/span>|' .                     // attributes of span elements
+				'<file>[^<]*<\/file>|' .                     // attributes of span elements
 				'style=".+?"|class=".+?"|' .                // styles and classes (e.g. of wikitables)
 				'\[' . $urlPattern . '\s.+?\]|'. $urlPattern .  '(?=\s|$)|' . // urls
 				'(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b)' .        // email addresses
