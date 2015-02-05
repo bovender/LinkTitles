@@ -4,3 +4,4 @@
 *.bak
 gpl-2.0.txt
 Maintenance.php
+doxygen_sqlite3.db
