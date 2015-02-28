@@ -44,6 +44,14 @@
 		/// as a string.
 		private static $targetTitleText;
 
+		/// Delimiter used in a regexp split operation to seperate those parts
+		/// of the page that should be parsed from those that should not be
+		/// parsed (e.g. inside pre-existing links etc.).
+		private static $delimiter;
+
+		private static $wordStartDelim;
+		private static $wordEndDelim;
+		
 		/// Setup function, hooks the extension's functions to MediaWiki events.
 		public static function setup() {
 			global $wgLinkTitlesParseOnEdit;
@@ -56,6 +64,7 @@
 				$wgHooks['InternalParseBeforeLinks'][] = 'LinkTitles::onInternalParseBeforeLinks';
 			};
 			$wgHooks['GetDoubleUnderscoreIDs'][] = 'LinkTitles::onGetDoubleUnderscoreIDs';
+			self::BuildDelimiters();
 		}
 
 		/// Event handler that is hooked to the PageContentSave event.
@@ -95,68 +104,16 @@
 			// Configuration variables need to be defined here as globals.
 			global $wgLinkTitlesPreferShortTitles;
 			global $wgLinkTitlesMinimumTitleLength;
-			global $wgLinkTitlesParseHeadings;
 			global $wgLinkTitlesBlackList;
-			global $wgLinkTitlesSkipTemplates;
 			global $wgLinkTitlesFirstOnly;
-			global $wgLinkTitlesWordStartOnly;
-			global $wgLinkTitlesWordEndOnly;
 			global $wgLinkTitlesSmartMode;
 			global $wgCapitalLinks;
-
-			// Use unicode character properties rather than \b escape sequences
-			// to detect whole words containing non-ASCII characters as well.
-			// Note that this requires the use of the '/u' switch, and you need
-			// to have PHP with a PCRE library that was compiled with 
-			// --enable-unicode-properties
-			( $wgLinkTitlesWordStartOnly ) ? $wordStartDelim = '(?<!\pL)' : $wordStartDelim = '';
-			( $wgLinkTitlesWordEndOnly ) ? $wordEndDelim = '(?!\pL)' : $wordEndDelim = '';
 
 			( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'ASC' : $sort_order = 'DESC';
 			( $wgLinkTitlesFirstOnly ) ? $limit = 1 : $limit = -1;
 
-			if ( $wgLinkTitlesSkipTemplates )
-			{
-				$templatesDelimiter = '{{[^}]+}}|';
-			} else {
-				// Match template names (ignoring any piped [[]] links in them) 
-				// along with the trailing pipe and parameter name or closing 
-				// braces; also match sequences of '|wordcharacters=' (without 
-				// spaces in them) that usually only occur as parameter names in 
-				// transclusions (but could also occur as wiki table cell contents).
-				// TODO: Find a way to match parameter names in transclusions, but 
-				// not in table cells or other sequences involving a pipe character 
-				// and equal sign.
-				$templatesDelimiter = '{{[^|]*?(?:(?:\[\[[^]]+]])?)[^|]*?(?:\|(?:\w+=)?|(?:}}))|\|\w+=|';
-			};
-
 			LinkTitles::$currentTitle = $title;
 			$newText = $text;
-
-			// Build a regular expression that will capture existing wiki links ("[[...]]"),
-			// wiki headings ("= ... =", "== ... ==" etc.),  
-			// urls ("http://example.com", "[http://example.com]", "[http://example.com Description]",
-			// and email addresses ("mail@example.com").
-			// Since there is a user option to skip headings, we make this part of the expression
-			// optional. Note that in order to use preg_split(), it is important to have only one
-			// capturing subpattern (which precludes the use of conditional subpatterns).
-			( $wgLinkTitlesParseHeadings ) ? $delimiter = '' : $delimiter = '=+.+?=+|';
-			$urlPattern = '[a-z]+?\:\/\/(?:\S+\.)+\S+(?:\/.*)?';
-			$delimiter = '/(' .                           // exclude from linking:
-				'\[\[.*?\]\]|' .                            // links
-				$delimiter .                                // titles (if requested)
-				$templatesDelimiter .                       // templates (if requested)
-				'^ .+?\n|\n .+?\n|\n .+?$|^ .+?$|' .        // preformatted text
-				'<nowiki>.*?<.nowiki>|<code>.*?<\/code>|' . // nowiki/code
-				'<pre>.*?<\/pre>|<html>.*?<\/html>|' .      // pre/html
-				'<script>.*?<\/script>|' .                  // script
-				'<div.+?>|<\/div>|' .                       // attributes of div elements
-				'<span.+?>|<\/span>|' .                     // attributes of span elements
-				'<file>[^<]*<\/file>|' .                     // attributes of span elements
-				'style=".+?"|class=".+?"|' .                // styles and classes (e.g. of wikitables)
-				'\[' . $urlPattern . '\s.+?\]|'. $urlPattern .  '(?=\s|$)|' . // urls
-				'(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b)' .        // email addresses
-				')/ism';
 
 			// Build a blacklist of pages that are not supposed to be link 
 			// targets. This includes the current page.
@@ -202,7 +159,7 @@
 				// split the page content by [[...]] groups
 				// credits to inhan @ StackOverflow for suggesting preg_split
 				// see http://stackoverflow.com/questions/10672286
-				$arr = preg_split( $delimiter, $newText, -1, PREG_SPLIT_DELIM_CAPTURE );
+				$arr = preg_split( self::$delimiter, $newText, -1, PREG_SPLIT_DELIM_CAPTURE );
 
 				// Escape certain special characters in the page title to prevent
 				// regexp compilation errors
@@ -223,7 +180,7 @@
 				for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 					// even indexes will point to text that is not enclosed by brackets
 					$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
-						$wordStartDelim . $searchTerm . $wordEndDelim . '/u',
+						self::$wordStartDelim . $searchTerm . self::$wordEndDelim . '/u',
 						array('LinkTitles', 'simpleModeCallback'), $arr[$i], $limit, $count );
 					if (( $limit >= 0 ) && ( $count > 0  )) {
 						break; 
@@ -235,13 +192,13 @@
 				// pass on the page and add links with aliases where the case does
 				// not match.
 				if ($wgLinkTitlesSmartMode) {
-					$arr = preg_split( $delimiter, $newText, -1, PREG_SPLIT_DELIM_CAPTURE );
+					$arr = preg_split( self::$delimiter, $newText, -1, PREG_SPLIT_DELIM_CAPTURE );
 
 					for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 						// even indexes will point to text that is not enclosed by brackets
 						$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
-							$wordStartDelim . '(' . $quotedTitle . ')' . 
-							$wordEndDelim . '/iu', array('LinkTitles', 'smartModeCallback'),
+							self::$wordStartDelim . '(' . $quotedTitle . ')' . 
+							self::$wordEndDelim . '/iu', array('LinkTitles', 'smartModeCallback'),
 							$arr[$i], $limit, $count );
 						if (( $limit >= 0 ) && ( $count > 0  )) {
 							break; 
@@ -399,6 +356,65 @@
 			};
 			return true;
 		}
-	}
+
+	/// Builds the delimiter that is used in a regexp to separate
+	/// text that should be parsed from text that should not be
+	/// parsed (e.g. inside existing links etc.)
+	private static function BuildDelimiters() {
+			// Configuration variables need to be defined here as globals.
+			global $wgLinkTitlesParseHeadings;
+			global $wgLinkTitlesSkipTemplates;
+			global $wgLinkTitlesWordStartOnly;
+			global $wgLinkTitlesWordEndOnly;
+
+			// Use unicode character properties rather than \b escape sequences
+			// to detect whole words containing non-ASCII characters as well.
+			// Note that this requires the use of the '/u' switch, and you need
+			// to have PHP with a PCRE library that was compiled with 
+			// --enable-unicode-properties
+			( $wgLinkTitlesWordStartOnly ) ? self::$wordStartDelim = '(?<!\pL)' : self::$wordStartDelim = '';
+			( $wgLinkTitlesWordEndOnly ) ? self::$wordEndDelim = '(?!\pL)' : self::$wordEndDelim = '';
+
+			if ( $wgLinkTitlesSkipTemplates )
+			{
+				$templatesDelimiter = '{{[^}]+}}|';
+			} else {
+				// Match template names (ignoring any piped [[]] links in them) 
+				// along with the trailing pipe and parameter name or closing 
+				// braces; also match sequences of '|wordcharacters=' (without 
+				// spaces in them) that usually only occur as parameter names in 
+				// transclusions (but could also occur as wiki table cell contents).
+				// TODO: Find a way to match parameter names in transclusions, but 
+				// not in table cells or other sequences involving a pipe character 
+				// and equal sign.
+				$templatesDelimiter = '{{[^|]*?(?:(?:\[\[[^]]+]])?)[^|]*?(?:\|(?:\w+=)?|(?:}}))|\|\w+=|';
+			}
+
+			// Build a regular expression that will capture existing wiki links ("[[...]]"),
+			// wiki headings ("= ... =", "== ... ==" etc.),  
+			// urls ("http://example.com", "[http://example.com]", "[http://example.com Description]",
+			// and email addresses ("mail@example.com").
+			// Since there is a user option to skip headings, we make this part of the expression
+			// optional. Note that in order to use preg_split(), it is important to have only one
+			// capturing subpattern (which precludes the use of conditional subpatterns).
+			( $wgLinkTitlesParseHeadings ) ? $delimiter = '' : $delimiter = '=+.+?=+|';
+			$urlPattern = '[a-z]+?\:\/\/(?:\S+\.)+\S+(?:\/.*)?';
+			self::$delimiter = '/(' .                     // exclude from linking:
+				'\[\[.*?\]\]|' .                            // links
+				$delimiter .                                // titles (if requested)
+				$templatesDelimiter .                       // templates (if requested)
+				'^ .+?\n|\n .+?\n|\n .+?$|^ .+?$|' .        // preformatted text
+				'<nowiki>.*?<.nowiki>|<code>.*?<\/code>|' . // nowiki/code
+				'<pre>.*?<\/pre>|<html>.*?<\/html>|' .      // pre/html
+				'<script>.*?<\/script>|' .                  // script
+				'<div.+?>|<\/div>|' .                       // attributes of div elements
+				'<span.+?>|<\/span>|' .                     // attributes of span elements
+				'<file>[^<]*<\/file>|' .                    // stuff inside file elements
+				'style=".+?"|class=".+?"|' .                // styles and classes (e.g. of wikitables)
+				'\[' . $urlPattern . '\s.+?\]|'. $urlPattern .  '(?=\s|$)|' . // urls
+				'(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b)' .        // email addresses
+				')/ism';
+			}
+		}
 
 // vim: ts=2:sw=2:noet:comments^=\:///
