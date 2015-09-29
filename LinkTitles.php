@@ -189,6 +189,10 @@
 	/// @ingroup config
 	$wgLinkTitlesTimeLimit = 0.2;
 
+    /// Namespaces to search in weighted order.
+    /// Namespace of the page will always to highest weight, rest in given order
+    $wgLinkTitlesNamespaces = array(NS_USER);
+
 	/// @cond
   $wgExtensionCredits['parserhook'][] = array(
     'path'           => __FILE__,

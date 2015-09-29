@@ -108,6 +108,7 @@
 			global $wgLinkTitlesFirstOnly;
 			global $wgLinkTitlesSmartMode;
 			global $wgCapitalLinks;
+            global $wgLinkTitlesNamespaces;
 
 			( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'ASC' : $sort_order = 'DESC';
 			( $wgLinkTitlesFirstOnly ) ? $limit = 1 : $limit = -1;
@@ -121,6 +122,23 @@
 				'("' . implode( '", "',$wgLinkTitlesBlackList ) . '", "' .
 				LinkTitles::$currentTitle->getDbKey() . '")' );
 
+            $currentNamespace = $title->getNamespace();
+
+            // Build our weight list. Make sure current namespace is first element
+            $namespaces = array_unshift( array($currentNamespace), array_diff($wgLinkTitlesNamespaces, array($currentNamespace)) );
+            
+            // No need for sanitiy check. we are sure that we have at least one element in the array
+            $weightSelect = "CASE page_namespace ";
+            $currentWeight = 0;
+            foreach ($namespaces as &$namspacevalue) {
+                $currentWeight = $currentWeight + 100;
+                $weightSelect = $weightSelect . " WHEN " . $namspacevalue . " THEN " . $currentWeight . PHP_EOL;
+            }
+            $weightSelect = $weightSelect . " END ";
+
+            $namespacesClause = str_replace( '_', ' ',
+				'("' . implode( '", "',$namespaces ) . '")' );
+
 			// Build an SQL query and fetch all page titles ordered by length from 
 			// shortest to longest. Only titles from 'normal' pages (namespace uid 
 			// = 0) are returned. Since the db may be sqlite, we need a try..catch 
@@ -129,21 +147,20 @@
 			try {
 				$res = $dbr->select( 
 					'page', 
-					'page_title', 
-					array( 
-						'page_namespace = 0', 
+					array( 'page_title', "page_namespace" , "weight" = > $weightSelect),
+					array( 						
 						'CHAR_LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
 						'page_title NOT IN ' . $blackList,
 					), 
 					__METHOD__, 
-					array( 'ORDER BY' => 'CHAR_LENGTH(page_title) ' . $sort_order )
+					array( 'ORDER BY' => 'weight ASC, CHAR_LENGTH(page_title) ' . $sort_order )
 				);
 			} catch (Exception $e) {
 				$res = $dbr->select( 
 					'page', 
 					'page_title', 
 					array( 
-						'page_namespace = 0', 
+						'page_namespace IN ' . $namespacesClause, 
 						'LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
 						'page_title NOT IN ' . $blackList,
 					), 
@@ -154,7 +171,7 @@
 
 			// Iterate through the page titles
 			foreach( $res as $row ) {
-				LinkTitles::newTarget( $row->page_title );
+				LinkTitles::newTarget($row->page_namespace, $row->page_title );
 
 				// split the page content by [[...]] groups
 				// credits to inhan @ StackOverflow for suggesting preg_split
@@ -249,7 +266,7 @@
 		// Build an anonymous callback function to be used in simple mode.
 		private static function simpleModeCallback( array $matches ) {
 			if ( LinkTitles::checkTargetPage() ) {
-				return '[[' . $matches[0] . ']]';
+				return '[[' . LinkTitles::$targetTitle . "|" . $matches[0] . ']]';
 			}
 			else
 			{
@@ -305,9 +322,9 @@
 		}
 
 		/// Sets member variables for the current target page.
-		private static function newTarget( $title ) {
+		private static function newTarget($ns, $title ) {
 			// @todo Make this wiki namespace aware.
-			LinkTitles::$targetTitle = Title::makeTitle( NS_MAIN, $title);
+			LinkTitles::$targetTitle = Title::makeTitle( $ns, $title);
 			LinkTitles::$targetContent = null;
 		}
 

@@ -1,0 +1,66 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Name>LinkTitles</Name>
+    <ProjectGuid>{1c5e70d9-0077-48f3-9e7a-97e6e7967c2e}</ProjectGuid>
+    <RootNamespace>LinkTitles</RootNamespace>
+    <OutputType>Library</OutputType>
+    <ProjectTypeGuids>{A0786B88-2ADB-4C21-ABE8-AA2D79766269}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <IncludeDebugInformation>true</IncludeDebugInformation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <IncludeDebugInformation>false</IncludeDebugInformation>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="release\LinkTitles-0.0.1.tar.gz" />
+    <Compile Include="release\LinkTitles-0.0.2.tar.gz" />
+    <Compile Include="release\LinkTitles-0.0.4.tar.gz" />
+    <Compile Include="release\LinkTitles-0.0.5.tar.gz" />
+    <Compile Include="release\LinkTitles-0.0.6.tar.gz" />
+    <Compile Include="release\LinkTitles-0.0.7.tar.gz" />
+    <Compile Include="release\LinkTitles-1.0.0.tar.gz" />
+    <Compile Include="release\LinkTitles-1.1.0.tar.gz" />
+    <Compile Include="release\LinkTitles-1.2.0.tar.gz" />
+    <Compile Include="release\LinkTitles-1.2.1.tar.gz" />
+    <Compile Include="release\LinkTitles-1.3.0.tar.gz" />
+    <Compile Include="release\LinkTitles-1.3.1.tar.gz" />
+    <Compile Include="release\LinkTitles-1.3.2.tar.gz" />
+    <Compile Include="release\LinkTitles-1.4.0.tar.gz" />
+    <Compile Include="release\LinkTitles-1.5.0.tar.gz" />
+    <Compile Include="release\LinkTitles-1.6.0.tar.gz" />
+    <Compile Include="release\LinkTitles-1.6.1.tar.gz" />
+    <Compile Include="release\LinkTitles-1.8.0.tar.gz" />
+    <Compile Include="release\LinkTitles-1.8.1.tar.gz" />
+    <Compile Include="release\LinkTitles-2.0.0.tar.gz" />
+    <Compile Include="release\LinkTitles-2.1.0.tar.gz" />
+    <Compile Include="release\LinkTitles-2.1.1.tar.gz" />
+    <Compile Include="release\LinkTitles-2.2.0.tar.gz" />
+    <Compile Include="release\LinkTitles-2.2.1.tar.gz" />
+    <Compile Include="release\LinkTitles-2.2.2.tar.gz" />
+    <Compile Include="release\LinkTitles-2.3.0.tar.gz" />
+    <Compile Include="release\LinkTitles-2.3.1.tar.gz" />
+    <Compile Include="release\LinkTitles-2.4.0.tar.gz" />
+    <Compile Include="release\LinkTitles-2.4.1.tar.gz" />
+    <Compile Include="release\LinkTitles-3.0.0.tar.gz" />
+    <Compile Include="release\LinkTitles-3.1.0.tar.gz" />
+    <Compile Include=".gitignore" />
+    <Compile Include=".gitmodules" />
+    <Compile Include="Doxyfile" />
+    <Compile Include="LinkTitles.body.php" />
+    <Compile Include="LinkTitles.cli.php" />
+    <Compile Include="LinkTitles.i18n.magic.php" />
+    <Compile Include="LinkTitles.i18n.php" />
+    <Compile Include="LinkTitles.php" />
+    <Compile Include="NEWS" />
+    <Compile Include="README.md" />
+    <Compile Include="README_DOC.md" />
+    <Compile Include="release.sh" />
+    <Compile Include="SpecialLinkTitles.php" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="gh-pages" />
+    <Folder Include="release" />
+  </ItemGroup>
+</Project>
