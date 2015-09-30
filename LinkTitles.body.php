@@ -123,11 +123,11 @@
 				LinkTitles::$currentTitle->getDbKey() . '")' );
 
             $currentNamespace[] = $title->getNamespace();
-            wfDebugLog("LinkTitles","$wgLinkTitlesNamespaces = ". print_r($wgLinkTitlesNamespaces,true));
-            wfDebugLog("LinkTitles","$currentNamespace = ". print_r($currentNamespace,true));
+            wfDebugLog("LinkTitles",'$wgLinkTitlesNamespaces = '. print_r($wgLinkTitlesNamespaces,true));
+            wfDebugLog("LinkTitles",'$currentNamespace = '. print_r($currentNamespace,true));
             // Build our weight list. Make sure current namespace is first element
             $namespaces = array_unshift(array_diff($wgLinkTitlesNamespaces, $currentNamespace),  $currentNamespace );
-            wfDebugLog("LinkTitles","$namespaces = ". print_r($namespaces,true));
+            wfDebugLog("LinkTitles",'$namespaces = '. print_r($namespaces,true));
             // No need for sanitiy check. we are sure that we have at least one element in the array
             $weightSelect = "CASE page_namespace ";
             $currentWeight = 0;
