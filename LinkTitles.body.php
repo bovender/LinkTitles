@@ -123,13 +123,13 @@
 				LinkTitles::$currentTitle->getDbKey() . '")' );
 
             $currentNamespace[] = $title->getNamespace();
-            wfDebugLog("LinkTitles",'$wgLinkTitlesNamespaces = '. print_r($wgLinkTitlesNamespaces,true));
-            wfDebugLog("LinkTitles",'$currentNamespace = '. print_r($currentNamespace,true));
+            wfDebugLog("LinkTitles",'$wgLinkTitlesNamespaces = '. print_r($wgLinkTitlesNamespaces,true),'private');
+            wfDebugLog("LinkTitles",'$currentNamespace = '. print_r($currentNamespace,true),'private');
 
             // Build our weight list. Make sure current namespace is first element
             $namespaces = array_diff($wgLinkTitlesNamespaces, $currentNamespace);
             array_unshift($namespaces,  $currentNamespace[0] );
-            wfDebugLog("LinkTitles",'$namespaces = '. print_r($namespaces,true));
+            wfDebugLog("LinkTitles",'$namespaces = '. print_r($namespaces,true),'private');
 
             // No need for sanitiy check. we are sure that we have at least one element in the array
             $weightSelect = "CASE page_namespace ";
@@ -140,8 +140,7 @@
             }
             $weightSelect = $weightSelect . " END ";
 
-            $namespacesClause = str_replace( '_', ' ',
-				'(' . implode( ', ',$namespaces ) . ')' );
+            $namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$namespaces ) . ')' );
 
 			// Build an SQL query and fetch all page titles ordered by length from 
 			// shortest to longest. Only titles from 'normal' pages (namespace uid 
