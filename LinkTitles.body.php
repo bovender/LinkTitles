@@ -125,7 +125,7 @@
             $currentNamespace[] = $title->getNamespace();
 
             // Build our weight list. Make sure current namespace is first element
-            $namespaces = array_unshift( $currentNamespace, array_diff($wgLinkTitlesNamespaces, $currentNamespace) );
+            $namespaces = array_unshift(array_diff($wgLinkTitlesNamespaces, $currentNamespace),  $currentNamespace );
             
             // No need for sanitiy check. we are sure that we have at least one element in the array
             $weightSelect = "CASE page_namespace ";
@@ -137,7 +137,7 @@
             $weightSelect = $weightSelect . " END ";
 
             $namespacesClause = str_replace( '_', ' ',
-				'("' . implode( '", "',$namespaces ) . '")' );
+				'(' . implode( ', ',$namespaces ) . ')' );
 
 			// Build an SQL query and fetch all page titles ordered by length from 
 			// shortest to longest. Only titles from 'normal' pages (namespace uid 
