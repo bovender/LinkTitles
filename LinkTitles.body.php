@@ -125,8 +125,10 @@
             $currentNamespace[] = $title->getNamespace();
             wfDebugLog("LinkTitles",'$wgLinkTitlesNamespaces = '. print_r($wgLinkTitlesNamespaces,true));
             wfDebugLog("LinkTitles",'$currentNamespace = '. print_r($currentNamespace,true));
+
             // Build our weight list. Make sure current namespace is first element
-            $namespaces = array_unshift(array_diff($wgLinkTitlesNamespaces, $currentNamespace),  $currentNamespace );
+            $namespaces = array_diff($wgLinkTitlesNamespaces, $currentNamespace);
+            array_unshift($namespaces,  $currentNamespace );
             wfDebugLog("LinkTitles",'$namespaces = '. print_r($namespaces,true));
             // No need for sanitiy check. we are sure that we have at least one element in the array
             $weightSelect = "CASE page_namespace ";
@@ -148,8 +150,9 @@
 			try {
 				$res = $dbr->select( 
 					'page', 
-					array( 'page_title', "page_namespace" , "weight" => $weightSelect),
-					array( 						
+					array( 'page_title', 'page_namespace' , "weight" => $weightSelect),
+					array( 		
+                        'page_namespace IN ' . $namespacesClause, 
 						'CHAR_LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
 						'page_title NOT IN ' . $blackList,
 					), 
@@ -159,14 +162,14 @@
 			} catch (Exception $e) {
 				$res = $dbr->select( 
 					'page', 
-					'page_title', 
+					array( 'page_title', 'page_namespace' , "weight" => $weightSelect ),
 					array( 
 						'page_namespace IN ' . $namespacesClause, 
 						'LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
 						'page_title NOT IN ' . $blackList,
 					), 
 					__METHOD__, 
-					array( 'ORDER BY' => 'LENGTH(page_title) ' . $sort_order )
+					array( 'ORDER BY' => 'weight ASC, LENGTH(page_title) ' . $sort_order )
 				);
 			}
 
