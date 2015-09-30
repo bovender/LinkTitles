@@ -239,13 +239,12 @@
 		///                  If in doubt, call MediaWiki's `RequestContext::getMain()`
 		///                  to obtain such an object.
 		/// @returns undefined
-		public static function processPage($title, RequestContext $context) {
-			// TODO: make this namespace-aware
-			$titleObj = Title::makeTitle(0, $title);
-			$page = WikiPage::factory($titleObj);
+		public static function processPage(Title $title, RequestContext $context) {
+			// TODO: make this namespace-aware			
+			$page = WikiPage::factory($title);
 			$content = $page->getContent();
 			$text = $content->getContentHandler()->serializeContent($content);
-			$newText = LinkTitles::parseContent($titleObj, $text);
+			$newText = LinkTitles::parseContent($title, $text);
 			if ( $text != $newText ) {
 				$content = $content->getContentHandler()->unserializeContent( $newText );
 				$page->doQuickEditContent($content,

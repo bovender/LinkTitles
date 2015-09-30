@@ -71,10 +71,15 @@ class LinkTitlesCli extends Maintenance {
 	/// if the `--start` option is given) and call LinkTitles::processPage() for 
 	/// each page.
 	public function execute() {
+        global $wgLinkTitlesNamespaces;
+
 		$index = intval($this->getOption('start', 0));
 		if ( $index < 0 ) {
 			$this->error('FATAL: Start index must be 0 or greater.', 1);
 		};
+
+        // get our Namespaces
+        $namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$wgLinkTitlesNamespaces ) . ')' );
 
 		// Connect to the database
 		$dbr = $this->getDB( DB_SLAVE );
@@ -82,9 +87,9 @@ class LinkTitlesCli extends Maintenance {
 		// Retrieve page names from the database.
 		$res = $dbr->select( 
 			'page',
-			'page_title', 
+			array('page_title', 'page_namespace'),
 			array( 
-				'page_namespace = 0', 
+				'page_namespace IN ' . $namespacesClause, 
 			), 
 			__METHOD__,
 			array(
@@ -99,7 +104,7 @@ class LinkTitlesCli extends Maintenance {
 		// Iterate through the pages; break if a time limit is exceeded.
 		foreach ( $res as $row ) {
 			$index += 1;
-			$curTitle = $row->page_title;
+			$curTitle = Title::makeTitle( $row->page_namespace, $row->page_title);
 			$this->output( 
 				sprintf("\rPage #%d (%02.0f%%)", $index, $index / $numPages * 100)
 		 	);

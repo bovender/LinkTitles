@@ -79,6 +79,10 @@ class SpecialLinkTitles extends SpecialPage {
 	/// @param OutputPage $output  Output page for the special page.
 	private function process( WebRequest &$request, OutputPage &$output) {
 		global $wgLinkTitlesTimeLimit;
+        global $wgLinkTitlesNamespaces;
+
+        // get our Namespaces
+        $namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$wgLinkTitlesNamespaces ) . ')' );
 
 		// Start the stopwatch
 		$startTime = microtime(true);
@@ -111,9 +115,9 @@ class SpecialLinkTitles extends SpecialPage {
 		// Retrieve page names from the database.
 		$res = $dbr->select( 
 			'page',
-			'page_title', 
+			array('page_title', 'page_namespace'),
 			array( 
-				'page_namespace = 0', 
+				'page_namespace IN ' . $namespacesClause, 
 			), 
 			__METHOD__, 
 			array(
@@ -124,7 +128,7 @@ class SpecialLinkTitles extends SpecialPage {
 
 		// Iterate through the pages; break if a time limit is exceeded.
 		foreach ( $res as $row ) {
-			$curTitle = $row->page_title;
+			$curTitle = Title::makeTitle( $row->page_namespace, $row->page_title);
 			LinkTitles::processPage($curTitle, $this->getContext());
 			$start += 1;
 			
