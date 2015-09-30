@@ -128,8 +128,9 @@
 
             // Build our weight list. Make sure current namespace is first element
             $namespaces = array_diff($wgLinkTitlesNamespaces, $currentNamespace);
-            array_unshift($namespaces,  $currentNamespace );
+            array_unshift($namespaces,  $currentNamespace[0] );
             wfDebugLog("LinkTitles",'$namespaces = '. print_r($namespaces,true));
+
             // No need for sanitiy check. we are sure that we have at least one element in the array
             $weightSelect = "CASE page_namespace ";
             $currentWeight = 0;
