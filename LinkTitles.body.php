@@ -122,10 +122,10 @@
 				'("' . implode( '", "',$wgLinkTitlesBlackList ) . '", "' .
 				LinkTitles::$currentTitle->getDbKey() . '")' );
 
-            $currentNamespace = $title->getNamespace();
+            $currentNamespace[] = $title->getNamespace();
 
             // Build our weight list. Make sure current namespace is first element
-            $namespaces = array_unshift( array($currentNamespace), array_diff($wgLinkTitlesNamespaces, array($currentNamespace)) );
+            $namespaces = array_unshift( $currentNamespace, array_diff($wgLinkTitlesNamespaces, $currentNamespace) );
             
             // No need for sanitiy check. we are sure that we have at least one element in the array
             $weightSelect = "CASE page_namespace ";
