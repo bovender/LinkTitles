@@ -184,8 +184,8 @@
 
 				// Escape certain special characters in the page title to prevent
 				// regexp compilation errors
-				LinkTitles::$targetTitleText = LinkTitles::$targetTitle->getText();
-				$quotedTitle = preg_quote(LinkTitles::$targetTitleText, '/');
+				LinkTitles::$targetTitleText = LinkTitles::$targetTitle->getText();  // inlcudes namespace
+				$quotedTitle = preg_quote( LinkTitles::$targetTitle->getTitleValue()->getText(), '/');
                 wfDebugLog("LinkTitles",'TargetTitle='. LinkTitles::$targetTitleText,"private");
 
 				// Depending on the global configuration setting $wgCapitalLinks,
