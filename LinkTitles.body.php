@@ -175,6 +175,7 @@
 
 			// Iterate through the page titles
 			foreach( $res as $row ) {
+                
 				LinkTitles::newTarget($row->page_namespace, $row->page_title );
 
 				// split the page content by [[...]] groups
@@ -184,10 +185,10 @@
 
 				// Escape certain special characters in the page title to prevent
 				// regexp compilation errors
-				LinkTitles::$targetTitleText = LinkTitles::$targetTitle->getText();  // inlcudes namespace
+				LinkTitles::$targetTitleText = LinkTitles::$targetTitle->getPrefixedText();  // containes Namespace !
 				$quotedTitle = preg_quote( LinkTitles::$targetTitle->getTitleValue()->getText(), '/');
                 wfDebugLog("LinkTitles",'TargetTitle='. LinkTitles::$targetTitleText,"private");
-
+                wfDebugLog("LinkTitles",'TargetTitleQuoted='. $quotedTitle,"private");
 				// Depending on the global configuration setting $wgCapitalLinks,
 				// the title has to be searched for either in a strictly case-sensitive
 				// way, or in a 'fuzzy' way where the first letter of the title may
@@ -328,7 +329,10 @@
 		/// Sets member variables for the current target page.
 		private static function newTarget($ns, $title ) {
 			// @todo Make this wiki namespace aware.
-			LinkTitles::$targetTitle = Title::makeTitle( $ns, $title);
+			LinkTitles::$targetTitle = Title::newFromText(  $title , $ns );           
+            wfDebugLog("LinkTitles",'newtarget='. print_r( LinkTitles::$targetTitle, true ) ,"private");
+            
+            wfDebugLog("LinkTitles",'altTarget='. print_r( LinkTitles::$targetTitle->getTitleValue(), true ) ,"private");
 			LinkTitles::$targetContent = null;
 		}
 
