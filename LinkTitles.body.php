@@ -186,6 +186,7 @@
 				// regexp compilation errors
 				LinkTitles::$targetTitleText = LinkTitles::$targetTitle->getText();
 				$quotedTitle = preg_quote(LinkTitles::$targetTitleText, '/');
+                wfDebugLog("LinkTitles",'TargetTitle='. LinkTitles::$targetTitleText,"private");
 
 				// Depending on the global configuration setting $wgCapitalLinks,
 				// the title has to be searched for either in a strictly case-sensitive
@@ -295,7 +296,7 @@
 				if ( LinkTitles::checkTargetPage() ) {
 					if ( strcmp(substr(LinkTitles::$targetTitleText, 1), substr($matches[0], 1)) == 0 ) {
 						// Case-sensitive match: no need to bulid piped link.
-						return '[[' . $matches[0] . ']]';
+						return '[[' . LinkTitles::$targetTitle . "|" . $matches[0] . ']]';
 					} else  {
 						// Case-insensitive match: build piped link.
 						return '[[' . LinkTitles::$targetTitleText . '|' . $matches[0] . ']]';
