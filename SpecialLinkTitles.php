@@ -105,7 +105,7 @@ class SpecialLinkTitles extends SpecialPage {
 		else 
 		{
 			// No end index was given. Therefore, count pages now.
-			$end = $this->countPages($dbr);
+			$end = $this->countPages($dbr, $namespacesClause );
 		};
 
 		array_key_exists('r', $postValues) ?
@@ -128,7 +128,7 @@ class SpecialLinkTitles extends SpecialPage {
 
 		// Iterate through the pages; break if a time limit is exceeded.
 		foreach ( $res as $row ) {
-			$curTitle = Title::makeTitle( $row->page_namespace, $row->page_title);
+			$curTitle = Title::makeTitleSafe( $row->page_namespace, $row->page_title);
 			LinkTitles::processPage($curTitle, $this->getContext());
 			$start += 1;
 			
@@ -279,16 +279,17 @@ EOF
 	/// Counts the number of pages in a read-access wiki database ($dbr).
 	/// @param $dbr Read-only `Database` object.
 	/// @returns Number of pages in the default namespace (0) of the wiki.
-	private function countPages(&$dbr) {
+	private function countPages(&$dbr, $namespacesClause) {
 		$res = $dbr->select(
 			'page',
-			'page_id', 
+			array('pagecount' => "COUNT(page_id)"),
 			array( 
-				'page_namespace = 0', 
+				'page_namespace IN ' . $namespacesClause, 
 			), 
 			__METHOD__ 
 		);
-		return $res->numRows();
+        
+		return $res->current()->pagecount;
 	}
 }
 

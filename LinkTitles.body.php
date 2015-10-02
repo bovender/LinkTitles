@@ -18,7 +18,7 @@
  *      MA 02110-1301, USA.
  */
 	/// @file
- 
+    
 	/// Helper function for development and debugging.
   /// @param $var Any variable. Raw content will be dumped to stderr.
 	/// @return undefined
@@ -34,6 +34,9 @@
 
 		/// A Title object for the target page currently being examined.
 		private static $targetTitle;
+
+        // The TiltleValue object of the target page
+        private static $targetTitleValue;
 
 		/// The content object for the currently processed target page.
 		/// This variable is necessary to be able to prevent loading the target 
@@ -52,6 +55,9 @@
 		private static $wordStartDelim;
 		private static $wordEndDelim;
 		
+        public static $ltConsoleOutput;
+        public static $ltConsoleOutputDebug;
+
 		/// Setup function, hooks the extension's functions to MediaWiki events.
 		public static function setup() {
 			global $wgLinkTitlesParseOnEdit;
@@ -91,6 +97,24 @@
 			return true;
 		}
 
+        /// Local Debugging output function which can send output to console as well
+        public static function ltDebugLog($text) {
+            if (LinkTitles::$ltConsoleOutputDebug)
+            {
+                print $text . "\n";
+            }
+            wfDebugLog('LinkTitles', $text , 'private');
+        }
+
+        /// Local Logging output function which can send output to console as well
+        public static function ltLog($text) {
+            if (LinkTitles::$ltConsoleOutput)
+            {
+                print $text . "\n";
+            }
+            wfDebugLog('LinkTitles', $text , 'private');
+        }
+
 		/// Core function of the extension, performs the actual parsing of the content.
 		/// @param Title $title   Title of the page being parsed
 		/// @param $text          String that holds the article content
@@ -116,6 +140,8 @@
 			LinkTitles::$currentTitle = $title;
 			$newText = $text;
 
+            
+
 			// Build a blacklist of pages that are not supposed to be link 
 			// targets. This includes the current page.
 			$blackList = str_replace( '_', ' ',
@@ -123,14 +149,12 @@
 				LinkTitles::$currentTitle->getDbKey() . '")' );
 
             $currentNamespace[] = $title->getNamespace();
-            wfDebugLog("LinkTitles",'$wgLinkTitlesNamespaces = '. print_r($wgLinkTitlesNamespaces,true),'private');
-            wfDebugLog("LinkTitles",'$currentNamespace = '. print_r($currentNamespace,true),'private');
-
+            
+            
             // Build our weight list. Make sure current namespace is first element
             $namespaces = array_diff($wgLinkTitlesNamespaces, $currentNamespace);
             array_unshift($namespaces,  $currentNamespace[0] );
-            wfDebugLog("LinkTitles",'$namespaces = '. print_r($namespaces,true),'private');
-
+            
             // No need for sanitiy check. we are sure that we have at least one element in the array
             $weightSelect = "CASE page_namespace ";
             $currentWeight = 0;
@@ -186,9 +210,11 @@
 				// Escape certain special characters in the page title to prevent
 				// regexp compilation errors
 				LinkTitles::$targetTitleText = LinkTitles::$targetTitle->getPrefixedText();  // containes Namespace !
-				$quotedTitle = preg_quote( LinkTitles::$targetTitle->getTitleValue()->getText(), '/');
-                wfDebugLog("LinkTitles",'TargetTitle='. LinkTitles::$targetTitleText,"private");
-                wfDebugLog("LinkTitles",'TargetTitleQuoted='. $quotedTitle,"private");
+				$quotedTitle = preg_quote( LinkTitles::$targetTitleValue->getText(), '/');
+
+                LinkTitles::ltDebugLog('TargetTitle='. LinkTitles::$targetTitleText,"private");
+                LinkTitles::ltDebugLog('TargetTitleQuoted='. $quotedTitle,"private");
+
 				// Depending on the global configuration setting $wgCapitalLinks,
 				// the title has to be searched for either in a strictly case-sensitive
 				// way, or in a 'fuzzy' way where the first letter of the title may
@@ -242,7 +268,9 @@
 		///                  to obtain such an object.
 		/// @returns undefined
 		public static function processPage(Title $title, RequestContext $context) {
-			// TODO: make this namespace-aware			
+			
+            LinkTitles::ltLog('Processing '. $title->getPrefixedText());
+
 			$page = WikiPage::factory($title);
 			$content = $page->getContent();
 			$text = $content->getContentHandler()->serializeContent($content);
@@ -270,7 +298,9 @@
 
 		// Build an anonymous callback function to be used in simple mode.
 		private static function simpleModeCallback( array $matches ) {
+            
 			if ( LinkTitles::checkTargetPage() ) {
+                LinkTitles::ltLog("Linking '$matches[0]' to '" . LinkTitles::$targetTitle . "'");
 				return '[[' . LinkTitles::$targetTitle . "|" . $matches[0] . ']]';
 			}
 			else
@@ -288,20 +318,15 @@
 		// piped link if only the case of the first letter is different.
 		private static function smartModeCallback( array $matches ) {
 			global $wgCapitalLinks;
-
+            
 			if ( $wgCapitalLinks ) {
 				// With $wgCapitalLinks set to true we have a slightly more 
 				// complicated version of the callback than if it were false; 
 				// we need to ignore the first letter of the page titles, as 
 				// it does not matter for linking.
 				if ( LinkTitles::checkTargetPage() ) {
-					if ( strcmp(substr(LinkTitles::$targetTitleText, 1), substr($matches[0], 1)) == 0 ) {
-						// Case-sensitive match: no need to bulid piped link.
-						return '[[' . LinkTitles::$targetTitle . "|" . $matches[0] . ']]';
-					} else  {
-						// Case-insensitive match: build piped link.
-						return '[[' . LinkTitles::$targetTitleText . '|' . $matches[0] . ']]';
-					}
+                    LinkTitles::ltLog("Linking (smart) '$matches[0]' to '" . LinkTitles::$targetTitle . "'");
+    				return '[[' . LinkTitles::$targetTitle . "|" . $matches[0] . ']]';
 				}
 				else
 				{
@@ -311,13 +336,8 @@
 				// If $wgCapitalLinks is false, we can use the simple variant 
 				// of the callback function.
 				if ( LinkTitles::checkTargetPage() ) {
-					if ( strcmp(LinkTitles::$targetTitleText, $matches[0]) == 0 ) {
-						// Case-sensitive match: no need to bulid piped link.
-						return '[[' . $matches[0] . ']]';
-					} else  {
-						// Case-insensitive match: build piped link.
-						return '[[' . LinkTitles::$targetTitleText . '|' . $matches[0] . ']]';
-					}
+                    LinkTitles::ltLog("Linking (smart) '$matches[0]' to '" . LinkTitles::$targetTitle . "'");
+					return '[[' . LinkTitles::$targetTitle . '|' . $matches[0] . ']]';
 				}
 				else
 				{
@@ -329,10 +349,10 @@
 		/// Sets member variables for the current target page.
 		private static function newTarget($ns, $title ) {
 			// @todo Make this wiki namespace aware.
-			LinkTitles::$targetTitle = Title::newFromText(  $title , $ns );           
-            wfDebugLog("LinkTitles",'newtarget='. print_r( LinkTitles::$targetTitle, true ) ,"private");
-            
-            wfDebugLog("LinkTitles",'altTarget='. print_r( LinkTitles::$targetTitle->getTitleValue(), true ) ,"private");
+			LinkTitles::$targetTitle = Title::makeTitleSafe($ns,$title);           
+            LinkTitles::ltDebugLog('newtarget='.  LinkTitles::$targetTitle->getText()  ,"private");            
+            LinkTitles::$targetTitleValue = LinkTitles::$targetTitle->getTitleValue();           
+            LinkTitles::ltDebugLog('altTarget='. LinkTitles::$targetTitleValue->getText() ,"private");
 			LinkTitles::$targetContent = null;
 		}
 

@@ -64,6 +64,26 @@ class LinkTitlesCli extends Maintenance {
 			true,  // requires argument
 			"s"
 		);
+        $this->addOption(
+			"page",
+			"page to process",
+			false, // not required
+			true,  // requires argument
+			"p"
+		);
+        $this->addOption(
+			"log",
+			"enables logging to console",
+			false, // not required
+			false,  // requires no argument
+			"l"
+		);
+        $this->addOption(
+			"debug",
+			"enables debug logging to console",
+			false, // not required
+			false  // requires no argument		
+		);
 	}
 
 	/// Main function of the maintenance script.
@@ -78,6 +98,24 @@ class LinkTitlesCli extends Maintenance {
 			$this->error('FATAL: Start index must be 0 or greater.', 1);
 		};
 
+        if ($this->hasOption('log'))
+        {
+            LinkTitles::$ltConsoleOutput = true;
+        }
+        if ($this->hasOption('debug'))
+        {
+            LinkTitles::$ltConsoleOutputDebug = true;
+        }
+
+        $pagename = strval($this->getOption('page'));
+        if ($pagename != null)
+        {
+           
+            $curTitle = Title::newFromDBkey( $pagename );            
+            LinkTitles::processPage($curTitle,RequestContext::getMain() );
+            $this->output("\nFinished parsing.\n");
+            return;
+        }
         // get our Namespaces
         $namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$wgLinkTitlesNamespaces ) . ')' );
 
@@ -104,7 +142,7 @@ class LinkTitlesCli extends Maintenance {
 		// Iterate through the pages; break if a time limit is exceeded.
 		foreach ( $res as $row ) {
 			$index += 1;
-			$curTitle = Title::makeTitle( $row->page_namespace, $row->page_title);
+			$curTitle = Title::makeTitleSafe( $row->page_namespace, $row->page_title);
 			$this->output( 
 				sprintf("\rPage #%d (%02.0f%%)", $index, $index / $numPages * 100)
 		 	);
