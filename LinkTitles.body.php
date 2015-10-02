@@ -79,11 +79,17 @@
 
 			if ( ! $isMinor ) {
 				$title = $wikiPage->getTitle();
-				$text = $content->getContentHandler()->serializeContent($content);
-				$newText = self::parseContent( $title, $text );
-				if ( $newText != $text ) {
-					$content = $content->getContentHandler()->unserializeContent( $newText );
-				}
+
+                // Only process if page is in one of our namespaces we want to link
+                // Fixes ugly autolinking of sidebar pages 
+                if (in_array($title->getNamespace(),$wgLinkTitlesNamespaces))
+                {
+                    $text = $content->getContentHandler()->serializeContent($content);
+                    $newText = self::parseContent( $title, $text );
+                    if ( $newText != $text ) {
+                        $content = $content->getContentHandler()->unserializeContent( $newText );
+                    }
+                }
 			};
 			return true;
 		}
@@ -93,7 +99,13 @@
 		/// @param $text          Preprocessed text of the page.
 		public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
 			$title = $parser->getTitle();
-			$text = self::parseContent( $title, $text );
+            
+            // Only process if page is in one of our namespaces we want to link
+            // Fixes ugly autolinking of sidebar pages 
+            if (in_array($title->getNamespace(),$wgLinkTitlesNamespaces))
+            {
+                $text = self::parseContent( $title, $text );
+            }
 			return true;
 		}
 
