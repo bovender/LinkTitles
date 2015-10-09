@@ -76,7 +76,7 @@
 		/// Event handler that is hooked to the PageContentSave event.
 		public static function onPageContentSave( &$wikiPage, &$user, &$content, &$summary,
 				$isMinor, $isWatch, $section, &$flags, &$status ) {
-
+			global $wgLinkTitlesNamespaces;
 			if ( ! $isMinor ) {
 				$title = $wikiPage->getTitle();
 
@@ -98,6 +98,7 @@
 		/// @param Parser $parser Parser that raised the event.
 		/// @param $text          Preprocessed text of the page.
 		public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
+			global $wgLinkTitlesNamespaces;
 			$title = $parser->getTitle();
             
             // Only process if page is in one of our namespaces we want to link
