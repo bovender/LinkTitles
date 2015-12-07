@@ -213,7 +213,7 @@
 				// the title has to be searched for either in a strictly case-sensitive
 				// way, or in a 'fuzzy' way where the first letter of the title may
 				// be either case.
-				if ( $wgCapitalLinks && ( $quotedTitle[0] != '\\' )) {
+				if ( $wgCapitalLinks && ( $quotedTitle[0] != '\\' ) && (1 == preg_match('/[a-zA-Z]/',$quotedTitle[0])) {
 					$searchTerm = '((?i)' . $quotedTitle[0] . '(?-i)' . 
 						substr($quotedTitle, 1) . ')';
 				}	else {
