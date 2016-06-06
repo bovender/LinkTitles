@@ -1,7 +1,7 @@
 @mainpage LinkTitles
 @author    [Daniel Kraus (bovender)](http://www.mediawiki.org/wiki/User:Bovender)
-@date      2012-2014
-@copyright [GNU GPL v2](http://www.gnu.org/licenses/gpl-2.0.html)
+@date      2012-2016
+@copyright [GNU GPL v2+](http://www.gnu.org/licenses/gpl-2.0.html)
 
 %LinkTitles source code documentation
 =====================================
@@ -11,16 +11,14 @@ for [MediaWiki][].
 
 The central class is LinkTitles, which contains only static functions. If
 you are looking for the linking algorithm, inspect the
-LinkTitles::parseContent() function.
+LinkTitles\\Extension::parseContent() function.
 
 The extension provides two methods for batch-processing of pages. One is a
-@link SpecialLinkTitles special page @endlink that provides web-access (by
-default restricted to sysops). The other is a @link LinkTitlesCli
+@link LinkTitles\\Special special page @endlink that provides web-access (by
+default restricted to sysops). The other is a @link LinkTitles\\Cli
 maintenance script @endlink that can be called from the command line if you
 have access to your server and are authorized to run php from the command
 line.
-
-@ref config variables are defined in LinkTitles.php.
 
 @note The source code that is referenced in this documentation may not
 necessarily reflect the latest code in the repository! Make sure to check

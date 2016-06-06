@@ -1,0 +1,6 @@
+{
+        "linktitles": "Title of the LinkTitles extension; also used for the special page.",
+	"linktitles-desc": "Description of the LinkTitles extension.",
+        "right-linktitles-batch": "Describes the right to perform a LinkTitles batch operation.",
+        "action-linktitles-batch": "Describes the action of performing a LinkTitles batch operation."
+}
