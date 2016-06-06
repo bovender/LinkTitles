@@ -180,7 +180,7 @@
 				for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 					// even indexes will point to text that is not enclosed by brackets
 					$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
-						self::$wordStartDelim . $searchTerm . self::$wordEndDelim . '/u',
+						self::$wordStartDelim . $searchTerm . self::$wordEndDelim . '/Su',
 						array('LinkTitles', 'simpleModeCallback'), $arr[$i], $limit, $count );
 					if (( $limit >= 0 ) && ( $count > 0  )) {
 						break; 
@@ -198,7 +198,7 @@
 						// even indexes will point to text that is not enclosed by brackets
 						$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
 							self::$wordStartDelim . '(' . $quotedTitle . ')' . 
-							self::$wordEndDelim . '/iu', array('LinkTitles', 'smartModeCallback'),
+							self::$wordEndDelim . '/iuS', array('LinkTitles', 'smartModeCallback'),
 							$arr[$i], $limit, $count );
 						if (( $limit >= 0 ) && ( $count > 0  )) {
 							break; 
@@ -413,7 +413,7 @@
 				'style=".+?"|class=".+?"|' .                // styles and classes (e.g. of wikitables)
 				'\[' . $urlPattern . '\s.+?\]|'. $urlPattern .  '(?=\s|$)|' . // urls
 				'(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b)' .        // email addresses
-				')/ism';
+				')/ismS';
 			}
 		}
 
