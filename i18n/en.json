@@ -1,0 +1,6 @@
+{
+        "linktitles": "LinkTitles",
+	"linktitles-desc": "Automatically adds links to existing pages whenever a page is saved.",
+        "right-linktitles-batch": "Perform a LinkTitles batch operation",
+        "action-linktitles-batch": "perform a LinkTitles batch operation"
+}
