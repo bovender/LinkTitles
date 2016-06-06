@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['posix_5fisatty',['posix_isatty',['../classMaintenance.html#a81180b71f62ae00ce0df86b37e4d56f9',1,'Maintenance']]],
-  ['processpage',['processPage',['../classLinkTitles.html#a13236641df92f938aa050eddca7c00f5',1,'LinkTitles']]],
-  ['purgeredundanttext',['purgeRedundantText',['../classMaintenance.html#accb8c4b12dbcfbcfb24e2f871d6aa344',1,'Maintenance']]]
+  ['setbatchsize',['setBatchSize',['../classMaintenance.html#a336f3432c822827d6b96fb4d9b5add2a',1,'Maintenance']]],
+  ['setconfig',['setConfig',['../classMaintenance.html#af3873a89e4f107e4b9e0e0467a9650d7',1,'Maintenance']]],
+  ['setdb',['setDB',['../classMaintenance.html#ae6997544b4058213f9f97b3f9cc3b18d',1,'Maintenance']]],
+  ['setup',['setup',['../classMaintenance.html#a03a9fd23b4d7902a67834d3886caf359',1,'Maintenance']]],
+  ['shouldexecute',['shouldExecute',['../classMaintenance.html#ada99e1815f8215436058a5229e52863d',1,'Maintenance']]]
 ];

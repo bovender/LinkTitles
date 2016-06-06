@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['maintenance',['Maintenance',['../classMaintenance.html',1,'']]]
+  ['loggedupdatemaintenance',['LoggedUpdateMaintenance',['../classLoggedUpdateMaintenance.html',1,'']]]
 ];

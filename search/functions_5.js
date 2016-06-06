@@ -1,7 +1,8 @@
 var searchData=
 [
   ['getarg',['getArg',['../classMaintenance.html#afd06571438830262f8aafe907f142ffd',1,'Maintenance']]],
-  ['getdb',['getDB',['../classMaintenance.html#a66722becf248461098b70704758a9918',1,'Maintenance']]],
+  ['getconfig',['getConfig',['../classMaintenance.html#af76ccab456798ad817d57fe1967dfee8',1,'Maintenance']]],
+  ['getdb',['getDB',['../classMaintenance.html#a7302ad247476b9f1d58cd75cc941570f',1,'Maintenance']]],
   ['getdbtype',['getDbType',['../classMaintenance.html#aab946ae2c8246935f05c9d3698561f90',1,'Maintenance']]],
   ['getdir',['getDir',['../classMaintenance.html#a69efbd3f455e247274e9b6447479d4bb',1,'Maintenance']]],
   ['getname',['getName',['../classMaintenance.html#a10362154352aed5917caf03adc004736',1,'Maintenance']]],

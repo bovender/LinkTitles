@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['maintenance',['Maintenance',['../classMaintenance.html',1,'Maintenance'],['../group__Maintenance.html',1,'(Global Namespace)']]],
-  ['maintenance_2ephp',['Maintenance.php',['../Maintenance_8php.html',1,'']]],
-  ['maintenance_20archives',['Maintenance archives',['../group__MaintenanceArchive.html',1,'']]],
-  ['maybehelp',['maybeHelp',['../classMaintenance.html#a53bdfd2fdb841602b51906fe40816057',1,'Maintenance']]],
-  ['memorylimit',['memoryLimit',['../classMaintenance.html#a4ffce2ef4cae3a5547543ea3c5cf9198',1,'Maintenance']]]
+  ['posix_5fisatty',['posix_isatty',['../classMaintenance.html#a81180b71f62ae00ce0df86b37e4d56f9',1,'Maintenance']]],
+  ['purgeredundanttext',['purgeRedundantText',['../classMaintenance.html#accb8c4b12dbcfbcfb24e2f871d6aa344',1,'Maintenance']]]
 ];

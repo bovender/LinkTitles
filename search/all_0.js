@@ -1,21 +1,4 @@
 var searchData=
 [
-  ['_24magicwords',['$magicWords',['../LinkTitles_8i18n_8magic_8php.html#af2f5c876bcf2c2f36d673e49a40965a3',1,'$magicWords():&#160;LinkTitles.i18n.magic.php'],['../LinkTitles_8i18n_8magic_8php.html#ab58221b84818ad05989dbc74290ec8e7',1,'$magicWords():&#160;LinkTitles.i18n.magic.php']]],
-  ['_24messages',['$messages',['../LinkTitles_8i18n_8php.html#a21a183f927a6d243fe6b4ba3a6c4d4c8',1,'$messages():&#160;LinkTitles.i18n.php'],['../LinkTitles_8i18n_8php.html#af162e1ff2d89585b3c3102d4447d67ca',1,'$messages():&#160;LinkTitles.i18n.php'],['../LinkTitles_8i18n_8php.html#a58dbe6b5936de9c45cbfc6d09d7db10e',1,'$messages():&#160;LinkTitles.i18n.php']]],
-  ['_24wgavailablerights',['$wgAvailableRights',['../LinkTitles_8php.html#ab40ac1d74e352864e05c0e53677498b3',1,'LinkTitles.php']]],
-  ['_24wggrouppermissions',['$wgGroupPermissions',['../group__config.html#ga313254c25496be97aef8795023ae712c',1,'LinkTitles.php']]],
-  ['_24wglinktitlesblacklist',['$wgLinkTitlesBlackList',['../group__config.html#ga0d9f38fac47f498ed419c70c6dabdfeb',1,'LinkTitles.php']]],
-  ['_24wglinktitlescheckredirect',['$wgLinkTitlesCheckRedirect',['../group__config.html#ga4f5913ca08f309713292503b61590ab0',1,'LinkTitles.php']]],
-  ['_24wglinktitlesenablenotargetmagicword',['$wgLinkTitlesEnableNoTargetMagicWord',['../group__config.html#ga388853f699fe99906c6f2a94bedd35bb',1,'LinkTitles.php']]],
-  ['_24wglinktitlesfirstonly',['$wgLinkTitlesFirstOnly',['../group__config.html#ga1e1552e4d5423318ac53655c68d4344e',1,'LinkTitles.php']]],
-  ['_24wglinktitlesminimumtitlelength',['$wgLinkTitlesMinimumTitleLength',['../group__config.html#ga2abf76e7280690227955ae9b8ccf998c',1,'LinkTitles.php']]],
-  ['_24wglinktitlesparseheadings',['$wgLinkTitlesParseHeadings',['../group__config.html#ga32ed07ff79e66fdb069384acd2ab000c',1,'LinkTitles.php']]],
-  ['_24wglinktitlesparseonedit',['$wgLinkTitlesParseOnEdit',['../group__config.html#ga177438fec3df41d0e990fb78c28a82c6',1,'LinkTitles.php']]],
-  ['_24wglinktitlesparseonrender',['$wgLinkTitlesParseOnRender',['../group__config.html#ga4c05f30be34d7a6b5c4469694998f0c7',1,'LinkTitles.php']]],
-  ['_24wglinktitlesprefershorttitles',['$wgLinkTitlesPreferShortTitles',['../group__config.html#gae707a3bba433ced0ec7d68ee9d467a94',1,'LinkTitles.php']]],
-  ['_24wglinktitlesskiptemplates',['$wgLinkTitlesSkipTemplates',['../group__config.html#ga58270504215b72fb3dbc52b0fc374710',1,'LinkTitles.php']]],
-  ['_24wglinktitlessmartmode',['$wgLinkTitlesSmartMode',['../group__config.html#ga50824ee447f4575735566cbbe8516c1f',1,'LinkTitles.php']]],
-  ['_24wglinktitlestimelimit',['$wgLinkTitlesTimeLimit',['../group__config.html#ga3a4aa5bafa71a93b463048e15ebc3d7d',1,'LinkTitles.php']]],
-  ['_24wglinktitleswordendonly',['$wgLinkTitlesWordEndOnly',['../group__config.html#gaf84300ec3eff24b8d9eb7c8ee5beb1ac',1,'LinkTitles.php']]],
-  ['_24wglinktitleswordstartonly',['$wgLinkTitlesWordStartOnly',['../group__config.html#ga5368c9aa5283524ec023187f1ec12f34',1,'LinkTitles.php']]]
+  ['_5f_5fconstruct',['__construct',['../classLinkTitles_1_1Cli.html#a5824c700cd5f5d150c98987e4559cdb4',1,'LinkTitles::Cli']]]
 ];

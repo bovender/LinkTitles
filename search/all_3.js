@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['batch_20processing',['Batch processing',['../group__batch.html',1,'']]]
+  ['linktitles',['LinkTitles',['../index.html',1,'']]]
 ];
