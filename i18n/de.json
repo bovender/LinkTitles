@@ -1,6 +1,6 @@
 {
         "linktitles": "LinkTitles",
-	"linktitles-desc": "Fügt beim Speichern von Seiten automatisch Querverweise zu vorhandenen Seiten ein.",:w
+	"linktitles-desc": "Fügt beim Speichern von Seiten automatisch Querverweise zu vorhandenen Seiten ein.",
         "right-linktitles-batch": "LinkTitles-Stapelverarbeitung ausführen",
         "action-linktitles-batch": "LinkTitles-Stapelverarbeitung auszuführen"
 }
