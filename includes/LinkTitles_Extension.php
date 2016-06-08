@@ -61,6 +61,8 @@ class Extension {
 	/// Event handler that is hooked to the PageContentSave event.
 	public static function onPageContentSave( &$wikiPage, &$user, &$content, &$summary,
 			$isMinor, $isWatch, $section, &$flags, &$status ) {
+		global $wgLinkTitlesParseOnEdit;
+		if (!$wgLinkTitlesParseOnEdit) return true;
 
 		if ( !$isMinor && !\MagicWord::get('MAG_LINKTITLES_NOAUTOLINKS')->match( $text ) ) {
 			$title = $wikiPage->getTitle();
@@ -77,6 +79,9 @@ class Extension {
 	/// @param Parser $parser Parser that raised the event.
 	/// @param $text          Preprocessed text of the page.
 	public static function onInternalParseBeforeLinks( \Parser &$parser, &$text ) {
+		global $wgLinkTitlesParseOnRender;
+		if (!$wgLinkTitlesParseOnRender) return true;
+
 		// If the page contains the magic word '__NOAUTOLINKS__', do not parse it.
 		if ( !isset($parser->mDoubleUnderScores[$text] )) {
 			$text = self::parseContent( $parser->getTitle(), $text );
