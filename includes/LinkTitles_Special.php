@@ -84,6 +84,10 @@ class Special extends \SpecialPage {
 	/// @param OutputPage $output  Output page for the special page.
 	private function process( \WebRequest &$request, \OutputPage &$output) {
 		global $wgLinkTitlesTimeLimit;
+        global $wgLinkTitlesNamespaces;
+
+        // get our Namespaces
+        $namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$wgLinkTitlesNamespaces ) . ')' );
 
 		// Start the stopwatch
 		$startTime = microtime(true);
@@ -106,7 +110,7 @@ class Special extends \SpecialPage {
 		else 
 		{
 			// No end index was given. Therefore, count pages now.
-			$end = $this->countPages($dbr);
+			$end = $this->countPages($dbr, $namespacesClause );
 		};
 
 		array_key_exists('r', $postValues) ?
@@ -116,9 +120,9 @@ class Special extends \SpecialPage {
 		// Retrieve page names from the database.
 		$res = $dbr->select( 
 			'page',
-			'page_title', 
+			array('page_title', 'page_namespace'),
 			array( 
-				'page_namespace = 0', 
+				'page_namespace IN ' . $namespacesClause, 
 			), 
 			__METHOD__, 
 			array(
@@ -129,8 +133,8 @@ class Special extends \SpecialPage {
 
 		// Iterate through the pages; break if a time limit is exceeded.
 		foreach ( $res as $row ) {
-			$curTitle = $row->page_title;
-			Extension::processPage( $curTitle, $this->getContext() );
+			$curTitle = Title::makeTitleSafe( $row->page_namespace, $row->page_title);
+			Extension::processPage($curTitle, $this->getContext());
 			$start += 1;
 			
 			// Check if the time limit is exceeded
@@ -280,16 +284,21 @@ EOF
 	/// Counts the number of pages in a read-access wiki database ($dbr).
 	/// @param $dbr Read-only `Database` object.
 	/// @returns Number of pages in the default namespace (0) of the wiki.
+<<<<<<< HEAD:includes/LinkTitles_Special.php
 	private function countPages( &$dbr ) {
+=======
+	private function countPages(&$dbr, $namespacesClause) {
+>>>>>>> 085a4032f07ef9200370e7561b5b22b4c05e287c:SpecialLinkTitles.php
 		$res = $dbr->select(
 			'page',
-			'page_id', 
+			array('pagecount' => "COUNT(page_id)"),
 			array( 
-				'page_namespace = 0', 
+				'page_namespace IN ' . $namespacesClause, 
 			), 
 			__METHOD__ 
 		);
-		return $res->numRows();
+        
+		return $res->current()->pagecount;
 	}
 }
 

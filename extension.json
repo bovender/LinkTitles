@@ -24,6 +24,9 @@
                 "LinkTitlesWordStartOnly": true,
                 "LinkTitlesWordEndOnly": true,
                 "LinkTitlesBatchTimeLimit": 1
+                "LinkTitlesNamespaces": [
+                        2
+                ]
         },
         "AutoloadClasses": {
                 "LinkTitles\\Extension": "includes/LinkTitles_Extension.php",
