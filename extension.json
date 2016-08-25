@@ -23,7 +23,7 @@
                 "LinkTitlesSmartMode": true,
                 "LinkTitlesWordStartOnly": true,
                 "LinkTitlesWordEndOnly": true,
-                "LinkTitlesBatchTimeLimit": 1
+                "LinkTitlesBatchTimeLimit": 1,
                 "LinkTitlesNamespaces": [
                         2
                 ]
