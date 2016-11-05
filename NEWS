@@ -1,126 +1,57 @@
-LinkTitles 3.1.0: 2015-02-05
+Version 4.0.0 (2016-11-05)
+------------------------------------------------------------------------
+
+- CHANGE: Improve performance.
+- FIX: Prevent a crash when trying to save a page whose title contains a quote character.
+- FIX: Prevent unicode compilation errors.
+- NEW: Support namespaces.
+- NEW: Use the new extension format introduced by MediaWiki 1.25; the extension will no longer run with older MediaWiki versions.
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+
+
+Version 3.1.0. (2015-02-05)
+------------------------------------------------------------------------
+
 - IMPROVEMENT: Do not link inside <file>...</file> tags.
 
-LinkTitles 3.0.1: 2014-09-03
-* Fix several bugs in template handling.
-* Ignore <pre> and similar sections that span multiple lines.
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
-LinkTitles 3.0.0: 2014-06-13
-* Dramatically improved performance (especially apparent during batch
-  processing).
-* Change algorithm for parse-on-render so that it also adds links to
-  expanded templates. 
-* Make code fully compatible with the current MediaWiki version 1.23 by
-  removing deprecated hooks. Minimum required MediaWiki version is now 1.21.
 
-LinkTitles 2.4.1: 2014-06-06
-* The ZIP file for 2.4.0 had missing files.
 
-LinkTitles 2.4.0: 2014-06-06
-* Prevent linking to self via redirects.
-* Prevent linking inside <pre>, <html>, and <script> tags.
-* Prevent linking inside attributes of div and span tags as well as in style
-  and class tags (e.g., in Wiki tables).
-* Increase performance in smart mode.
-* Implement batch-processing features (special page for sysops and
-  maintenance script)
-* Source code is now fully documented.
 
-LinkTitles 2.3.1: 2013-08-29
-* Fix bug introduced with 2.3.0 that prevented the extension from working...
 
-LinkTitles 2.3.0: 2013-08-28
-* No longer mess up pages if a page title started with a slash.
-* Do not link preformatted text and text enclosed in <nowiki> or <code>
-  tags.
 
-LinkTitles 2.2.2: 2013-08-09
-* Prevent crashes due to special characters in page titles.
 
-LinkTitles 2.2.1: 2013-07-22
-* Make the extension work with sqlite databases.
 
-LinkTitles 2.2.0: 2013-04-16
-* Fix case-sensitive linking when $wgCapitalLinks is false.
 
-LinkTitles 2.1.1: 2013-03-06
-* Fix crashing bugs that occurred with older PHP versions (prior to 5.3).
 
-LinkTitles 2.1.0: 2013-02-23
-* Introduced new 'magic word' __NOAUTOLINKS__, whose presence on a page will
-  prevent the extension from adding links.
 
-LinkTitles 2.0.0: 2013-01-29
-* Introduced a new 'smart mode' ($wgLinkTitlesSmartMode) which is enabled by
-  default and will automatically generate aliased links if there is a case
-  mismatch. To increase performance, this smart mode can be disabled.
 
-LinkTitles 1.8.1: 2013-01-26
-* The extension will now automatically generate aliases for case-mismatched
-  page titles.
-* Fix version number confusion (1.7.0 in the extension vs. 1.8.0 on GitHub).
 
-LinkTitles 1.7.0: 2013-01-22
-* Added new option to do exact searches of page titles; the default is to
-  do __case-insensitive__ searches as before ($wgLinkTitlesIgnoreCase).
 
-LinkTitles 1.6.1: 2012-12-31
-* Fixed a bug that caused linking to fail in certain situations when
-  $wgLinkTitlesFirstOnly was set to true.
 
-LinkTitles 1.6.0: 2012-12-22
-* Added new options to restrict linking to page titles at the beginning or an 
-  end of a word. This enables linking variants of a page title.
 
-LinkTitles 1.5.0: 2012-12-11
-* Added new option to link only the first occurrence of a page title.
 
-LinkTitles 1.4.0: 2012-10-09
-* Added new option to skip template variables.
 
-LinkTitles 1.3.2: 2012-10-05
-* Fix incorrect handling of PreferShortTitles option.
 
-LinkTitles 1.3.1: 2012-10-05
-* Fix typo that prevented proper function of the extension.
 
-LinkTitles 1.3.0: 2012-09-15
-* Do not link template names.
 
-LinkTitles 1.2.0: 2012-07-19
-* Added a black list option to prevent certain page titles from being
-  automatically linked.
 
-LinkTitles 1.1.0: 2012-05-24
-* No longer parses urls and email addresses.
 
-LinkTitles 1.0.0: 2012-05-22
-* Added new option to parse or not parse headings
-* Added new option to parse pages on saving edits
-* Added new option to parse pages on viewing (unless the page is retrieved
-  from cache)
-* Minor performance improvement
 
-LinkTitles 0.0.7: 2012-05-20
-* Fix version information
 
-LinkTitles 0.0.6: 2012-05-20
-* Fix bug: Minimum length title 
 
-LinkTitles 0.0.5: 2012-05-20
-* Add $wgLinkTitlesMinimumTitleLength configuration variable.
 
-LinkTitles 0.0.4: 2012-05-20
-* Add $wgLinkTitlesPreferShortTitles configuration variable.
 
-LinkTitles 0.0.3: 2012-05-20
-* Only look for page titles from 'normal' pages (namespace = 0).
 
-LinkTitles 0.0.2: 2012-05-20
-* Prevent generation of self-references.
-* Escape slashes in page titles before using them in a regexp.
 
-LinkTitles 0.0.1: 2012-05-20
-* Initial release.
 
-# vim: tw=76:fo=tqn:fo=tcroqn:flp=^\\*\\s+:comments=\:#
+
+
+version 0.0.1 (2012-05-20)
+------------------------------------------------------------------------
+
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

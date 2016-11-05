@@ -1,6 +1,9 @@
 {
         "name": "LinkTitles",
-        "author": "[https://www.mediawiki.org/wiki/User:Bovender Daniel Kraus (bovender)]", 
+        "author": [
+                "[https://www.mediawiki.org/wiki/User:Bovender Daniel Kraus (bovender)]", 
+                "Ulrich Strauss (c0nnex)"
+        ],
         "type": "parserhook",
         "url": "https://www.mediawiki.org/wiki/Extension:LinkTitles",
         "version": "4.0.0",
@@ -25,7 +28,7 @@
                 "LinkTitlesWordEndOnly": true,
                 "LinkTitlesBatchTimeLimit": 1,
                 "LinkTitlesNamespaces": [
-                        2
+                        0
                 ]
         },
         "AutoloadClasses": {
