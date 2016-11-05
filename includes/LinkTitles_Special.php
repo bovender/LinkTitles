@@ -1,6 +1,6 @@
 <?php
 /*
- *      Copyright 2012-2014 Daniel Kraus <krada@gmx.net> ('bovender')
+ *      Copyright 2012-2016 Daniel Kraus <bovender@bovender.de> ('bovender')
  *
  *      This program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -17,18 +17,19 @@
  *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  *      MA 02110-1301, USA.
  */
+namespace LinkTitles;
 /// @defgroup batch Batch processing
 
-	/// @cond
-  if ( !defined( 'MEDIAWIKI' ) ) {
-    die( 'Not an entry point.' );
-	}
-	/// @endcond
+/// @cond
+if ( !defined( 'MEDIAWIKI' ) ) {
+	die( 'Not an entry point.' );
+}
+/// @endcond
  
 /// Provides a special page that can be used to batch-process all pages in 
 /// the wiki. By default, this can only be performed by sysops.
 /// @ingroup batch
-class SpecialLinkTitles extends SpecialPage {
+class Special extends \SpecialPage {
 
 	/// Constructor. Announces the special page title and required user right 
 	/// to the parent constructor.
@@ -36,17 +37,21 @@ class SpecialLinkTitles extends SpecialPage {
 		// the second parameter in the following function call ensures that only 
 		// users who have the 'linktitles-batch' right get to see this page (by 
 		// default, this are all sysop users).
-		parent::__construct('LinkTitles', 'linktitles-batch');
+		parent::__construct( 'LinkTitles', 'linktitles-batch' );
+	}
+
+	function getGroupName() {
+		return 'pagetools';
 	}
 
 	/// Entry function of the special page class. Will abort if the user does 
 	/// not have appropriate permissions ('linktitles-batch').
-	/// @returns undefined
+	/// @return undefined
 	function execute($par) {
 		// Prevent non-authorized users from executing the batch processing.
-		if (  !$this->userCanExecute( $this->getUser() )  ) {
-					$this->displayRestrictionError();
-							return;
+		if ( !$this->userCanExecute( $this->getUser() ) ) {
+			$this->displayRestrictionError();
+			return;
 		}
 
 		$request = $this->getRequest();
@@ -57,17 +62,17 @@ class SpecialLinkTitles extends SpecialPage {
 		// If GET, display information and a button to start linking.
 		// If POST, start or continue the linking process.
 		if ( $request->wasPosted() ) {
-			if ( array_key_exists('s', $request->getValues()) ) {
-				$this->process($request, $output);
+			if ( array_key_exists( 's', $request->getValues() ) ) {
+				$this->process( $request, $output );
 			}
 			else
 			{
-				$this->buildInfoPage($request, $output);
+				$this->buildInfoPage( $request, $output );
 			}
 		}
 		else
 		{
-			$this->buildInfoPage($request, $output);
+			$this->buildInfoPage( $request, $output );
 		}
 	}
 
@@ -77,8 +82,12 @@ class SpecialLinkTitles extends SpecialPage {
 	/// @param WebRequest $request WebRequest object that is associated with the special 
 	///                            page.
 	/// @param OutputPage $output  Output page for the special page.
-	private function process( WebRequest &$request, OutputPage &$output) {
+	private function process( \WebRequest &$request, \OutputPage &$output) {
 		global $wgLinkTitlesTimeLimit;
+        global $wgLinkTitlesNamespaces;
+
+        // get our Namespaces
+        $namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$wgLinkTitlesNamespaces ) . ')' );
 
 		// Start the stopwatch
 		$startTime = microtime(true);
@@ -101,7 +110,7 @@ class SpecialLinkTitles extends SpecialPage {
 		else 
 		{
 			// No end index was given. Therefore, count pages now.
-			$end = $this->countPages($dbr);
+			$end = $this->countPages($dbr, $namespacesClause );
 		};
 
 		array_key_exists('r', $postValues) ?
@@ -111,9 +120,9 @@ class SpecialLinkTitles extends SpecialPage {
 		// Retrieve page names from the database.
 		$res = $dbr->select( 
 			'page',
-			'page_title', 
+			array('page_title', 'page_namespace'),
 			array( 
-				'page_namespace = 0', 
+				'page_namespace IN ' . $namespacesClause, 
 			), 
 			__METHOD__, 
 			array(
@@ -124,8 +133,8 @@ class SpecialLinkTitles extends SpecialPage {
 
 		// Iterate through the pages; break if a time limit is exceeded.
 		foreach ( $res as $row ) {
-			$curTitle = $row->page_title;
-			LinkTitles::processPage($curTitle, $this->getContext());
+			$curTitle = Title::makeTitleSafe( $row->page_namespace, $row->page_title);
+			Extension::processPage($curTitle, $this->getContext());
 			$start += 1;
 			
 			// Check if the time limit is exceeded
@@ -155,7 +164,7 @@ class SpecialLinkTitles extends SpecialPage {
 
 	/// Adds WikiText to the output containing information about the extension 
 	/// and a form and button to start linking.
-	private function buildInfoPage(&$request, &$output) {
+	private function buildInfoPage( &$request, &$output ) {
 		$url = $request->getRequestURL();
 
 		// TODO: Put the page contents in messages in the i18n file.
@@ -189,7 +198,7 @@ EOF
 	/// @param $index     Index of the currently processed page.     
 	/// @param $end       Last index that will be processed (i.e., number of 
 	///                   pages).
-	private function addProgressInfo(&$output, $curTitle, $index, $end) {
+	private function addProgressInfo( &$output, $curTitle, $index, $end ) {
 		$progress = $index / $end * 100;
 		$percent = sprintf("%01.1f", $progress);
 
@@ -231,7 +240,7 @@ EOF
 	/// @param $reloads Counter that holds the number of reloads so far.
 	/// @returns        String that holds the HTML for a form and a
 	///                 JavaScript command.
-	private function getReloaderForm($url, $start, $end, $reloads) {
+	private function getReloaderForm( $url, $start, $end, $reloads ) {
 		return
 <<<EOF
 <form method="post" name="linktitles" action="${url}">
@@ -252,7 +261,7 @@ EOF
 	/// @param $end     Index of the last processed page.
 	/// @param $reloads Number of reloads of the page.
 	/// @returns undefined
-	private function addCompletedInfo(&$output, $start, $end, $reloads) {
+	private function addCompletedInfo( &$output, $start, $end, $reloads ) {
 		global $wgLinkTitlesTimeLimit;
 		$pagesPerReload = sprintf('%0.1f', $end / $reloads);
 		$output->addWikiText(
@@ -275,16 +284,21 @@ EOF
 	/// Counts the number of pages in a read-access wiki database ($dbr).
 	/// @param $dbr Read-only `Database` object.
 	/// @returns Number of pages in the default namespace (0) of the wiki.
-	private function countPages(&$dbr) {
+<<<<<<< HEAD:includes/LinkTitles_Special.php
+	private function countPages( &$dbr ) {
+=======
+	private function countPages(&$dbr, $namespacesClause) {
+>>>>>>> 085a4032f07ef9200370e7561b5b22b4c05e287c:SpecialLinkTitles.php
 		$res = $dbr->select(
 			'page',
-			'page_id', 
+			array('pagecount' => "COUNT(page_id)"),
 			array( 
-				'page_namespace = 0', 
+				'page_namespace IN ' . $namespacesClause, 
 			), 
 			__METHOD__ 
 		);
-		return $res->numRows();
+        
+		return $res->current()->pagecount;
 	}
 }
 

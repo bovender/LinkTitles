@@ -1,6 +1,6 @@
 <?php
 /*
- *      Copyright 2012-2014 Daniel Kraus <krada@gmx.net> ('bovender')
+ *      Copyright 2012-2016 Daniel Kraus <bovender@bovender.de> ('bovender')
  *      
  *      This program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -17,20 +17,21 @@
  *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  *      MA 02110-1301, USA.
  */
+namespace LinkTitles;
 
 // Attempt to include the maintenance base class from:
 //   $wgScriptPath/maintenance/Maintenance.php
 // Our script is normally located at:
-//   $wgScriptPath/extensions/LinkTitles/LinkTitles.cli.php
-$maintenanceScript = dirname( __FILE__ ) . "/../../maintenance/Maintenance.php";
+//   $wgScriptPath/extensions/LinkTitles/LinkTitles_Maintenance.php
+$maintenanceScript = __DIR__ . "/../../maintenance/Maintenance.php";
 if ( file_exists( $maintenanceScript ) ) {
 	require_once $maintenanceScript;
 }
 else
 {
 	// Did not find the script where we expected it (maybe because we are a 
-	// symlinked file -- __FILE__ resolves symbolic links).
-	$maintenanceScript = dirname( __FILE__ ) . "/Maintenance.php";
+	// symlinked file -- __DIR resolves symbolic links).
+	$maintenanceScript = __DIR__ . "/Maintenance.php";
 	if ( file_exists( $maintenanceScript ) ) {
 		require_once $maintenanceScript;
 	}
@@ -39,11 +40,11 @@ else
 		die("FATAL: Could not locate Maintenance.php.\n" .
 			"You may want to create a symbolic link named Maintenance.php in this directory\n" .
 			"which points to <YOUR_MEDIAWIKI_ROOT_IN_FILESYSTEM>/extensions/Maintenance.php\n" .
-			"Ex.: ln -s /var/www/wiki/extensions/Maintenance.php\n\n");
+			"Ex.: ln -s /var/www/wiki/maintenance/Maintenance.php\n\n");
 	}
 };
 
-require_once( dirname( __FILE__ ) . "/LinkTitles.body.php" );
+require_once( __DIR__ . "/includes/LinkTitles_Extension.php" );
  
 /// Core class of the maintanance script.
 /// @note Note that the execution of maintenance scripts is prohibited for 
@@ -52,7 +53,7 @@ require_once( dirname( __FILE__ ) . "/LinkTitles.body.php" );
 /// anybody who is able to execute this script may place a high load on the 
 /// server.
 /// @ingroup batch
-class LinkTitlesCli extends Maintenance {
+class Cli extends \Maintenance {
 	/// The constructor adds a description and one option.
 	public function __construct() {
 		parent::__construct();
@@ -64,6 +65,26 @@ class LinkTitlesCli extends Maintenance {
 			true,  // requires argument
 			"s"
 		);
+        $this->addOption(
+			"page",
+			"page to process",
+			false, // not required
+			true,  // requires argument
+			"p"
+		);
+        $this->addOption(
+			"log",
+			"enables logging to console",
+			false, // not required
+			false,  // requires no argument
+			"l"
+		);
+        $this->addOption(
+			"debug",
+			"enables debug logging to console",
+			false, // not required
+			false  // requires no argument		
+		);
 	}
 
 	/// Main function of the maintenance script.
@@ -71,10 +92,33 @@ class LinkTitlesCli extends Maintenance {
 	/// if the `--start` option is given) and call LinkTitles::processPage() for 
 	/// each page.
 	public function execute() {
+        global $wgLinkTitlesNamespaces;
+
 		$index = intval($this->getOption('start', 0));
 		if ( $index < 0 ) {
 			$this->error('FATAL: Start index must be 0 or greater.', 1);
 		};
+
+        if ($this->hasOption('log'))
+        {
+            LinkTitles::$ltConsoleOutput = true;
+        }
+        if ($this->hasOption('debug'))
+        {
+            LinkTitles::$ltConsoleOutputDebug = true;
+        }
+
+        $pagename = strval($this->getOption('page'));
+        if ($pagename != null)
+        {
+           
+            $curTitle = Title::newFromDBkey( $pagename );            
+            LinkTitles::processPage($curTitle,RequestContext::getMain() );
+            $this->output("\nFinished parsing.\n");
+            return;
+        }
+        // get our Namespaces
+        $namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$wgLinkTitlesNamespaces ) . ')' );
 
 		// Connect to the database
 		$dbr = $this->getDB( DB_SLAVE );
@@ -82,9 +126,9 @@ class LinkTitlesCli extends Maintenance {
 		// Retrieve page names from the database.
 		$res = $dbr->select( 
 			'page',
-			'page_title', 
+			array('page_title', 'page_namespace'),
 			array( 
-				'page_namespace = 0', 
+				'page_namespace IN ' . $namespacesClause, 
 			), 
 			__METHOD__,
 			array(
@@ -93,28 +137,28 @@ class LinkTitlesCli extends Maintenance {
 			)
 		);
 		$numPages = $res->numRows();
-		$context = RequestContext::getMain();
+		$context = \RequestContext::getMain();
 		$this->output("Processing ${numPages} pages, starting at index ${index}...\n");
 
 		// Iterate through the pages; break if a time limit is exceeded.
 		foreach ( $res as $row ) {
 			$index += 1;
-			$curTitle = $row->page_title;
+			$curTitle = Title::makeTitleSafe( $row->page_namespace, $row->page_title);
 			$this->output( 
 				sprintf("\rPage #%d (%02.0f%%)", $index, $index / $numPages * 100)
 		 	);
-			LinkTitles::processPage($curTitle, $context);
+			Extension::processPage($curTitle, $context);
 		}
 
 		$this->output("\nFinished parsing.\n");
 	}
 }
  
-$maintClass = 'LinkTitlesCli';
+$maintClass = 'LinkTitles\Cli';
 if( defined('RUN_MAINTENANCE_IF_MAIN') ) {
 	require_once( RUN_MAINTENANCE_IF_MAIN );
 } else {
-	require_once( DO_MAINTENANCE ); # Make this work on versions before 1.17
+	require_once( DO_MAINTENANCE );
 }
 
 // vim: ts=2:sw=2:noet:comments^=\:///
