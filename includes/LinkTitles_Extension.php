@@ -113,7 +113,7 @@ class Extension {
 		// targets. This includes the current page.
 		$blackList = str_replace( '_', ' ',
 			'("' . implode( '", "',$wgLinkTitlesBlackList ) . '", "' .
-			self::$currentTitle->getDbKey() . '")' );
+			addslashes( self::$currentTitle->getDbKey() ) . '")' );
 
 		// Build an SQL query and fetch all page titles ordered by length from 
 		// shortest to longest. Only titles from 'normal' pages (namespace uid 
