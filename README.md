@@ -11,3 +11,5 @@ Source code documentation can be found at the [Github project
 pages](http://bovender.github.io/LinkTitles).
 
 This extension is [semantically versioned](http://semver.org).
+
+If you wish to contribute, please issue pull requests against the `develop` branch.
