@@ -172,7 +172,7 @@ class Extension {
 			}
 
 			$regex = '/(?<![\:\.\@\/\?\&])' . self::$wordStartDelim . 
-				$searchTerm . self::$wordEndDelim . '/Su';
+				$searchTerm . self::$wordEndDelim . '/S';
 			for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 				// even indexes will point to text that is not enclosed by brackets
 				$arr[$i] = preg_replace_callback( $regex,
@@ -193,7 +193,7 @@ class Extension {
 					// even indexes will point to text that is not enclosed by brackets
 					$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
 						self::$wordStartDelim . '(' . $quotedTitle . ')' . 
-						self::$wordEndDelim . '/iuS', 'LinkTitles\Extension::smartModeCallback',
+						self::$wordEndDelim . '/iS', 'LinkTitles\Extension::smartModeCallback',
 						$arr[$i], $limit, $count );
 					if (( $limit >= 0 ) && ( $count > 0  )) {
 						break; 
@@ -364,8 +364,7 @@ private static function BuildDelimiters() {
 
 		// Use unicode character properties rather than \b escape sequences
 		// to detect whole words containing non-ASCII characters as well.
-		// Note that this requires the use of the '/u' switch, and you need
-		// to have PHP with a PCRE library that was compiled with 
+		// Note that this requires a PCRE library that was compiled with 
 		// --enable-unicode-properties
 		( $wgLinkTitlesWordStartOnly ) ? self::$wordStartDelim = '(?<!\pL)' : self::$wordStartDelim = '';
 		( $wgLinkTitlesWordEndOnly ) ? self::$wordEndDelim = '(?!\pL)' : self::$wordEndDelim = '';
