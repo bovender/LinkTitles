@@ -284,11 +284,7 @@ EOF
 	/// Counts the number of pages in a read-access wiki database ($dbr).
 	/// @param $dbr Read-only `Database` object.
 	/// @returns Number of pages in the default namespace (0) of the wiki.
-<<<<<<< HEAD:includes/LinkTitles_Special.php
-	private function countPages( &$dbr ) {
-=======
 	private function countPages(&$dbr, $namespacesClause) {
->>>>>>> 085a4032f07ef9200370e7561b5b22b4c05e287c:SpecialLinkTitles.php
 		$res = $dbr->select(
 			'page',
 			array('pagecount' => "COUNT(page_id)"),
