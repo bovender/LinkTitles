@@ -18,5 +18,5 @@ If you wish to contribute, please issue pull requests against the `develop` bran
 Contributors
 ------------
 
-Daniel Kraus (@bovender), main developer
-Ulrich Strauss (@c0nnex), namespaces
+- Daniel Kraus (@bovender), main developer
+- Ulrich Strauss (@c0nnex), namespaces
