@@ -181,9 +181,7 @@ class Extension {
 
 		// Iterate through the page titles
 		foreach( $res as $row ) {
-			self::newTarget( $row->page_title );
-
-			LinkTitles::newTarget( $row->page_namespace, $row->page_title );
+			self::newTarget( $row->page_namespace, $row->page_title );
 
 			// split the page content by [[...]] groups
 			// credits to inhan @ StackOverflow for suggesting preg_split
@@ -195,8 +193,8 @@ class Extension {
 			self::$targetTitleText = self::$targetTitle->getText();
 			$quotedTitle = preg_quote(self::$targetTitleText, '/');
 			
-      LinkTitles::ltDebugLog('TargetTitle='. LinkTitles::$targetTitleText,"private");
-      LinkTitles::ltDebugLog('TargetTitleQuoted='. $quotedTitle,"private");
+      self::ltDebugLog('TargetTitle='. self::$targetTitleText,"private");
+      self::ltDebugLog('TargetTitleQuoted='. $quotedTitle,"private");
 
 			// Depending on the global configuration setting $wgCapitalLinks,
 			// the title has to be searched for either in a strictly case-sensitive
@@ -253,7 +251,7 @@ class Extension {
 	/// @returns undefined
 	public static function processPage( $title, \RequestContext $context ) {
 		$titleObj = \Title::makeTitle(0, $title);
-		LinkTitles::ltLog('Processing '. $titleObj->getPrefixedText());
+		self::ltLog('Processing '. $titleObj->getPrefixedText());
 		$page = \WikiPage::factory($titleObj);
 		$content = $page->getContent();
 		$text = $content->getContentHandler()->serializeContent($content);
@@ -307,7 +305,7 @@ class Extension {
 			// we need to ignore the first letter of the page titles, as 
 			// it does not matter for linking.
 			if ( self::checkTargetPage() ) {
-				LinkTitles::ltLog( "Linking (smart) '$matches[0]' to '" . LinkTitles::$targetTitle . "'" );
+				self::ltLog( "Linking (smart) '$matches[0]' to '" . self::$targetTitle . "'" );
 				if ( strcmp(substr(self::$targetTitleText, 1), substr($matches[0], 1)) == 0 ) {
 					// Case-sensitive match: no need to bulid piped link.
 					return '[[' . $matches[0] . ']]';
@@ -324,7 +322,7 @@ class Extension {
 			// If $wgCapitalLinks is false, we can use the simple variant 
 			// of the callback function.
 			if ( self::checkTargetPage() ) {
-				LinkTitles::ltLog( "Linking (smart) '$matches[0]' to '" . LinkTitles::$targetTitle . "'" );
+				self::ltLog( "Linking (smart) '$matches[0]' to '" . self::$targetTitle . "'" );
 				if ( strcmp(self::$targetTitleText, $matches[0]) == 0 ) {
 					// Case-sensitive match: no need to bulid piped link.
 					return '[[' . $matches[0] . ']]';
@@ -455,7 +453,7 @@ private static function BuildDelimiters() {
 
     /// Local Debugging output function which can send output to console as well
     public static function ltDebugLog($text) {
-        if (LinkTitles::$ltConsoleOutputDebug)
+        if (self::$ltConsoleOutputDebug)
         {
             print $text . "\n";
         }
@@ -464,7 +462,7 @@ private static function BuildDelimiters() {
 
     /// Local Logging output function which can send output to console as well
     public static function ltLog($text) {
-        if (LinkTitles::$ltConsoleOutput)
+        if (self::$ltConsoleOutput)
         {
             print $text . "\n";
         }
