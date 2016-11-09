@@ -143,7 +143,7 @@ class Cli extends \Maintenance {
 		// Iterate through the pages; break if a time limit is exceeded.
 		foreach ( $res as $row ) {
 			$index += 1;
-			$curTitle = Title::makeTitleSafe( $row->page_namespace, $row->page_title);
+			$curTitle = \Title::makeTitleSafe( $row->page_namespace, $row->page_title);
 			$this->output( 
 				sprintf("\rPage #%d (%02.0f%%)", $index, $index / $numPages * 100)
 		 	);
