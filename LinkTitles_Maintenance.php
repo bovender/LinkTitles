@@ -101,11 +101,11 @@ class Cli extends \Maintenance {
 
         if ($this->hasOption('log'))
         {
-            LinkTitles::$ltConsoleOutput = true;
+            Extension::$ltConsoleOutput = true;
         }
         if ($this->hasOption('debug'))
         {
-            LinkTitles::$ltConsoleOutputDebug = true;
+            Extension::$ltConsoleOutputDebug = true;
         }
 
         $pagename = strval($this->getOption('page'));
@@ -143,9 +143,9 @@ class Cli extends \Maintenance {
 		// Iterate through the pages; break if a time limit is exceeded.
 		foreach ( $res as $row ) {
 			$index += 1;
-			$curTitle = Title::makeTitleSafe( $row->page_namespace, $row->page_title);
+			$curTitle = \Title::makeTitleSafe( $row->page_namespace, $row->page_title);
 			$this->output( 
-				sprintf("\rPage #%d (%02.0f%%)", $index, $index / $numPages * 100)
+				sprintf("\rPage #%d (%02.0f%%) ", $index, $index / $numPages * 100)
 		 	);
 			Extension::processPage($curTitle, $context);
 		}

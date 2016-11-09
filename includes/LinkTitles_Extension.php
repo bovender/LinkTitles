@@ -35,6 +35,9 @@ class Extension {
 
 	/// A Title object for the target page currently being examined.
 	private static $targetTitle;
+	
+  // The TitleValue object of the target page
+  private static $targetTitleValue;
 
 	/// The content object for the currently processed target page.
 	/// This variable is necessary to be able to prevent loading the target 
@@ -53,6 +56,9 @@ class Extension {
 	private static $wordStartDelim;
 	private static $wordEndDelim;
 	
+	public static $ltConsoleOutput;
+	public static $ltConsoleOutputDebug;
+
 	/// Setup method
 	public static function setup() {
 		self::BuildDelimiters();
@@ -62,14 +68,21 @@ class Extension {
 	public static function onPageContentSave( &$wikiPage, &$user, &$content, &$summary,
 			$isMinor, $isWatch, $section, &$flags, &$status ) {
 		global $wgLinkTitlesParseOnEdit;
-		if (!$wgLinkTitlesParseOnEdit) return true;
+		global $wgLinkTitlesNamespaces;
+		if ( !$wgLinkTitlesParseOnEdit ) return true;
 
-		if ( !$isMinor && !\MagicWord::get('MAG_LINKTITLES_NOAUTOLINKS')->match( $text ) ) {
+		if ( !$isMinor && !\MagicWord::get( 'MAG_LINKTITLES_NOAUTOLINKS' )->match( $text ) ) {
 			$title = $wikiPage->getTitle();
-			$text = $content->getContentHandler()->serializeContent($content);
-			$newText = self::parseContent( $title, $text );
-			if ( $newText != $text ) {
-				$content = $content->getContentHandler()->unserializeContent( $newText );
+
+			// Only process if page is in one of our namespaces we want to link
+			// Fixes ugly autolinking of sidebar pages 
+			if ( in_array( $title->getNamespace(), $wgLinkTitlesNamespaces ))
+			{
+					$text = $content->getContentHandler()->serializeContent( $content );
+					$newText = self::parseContent( $title, $text );
+					if ( $newText != $text ) {
+							$content = $content->getContentHandler()->unserializeContent( $newText );
+					}
 			}
 		};
 		return true;
@@ -81,10 +94,13 @@ class Extension {
 	public static function onInternalParseBeforeLinks( \Parser &$parser, &$text ) {
 		global $wgLinkTitlesParseOnRender;
 		if (!$wgLinkTitlesParseOnRender) return true;
+		global $wgLinkTitlesNamespaces;
+		$title = $parser->getTitle();
 
 		// If the page contains the magic word '__NOAUTOLINKS__', do not parse it.
-		if ( !isset($parser->mDoubleUnderScores[$text] )) {
-			$text = self::parseContent( $parser->getTitle(), $text );
+		// Only process if page is in one of our namespaces we want to link
+		if ( !isset( $parser->mDoubleUnderScores[$text] ) && in_array( $title->getNamespace(), $wgLinkTitlesNamespaces ) ) {
+			$text = self::parseContent( $title, $text );
 		}
 		return true;
 	}
@@ -102,6 +118,7 @@ class Extension {
 		global $wgLinkTitlesFirstOnly;
 		global $wgLinkTitlesSmartMode;
 		global $wgCapitalLinks;
+		global $wgLinkTitlesNamespaces;
 
 		( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'ASC' : $sort_order = 'DESC';
 		( $wgLinkTitlesFirstOnly ) ? $limit = 1 : $limit = -1;
@@ -115,6 +132,22 @@ class Extension {
 			'("' . implode( '", "',$wgLinkTitlesBlackList ) . '", "' .
 			addslashes( self::$currentTitle->getDbKey() ) . '")' );
 
+		$currentNamespace[] = $title->getNamespace();
+		
+		// Build our weight list. Make sure current namespace is first element
+		$namespaces = array_diff($wgLinkTitlesNamespaces, $currentNamespace);
+		array_unshift($namespaces,  $currentNamespace[0] );
+		
+		// No need for sanitiy check. we are sure that we have at least one element in the array
+		$weightSelect = "CASE page_namespace ";
+		$currentWeight = 0;
+		foreach ($namespaces as &$namspacevalue) {
+				$currentWeight = $currentWeight + 100;
+				$weightSelect = $weightSelect . " WHEN " . $namspacevalue . " THEN " . $currentWeight . PHP_EOL;
+		}
+		$weightSelect = $weightSelect . " END ";
+		$namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$namespaces ) . ')' );
+
 		// Build an SQL query and fetch all page titles ordered by length from 
 		// shortest to longest. Only titles from 'normal' pages (namespace uid 
 		// = 0) are returned. Since the db may be sqlite, we need a try..catch 
@@ -123,9 +156,9 @@ class Extension {
 		try {
 			$res = $dbr->select( 
 				'page', 
-				'page_title', 
+				array( 'page_title', 'page_namespace' , "weight" => $weightSelect),
 				array( 
-					'page_namespace = 0', 
+					'page_namespace IN ' . $namespacesClause, 
 					'CHAR_LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
 					'page_title NOT IN ' . $blackList,
 				), 
@@ -135,9 +168,9 @@ class Extension {
 		} catch (Exception $e) {
 			$res = $dbr->select( 
 				'page', 
-				'page_title', 
+				array( 'page_title', 'page_namespace' , "weight" => $weightSelect ),
 				array( 
-					'page_namespace = 0', 
+					'page_namespace IN ' . $namespacesClause, 
 					'LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
 					'page_title NOT IN ' . $blackList,
 				), 
@@ -148,7 +181,7 @@ class Extension {
 
 		// Iterate through the page titles
 		foreach( $res as $row ) {
-			self::newTarget( $row->page_title );
+			self::newTarget( $row->page_namespace, $row->page_title );
 
 			// split the page content by [[...]] groups
 			// credits to inhan @ StackOverflow for suggesting preg_split
@@ -159,6 +192,9 @@ class Extension {
 			// regexp compilation errors
 			self::$targetTitleText = self::$targetTitle->getText();
 			$quotedTitle = preg_quote(self::$targetTitleText, '/');
+			
+      self::ltDebugLog('TargetTitle='. self::$targetTitleText,"private");
+      self::ltDebugLog('TargetTitleQuoted='. $quotedTitle,"private");
 
 			// Depending on the global configuration setting $wgCapitalLinks,
 			// the title has to be searched for either in a strictly case-sensitive
@@ -214,8 +250,8 @@ class Extension {
 	///                  to obtain such an object.
 	/// @returns undefined
 	public static function processPage( $title, \RequestContext $context ) {
-		// TODO: make this namespace-aware
 		$titleObj = \Title::makeTitle(0, $title);
+		self::ltLog('Processing '. $titleObj->getPrefixedText());
 		$page = \WikiPage::factory($titleObj);
 		$content = $page->getContent();
 		$text = $content->getContentHandler()->serializeContent($content);
@@ -244,6 +280,7 @@ class Extension {
 	// Build an anonymous callback function to be used in simple mode.
 	private static function simpleModeCallback( array $matches ) {
 		if ( self::checkTargetPage() ) {
+			self::ltLog( "Linking '$matches[0]' to '" . self::$targetTitle . "'" );
 			return '[[' . $matches[0] . ']]';
 		}
 		else
@@ -268,6 +305,7 @@ class Extension {
 			// we need to ignore the first letter of the page titles, as 
 			// it does not matter for linking.
 			if ( self::checkTargetPage() ) {
+				self::ltLog( "Linking (smart) '$matches[0]' to '" . self::$targetTitle . "'" );
 				if ( strcmp(substr(self::$targetTitleText, 1), substr($matches[0], 1)) == 0 ) {
 					// Case-sensitive match: no need to bulid piped link.
 					return '[[' . $matches[0] . ']]';
@@ -284,6 +322,7 @@ class Extension {
 			// If $wgCapitalLinks is false, we can use the simple variant 
 			// of the callback function.
 			if ( self::checkTargetPage() ) {
+				self::ltLog( "Linking (smart) '$matches[0]' to '" . self::$targetTitle . "'" );
 				if ( strcmp(self::$targetTitleText, $matches[0]) == 0 ) {
 					// Case-sensitive match: no need to bulid piped link.
 					return '[[' . $matches[0] . ']]';
@@ -300,9 +339,11 @@ class Extension {
 	}
 
 	/// Sets member variables for the current target page.
-	private static function newTarget( $title ) {
-		// @todo Make this wiki namespace aware.
-		self::$targetTitle = \Title::makeTitle( NS_MAIN, $title);
+	private static function newTarget( $ns, $title ) {
+		self::$targetTitle = \Title::makeTitleSafe( $ns, $title );           
+		self::ltDebugLog( 'newtarget='.  self::$targetTitle->getText(), "private" );            
+		self::$targetTitleValue = self::$targetTitle->getTitleValue();           
+		self::ltDebugLog( 'altTarget='. self::$targetTitleValue->getText(), "private" );
 		self::$targetContent = null;
 	}
 
@@ -409,6 +450,24 @@ private static function BuildDelimiters() {
 			'(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b)' .        // email addresses
 			')/ismS';
 		}
+
+    /// Local Debugging output function which can send output to console as well
+    public static function ltDebugLog($text) {
+        if (self::$ltConsoleOutputDebug)
+        {
+            print $text . "\n";
+        }
+        wfDebugLog('LinkTitles', $text , 'private');
+    }
+
+    /// Local Logging output function which can send output to console as well
+    public static function ltLog($text) {
+        if (self::$ltConsoleOutput)
+        {
+            print $text . "\n";
+        }
+        wfDebugLog('LinkTitles', $text , 'private');
+    }
 	}
 
 // vim: ts=2:sw=2:noet:comments^=\:///
