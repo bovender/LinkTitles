@@ -71,17 +71,18 @@ class Extension {
 		global $wgLinkTitlesNamespaces;
 		if ( !$wgLinkTitlesParseOnEdit ) return true;
 
-		if ( !$isMinor && !\MagicWord::get( 'MAG_LINKTITLES_NOAUTOLINKS' )->match( $text ) ) {
+		if ( !$isMinor ) {
 			$title = $wikiPage->getTitle();
 
 			// Only process if page is in one of our namespaces we want to link
 			// Fixes ugly autolinking of sidebar pages 
-			if ( in_array( $title->getNamespace(), $wgLinkTitlesNamespaces ))
-			{
+			if ( in_array( $title->getNamespace(), $wgLinkTitlesNamespaces )) {
 					$text = $content->getContentHandler()->serializeContent( $content );
-					$newText = self::parseContent( $title, $text );
-					if ( $newText != $text ) {
-							$content = $content->getContentHandler()->unserializeContent( $newText );
+					if ( !\MagicWord::get( 'MAG_LINKTITLES_NOAUTOLINKS' )->match( $text ) ) {
+						$newText = self::parseContent( $title, $text );
+						if ( $newText != $text ) {
+								$content = $content->getContentHandler()->unserializeContent( $newText );
+						}
 					}
 			}
 		};
