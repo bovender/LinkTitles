@@ -123,6 +123,8 @@ class Extension {
 
 		( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'ASC' : $sort_order = 'DESC';
 		( $wgLinkTitlesFirstOnly ) ? $limit = 1 : $limit = -1;
+		$limitReached = false;
+		error_log($wgLinkTitlesFirstOnly);
 
 		self::$currentTitle = $title;
 		$newText = $text;
@@ -214,7 +216,8 @@ class Extension {
 				// even indexes will point to text that is not enclosed by brackets
 				$arr[$i] = preg_replace_callback( $regex,
 					'LinkTitles\Extension::simpleModeCallback', $arr[$i], $limit, $count );
-				if (( $limit >= 0 ) && ( $count > 0  )) {
+				if ( $wgLinkTitlesFirstOnly && ( $count > 0 ) ) {
+					$limitReached = true;
 					break; 
 				};
 			};
@@ -223,7 +226,7 @@ class Extension {
 			// If smart mode is turned on, the extension will perform a second
 			// pass on the page and add links with aliases where the case does
 			// not match.
-			if ($wgLinkTitlesSmartMode) {
+			if ( $wgLinkTitlesSmartMode && !$limitReached ) {
 				$arr = preg_split( self::$delimiter, $newText, -1, PREG_SPLIT_DELIM_CAPTURE );
 
 				for ( $i = 0; $i < count( $arr ); $i+=2 ) {
@@ -232,7 +235,7 @@ class Extension {
 						self::$wordStartDelim . '(' . $quotedTitle . ')' . 
 						self::$wordEndDelim . '/iS', 'LinkTitles\Extension::smartModeCallback',
 						$arr[$i], $limit, $count );
-					if (( $limit >= 0 ) && ( $count > 0  )) {
+					if ( $wgLinkTitlesFirstOnly && ( $count > 0  )) {
 						break; 
 					};
 				};
