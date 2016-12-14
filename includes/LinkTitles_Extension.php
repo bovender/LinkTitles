@@ -124,7 +124,6 @@ class Extension {
 		( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'ASC' : $sort_order = 'DESC';
 		( $wgLinkTitlesFirstOnly ) ? $limit = 1 : $limit = -1;
 		$limitReached = false;
-		error_log($wgLinkTitlesFirstOnly);
 
 		self::$currentTitle = $title;
 		$newText = $text;
