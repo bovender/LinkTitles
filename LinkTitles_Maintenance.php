@@ -111,11 +111,16 @@ class Cli extends \Maintenance {
         $pagename = strval($this->getOption('page'));
         if ($pagename != null)
         {
-           
-            $curTitle = Title::newFromDBkey( $pagename );            
-            LinkTitles::processPage($curTitle,RequestContext::getMain() );
-            $this->output("\nFinished parsing.\n");
-            return;
+						$this->output( 'Processing single page: ' . $pagename);
+						$title = \Title::newFromText( $pagename );
+						$success = Extension::processPage( $title, \RequestContext::getMain() );
+						if ( $success ) {
+							$this->output( "\nFinished parsing.\n" );
+						}
+						else {
+							$this->output( "\nError: There is no such page.\n" );
+						}
+						return $success;
         }
         // get our Namespaces
         $namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$wgLinkTitlesNamespaces ) . ')' );
@@ -150,7 +155,7 @@ class Cli extends \Maintenance {
 			Extension::processPage($curTitle, $context);
 		}
 
-		$this->output("\nFinished parsing.\n");
+		$this->output("\rFinished parsing.                      \n");
 	}
 }
  

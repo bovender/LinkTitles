@@ -248,26 +248,32 @@ class Extension {
 	/// Automatically processes a single page, given a $title Title object.
 	/// This function is called by the SpecialLinkTitles class and the 
 	/// LinkTitlesJob class.
-	/// @param string $title            Page title.
-	/// @param RequestContext $context  Current context. 
+	/// @param Title 					$title            Title object.
+	/// @param RequestContext $context					Current request context. 
 	///                  If in doubt, call MediaWiki's `RequestContext::getMain()`
 	///                  to obtain such an object.
-	/// @returns undefined
-	public static function processPage( $title, \RequestContext $context ) {
-		$titleObj = \Title::makeTitle(0, $title);
-		self::ltLog('Processing '. $titleObj->getPrefixedText());
-		$page = \WikiPage::factory($titleObj);
+	/// @returns boolean True if the page exists, false if the page does not exist
+	public static function processPage( \Title $title, \RequestContext $context ) {
+		self::ltLog('Processing '. $title->getPrefixedText());
+		$page = \WikiPage::factory($title);
 		$content = $page->getContent();
-		$text = $content->getContentHandler()->serializeContent($content);
-		$newText = self::parseContent($titleObj, $text);
-		if ( $text != $newText ) {
-			$content = $content->getContentHandler()->unserializeContent( $newText );
-			$page->doQuickEditContent($content,
-				$context->getUser(),
-				"Links to existing pages added by LinkTitles bot.", // TODO: i18n
-				true // minor modification
-			);
-		};
+		if ( $content != null ) {
+			$text = $content->getContentHandler()->serializeContent($content);
+			$newText = self::parseContent($title, $text);
+			if ( $text != $newText ) {
+				$content = $content->getContentHandler()->unserializeContent( $newText );
+				$page->doQuickEditContent(
+					$content,
+					$context->getUser(),
+					"Links to existing pages added by LinkTitles bot.", // TODO: i18n
+					true // minor modification
+				);
+			};
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	/// Adds the two magic words defined by this extension to the list of 
