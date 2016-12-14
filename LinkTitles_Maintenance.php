@@ -1,17 +1,17 @@
 <?php
 /*
- *      Copyright 2012-2016 Daniel Kraus <bovender@bovender.de> ('bovender')
- *      
+ *      Copyright 2012-2016 Daniel Kraus <bovender@bovender.de> @bovender
+ *
  *      This program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
  *      the Free Software Foundation; either version 2 of the License, or
  *      (at your option) any later version.
- *      
+ *
  *      This program is distributed in the hope that it will be useful,
  *      but WITHOUT ANY WARRANTY; without even the implied warranty of
  *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *      GNU General Public License for more details.
- *      
+ *
  *      You should have received a copy of the GNU General Public License
  *      along with this program; if not, write to the Free Software
  *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -29,7 +29,7 @@ if ( file_exists( $maintenanceScript ) ) {
 }
 else
 {
-	// Did not find the script where we expected it (maybe because we are a 
+	// Did not find the script where we expected it (maybe because we are a
 	// symlinked file -- __DIR resolves symbolic links).
 	$maintenanceScript = __DIR__ . "/Maintenance.php";
 	if ( file_exists( $maintenanceScript ) ) {
@@ -45,12 +45,12 @@ else
 };
 
 require_once( __DIR__ . "/includes/LinkTitles_Extension.php" );
- 
+
 /// Core class of the maintanance script.
-/// @note Note that the execution of maintenance scripts is prohibited for 
-/// an Apache web server due to a `.htaccess` file that declares `deny from 
+/// @note Note that the execution of maintenance scripts is prohibited for
+/// an Apache web server due to a `.htaccess` file that declares `deny from
 /// all`. Other webservers may exhibit different behavior. Be aware that 
-/// anybody who is able to execute this script may place a high load on the 
+/// anybody who is able to execute this script may place a high load on the
 /// server.
 /// @ingroup batch
 class Cli extends \Maintenance {
@@ -65,76 +65,84 @@ class Cli extends \Maintenance {
 			true,  // requires argument
 			"s"
 		);
-        $this->addOption(
+				$this->addOption(
 			"page",
-			"page to process",
+			"page name to process",
 			false, // not required
 			true,  // requires argument
 			"p"
 		);
-        $this->addOption(
+				$this->addOption(
 			"log",
 			"enables logging to console",
 			false, // not required
 			false,  // requires no argument
 			"l"
 		);
-        $this->addOption(
+				$this->addOption(
 			"debug",
 			"enables debug logging to console",
 			false, // not required
-			false  // requires no argument		
+			false  // requires no argument
 		);
 	}
 
 	/// Main function of the maintenance script.
-	/// Will iterate over all pages in the wiki (starting at a certain index, 
-	/// if the `--start` option is given) and call LinkTitles::processPage() for 
+	/// Will iterate over all pages in the wiki (starting at a certain index,
+	/// if the `--start` option is given) and call LinkTitles::processPage() for
 	/// each page.
 	public function execute() {
-        global $wgLinkTitlesNamespaces;
-
-		$index = intval($this->getOption('start', 0));
-		if ( $index < 0 ) {
-			$this->error('FATAL: Start index must be 0 or greater.', 1);
-		};
-
-        if ($this->hasOption('log'))
-        {
-            Extension::$ltConsoleOutput = true;
-        }
-        if ($this->hasOption('debug'))
-        {
-            Extension::$ltConsoleOutputDebug = true;
-        }
-
-        $pagename = strval($this->getOption('page'));
-        if ($pagename != null)
-        {
-						$this->output( 'Processing single page: ' . $pagename);
-						$title = \Title::newFromText( $pagename );
-						$success = Extension::processPage( $title, \RequestContext::getMain() );
-						if ( $success ) {
-							$this->output( "\nFinished parsing.\n" );
-						}
-						else {
-							$this->output( "\nError: There is no such page.\n" );
-						}
-						return $success;
-        }
-        // get our Namespaces
-        $namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$wgLinkTitlesNamespaces ) . ')' );
-
-		// Connect to the database
-		$dbr = $this->getDB( DB_SLAVE );
+		if ($this->hasOption('log'))
+		{
+				Extension::$ltConsoleOutput = true;
+		}
+		if ($this->hasOption('debug'))
+		{
+				Extension::$ltConsoleOutputDebug = true;
+		}
+		if ( $this->hasOption('page') ) {
+			if ( !$this->hasOption( 'start' ) ) {
+				$this->singlePage();
+			}
+			else {
+				$this->error( 'FATAL: Must not use --start option with --page option.', 2 );
+			}
+		}
+		else {
+			$startIndex = intval( $this->getOption( 'start', 0 ) );
+			if ( $startIndex < 0 ) {
+				$this->error( 'FATAL: Start index must be 0 or greater.', 1 );
+			};
+			$this->allPages( $startIndex);
+		}
+	}
+	
+	private function singlePage() {
+		$pageName = strval( $this->getOption( 'page' ) );
+		$this->output( "Processing single page: '$pageName'\n" );
+		$title = \Title::newFromText( $pageName );
+		$success = Extension::processPage( $title, \RequestContext::getMain() );
+		if ( $success ) {
+			$this->output( "Finished.\n" );
+		}
+		else {
+			$this->error( 'FATAL: There is no such page.', 3 );
+		}
+		return $success;
+	}
+	
+	private function allPages( $index = 0 ) {
+		global $wgLinkTitlesNamespaces;
 
 		// Retrieve page names from the database.
-		$res = $dbr->select( 
+		$dbr = $this->getDB( DB_SLAVE );
+		$namespacesClause = str_replace( '_', ' ','(' . implode( ', ', $wgLinkTitlesNamespaces ) . ')' );
+		$res = $dbr->select(
 			'page',
-			array('page_title', 'page_namespace'),
-			array( 
-				'page_namespace IN ' . $namespacesClause, 
-			), 
+			array( 'page_title', 'page_namespace' ),
+			array(
+				'page_namespace IN ' . $namespacesClause,
+			),
 			__METHOD__,
 			array(
 				'LIMIT' => 999999999,
@@ -143,22 +151,19 @@ class Cli extends \Maintenance {
 		);
 		$numPages = $res->numRows();
 		$context = \RequestContext::getMain();
-		$this->output("Processing ${numPages} pages, starting at index ${index}...\n");
+		$this->output( "Processing ${numPages} pages, starting at index ${index}...\n" );
 
-		// Iterate through the pages; break if a time limit is exceeded.
 		foreach ( $res as $row ) {
-			$index += 1;
-			$curTitle = \Title::makeTitleSafe( $row->page_namespace, $row->page_title);
-			$this->output( 
-				sprintf("\rPage #%d (%02.0f%%) ", $index, $index / $numPages * 100)
-		 	);
-			Extension::processPage($curTitle, $context);
+			$index += 1; // at this point, $index is only needed for reporting to user
+			$title = \Title::makeTitleSafe( $row->page_namespace, $row->page_title );
+			$this->output( sprintf( "\rPage #%d (%02.0f%%) ", $index, $index / $numPages * 100 ) );
+			Extension::processPage( $title, $context );
 		}
 
-		$this->output("\rFinished parsing.                      \n");
+		$this->output( "\rFinished.                          \n" );
 	}
 }
- 
+
 $maintClass = 'LinkTitles\Cli';
 if( defined('RUN_MAINTENANCE_IF_MAIN') ) {
 	require_once( RUN_MAINTENANCE_IF_MAIN );
