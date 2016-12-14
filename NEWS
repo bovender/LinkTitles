@@ -1,3 +1,13 @@
+Version 4.0.5 (2016-12-14)
+------------------------------------------------------------------------
+
+- Fix: Maintenance script would crash if invoked with the --page option.
+- Fix: Remove leftover error log call.
+- Improvement: Refactored maintenance script, improving user interaction.
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+
+
 Version 4.0.4 (2016-11-30)
 ------------------------------------------------------------------------
 
