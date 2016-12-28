@@ -35,7 +35,7 @@ class Extension {
 
 	/// A Title object for the target page currently being examined.
 	private static $targetTitle;
-	
+
   // The TitleValue object of the target page
   private static $targetTitleValue;
 
@@ -55,7 +55,7 @@ class Extension {
 
 	private static $wordStartDelim;
 	private static $wordEndDelim;
-	
+
 	public static $ltConsoleOutput;
 	public static $ltConsoleOutputDebug;
 
@@ -130,16 +130,16 @@ class Extension {
 
 		// Build a blacklist of pages that are not supposed to be link 
 		// targets. This includes the current page.
-		$blackList = str_replace( '_', ' ',
-			'("' . implode( '", "',$wgLinkTitlesBlackList ) . '", "' .
+		$blackList = str_replace( ' ', '_',
+			'("' . implode( '","',$wgLinkTitlesBlackList ) . '","' .
 			addslashes( self::$currentTitle->getDbKey() ) . '")' );
 
 		$currentNamespace[] = $title->getNamespace();
-		
+
 		// Build our weight list. Make sure current namespace is first element
 		$namespaces = array_diff($wgLinkTitlesNamespaces, $currentNamespace);
 		array_unshift($namespaces,  $currentNamespace[0] );
-		
+
 		// No need for sanitiy check. we are sure that we have at least one element in the array
 		$weightSelect = "CASE page_namespace ";
 		$currentWeight = 0;
@@ -148,7 +148,7 @@ class Extension {
 				$weightSelect = $weightSelect . " WHEN " . $namspacevalue . " THEN " . $currentWeight . PHP_EOL;
 		}
 		$weightSelect = $weightSelect . " END ";
-		$namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$namespaces ) . ')' );
+		$namespacesClause = '(' . implode( ', ', $namespaces ) . ')';
 
 		// Build an SQL query and fetch all page titles ordered by length from 
 		// shortest to longest. Only titles from 'normal' pages (namespace uid 
@@ -194,7 +194,7 @@ class Extension {
 			// regexp compilation errors
 			self::$targetTitleText = self::$targetTitle->getText();
 			$quotedTitle = preg_quote(self::$targetTitleText, '/');
-			
+
       self::ltDebugLog('TargetTitle='. self::$targetTitleText,"private");
       self::ltDebugLog('TargetTitleQuoted='. $quotedTitle,"private");
 
@@ -243,7 +243,7 @@ class Extension {
 		}; // foreach $res as $row
 		return $newText;
 	}
-	
+
 	/// Automatically processes a single page, given a $title Title object.
 	/// This function is called by the SpecialLinkTitles class and the 
 	/// LinkTitlesJob class.
@@ -349,9 +349,9 @@ class Extension {
 
 	/// Sets member variables for the current target page.
 	private static function newTarget( $ns, $title ) {
-		self::$targetTitle = \Title::makeTitleSafe( $ns, $title );           
-		self::ltDebugLog( 'newtarget='.  self::$targetTitle->getText(), "private" );            
-		self::$targetTitleValue = self::$targetTitle->getTitleValue();           
+		self::$targetTitle = \Title::makeTitleSafe( $ns, $title );
+		self::ltDebugLog( 'newtarget='.  self::$targetTitle->getText(), "private" );
+		self::$targetTitleValue = self::$targetTitle->getTitleValue();
 		self::ltDebugLog( 'altTarget='. self::$targetTitleValue->getText(), "private" );
 		self::$targetContent = null;
 	}
@@ -477,6 +477,6 @@ private static function BuildDelimiters() {
         }
         wfDebugLog('LinkTitles', $text , 'private');
     }
-	}
+}
 
 // vim: ts=2:sw=2:noet:comments^=\:///
