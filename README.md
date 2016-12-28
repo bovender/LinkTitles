@@ -13,7 +13,14 @@ pages](http://bovender.github.io/LinkTitles).
 
 This extension is [semantically versioned](http://semver.org).
 
-If you wish to contribute, please issue pull requests against the `develop` branch.
+
+Contributing
+------------
+
+If you wish to contribute, please issue pull requests against the `develop` 
+branch, as I follow Vincent Driessen's advice on [A successful Git branching 
+model](http://nvie.com/git-model) (knowing that there are [alternative 
+workflows](http://scottchacon.com/2011/08/31/github-flow.html)).
 
 
 Contributors
@@ -21,3 +28,4 @@ Contributors
 
 - Daniel Kraus (@bovender), main developer
 - Ulrich Strauss (@c0nnex), namespaces
+- Brent Laabs (@labster), bug fixes
