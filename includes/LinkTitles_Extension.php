@@ -165,7 +165,7 @@ class Extension {
 					'page_title NOT IN ' . $blackList,
 				), 
 				__METHOD__, 
-				array( 'ORDER BY' => 'CHAR_LENGTH(page_title) ' . $sort_order )
+				array( 'ORDER BY' => 'weight ASC, CHAR_LENGTH(page_title) ' . $sort_order )
 			);
 		} catch (Exception $e) {
 			$res = $dbr->select( 
@@ -177,7 +177,7 @@ class Extension {
 					'page_title NOT IN ' . $blackList,
 				), 
 				__METHOD__, 
-				array( 'ORDER BY' => 'LENGTH(page_title) ' . $sort_order )
+				array( 'ORDER BY' => 'weight ASC, LENGTH(page_title) ' . $sort_order )
 			);
 		}
 
