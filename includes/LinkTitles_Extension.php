@@ -30,6 +30,15 @@ function dump($var) {
 /// Central class of the extension. Sets up parser hooks.
 /// This class contains only static functions; do not instantiate.
 class Extension {
+	/// Caching variable for page titles that are fetched from the DB.
+	private static $pageTitles;
+
+	/// Caching variable for the current namespace.
+	/// This is needed because the sort order of the page titles that
+	/// are cached in self::$pageTitles depends on the namespace of
+	/// the page currently being processed.
+	private static $currentNamespace;
+
 	/// A Title object for the page that is being parsed.
 	private static $currentTitle;
 
@@ -113,76 +122,23 @@ class Extension {
 	private static function parseContent( $title, &$text ) {
 
 		// Configuration variables need to be defined here as globals.
-		global $wgLinkTitlesPreferShortTitles;
-		global $wgLinkTitlesMinimumTitleLength;
-		global $wgLinkTitlesBlackList;
 		global $wgLinkTitlesFirstOnly;
 		global $wgLinkTitlesSmartMode;
 		global $wgCapitalLinks;
-		global $wgLinkTitlesNamespaces;
 
-		( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'ASC' : $sort_order = 'DESC';
 		( $wgLinkTitlesFirstOnly ) ? $limit = 1 : $limit = -1;
 		$limitReached = false;
-
 		self::$currentTitle = $title;
+		$currentNamespace = $title->getNamespace();
 		$newText = $text;
 
-		// Build a blacklist of pages that are not supposed to be link 
-		// targets. This includes the current page.
-		$blackList = str_replace( ' ', '_',
-			'("' . implode( '","',$wgLinkTitlesBlackList ) . '","' .
-			addslashes( self::$currentTitle->getDbKey() ) . '")' );
-
-		$currentNamespace[] = $title->getNamespace();
-
-		// Build our weight list. Make sure current namespace is first element
-		$namespaces = array_diff($wgLinkTitlesNamespaces, $currentNamespace);
-		array_unshift($namespaces,  $currentNamespace[0] );
-
-		// No need for sanitiy check. we are sure that we have at least one element in the array
-		$weightSelect = "CASE page_namespace ";
-		$currentWeight = 0;
-		foreach ($namespaces as &$namspacevalue) {
-				$currentWeight = $currentWeight + 100;
-				$weightSelect = $weightSelect . " WHEN " . $namspacevalue . " THEN " . $currentWeight . PHP_EOL;
-		}
-		$weightSelect = $weightSelect . " END ";
-		$namespacesClause = '(' . implode( ', ', $namespaces ) . ')';
-
-		// Build an SQL query and fetch all page titles ordered by length from 
-		// shortest to longest. Only titles from 'normal' pages (namespace uid 
-		// = 0) are returned. Since the db may be sqlite, we need a try..catch 
-		// structure because sqlite does not support the CHAR_LENGTH function.
-		$dbr = wfGetDB( DB_SLAVE );
-		try {
-			$res = $dbr->select( 
-				'page', 
-				array( 'page_title', 'page_namespace' , "weight" => $weightSelect),
-				array( 
-					'page_namespace IN ' . $namespacesClause, 
-					'CHAR_LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
-					'page_title NOT IN ' . $blackList,
-				), 
-				__METHOD__, 
-				array( 'ORDER BY' => 'weight ASC, CHAR_LENGTH(page_title) ' . $sort_order )
-			);
-		} catch (Exception $e) {
-			$res = $dbr->select( 
-				'page', 
-				array( 'page_title', 'page_namespace' , "weight" => $weightSelect ),
-				array( 
-					'page_namespace IN ' . $namespacesClause, 
-					'LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
-					'page_title NOT IN ' . $blackList,
-				), 
-				__METHOD__, 
-				array( 'ORDER BY' => 'weight ASC, LENGTH(page_title) ' . $sort_order )
-			);
+		if ( !isset( self::$pageTitles ) || ( $currentNamespace != self::$currentNamespace ) ) {
+			self::$currentNamespace = $currentNamespace;
+			self::$pageTitles = self::fetchPageTitles( $currentNamespace );
 		}
 
 		// Iterate through the page titles
-		foreach( $res as $row ) {
+		foreach( self::$pageTitles as $row ) {
 			self::newTarget( $row->page_namespace, $row->page_title );
 
 			// split the page content by [[...]] groups
@@ -284,6 +240,69 @@ class Extension {
 		$doubleUnderscoreIDs[] = 'MAG_LINKTITLES_NOTARGET';
 		$doubleUnderscoreIDs[] = 'MAG_LINKTITLES_NOAUTOLINKS';
 		return true;
+	}
+
+	// Fetches the page titles from the database.
+	// @param $currentNamespace String holding the namespace of the page currently being processed.
+	private static function fetchPageTitles( $currentNamespace ) {
+		global $wgLinkTitlesPreferShortTitles;
+		global $wgLinkTitlesMinimumTitleLength;
+		global $wgLinkTitlesBlackList;
+		global $wgLinkTitlesNamespaces;
+
+		( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'ASC' : $sort_order = 'DESC';
+		// Build a blacklist of pages that are not supposed to be link 
+		// targets. This includes the current page.
+		$blackList = str_replace( ' ', '_',
+			'("' . implode( '","',$wgLinkTitlesBlackList ) . '","' .
+			addslashes( self::$currentTitle->getDbKey() ) . '")' );
+
+		// Build our weight list. Make sure current namespace is first element
+		$namespaces = array_diff( $wgLinkTitlesNamespaces, [ $currentNamespace ] );
+		array_unshift( $namespaces,  $currentNamespace );
+
+		// No need for sanitiy check. we are sure that we have at least one element in the array
+		$weightSelect = "CASE page_namespace ";
+		$currentWeight = 0;
+		foreach ($namespaces as &$namspacevalue) {
+				$currentWeight = $currentWeight + 100;
+				$weightSelect = $weightSelect . " WHEN " . $namspacevalue . " THEN " . $currentWeight . PHP_EOL;
+		}
+		$weightSelect = $weightSelect . " END ";
+		$namespacesClause = '(' . implode( ', ', $namespaces ) . ')';
+
+		// Build an SQL query and fetch all page titles ordered by length from 
+		// shortest to longest. Only titles from 'normal' pages (namespace uid 
+		// = 0) are returned. Since the db may be sqlite, we need a try..catch 
+		// structure because sqlite does not support the CHAR_LENGTH function.
+		$dbr = wfGetDB( DB_SLAVE );
+		try {
+			$res = $dbr->select( 
+				'page', 
+				array( 'page_title', 'page_namespace' , "weight" => $weightSelect),
+				array( 
+					'page_namespace IN ' . $namespacesClause, 
+					'CHAR_LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
+					'page_title NOT IN ' . $blackList,
+				), 
+				__METHOD__, 
+				array( 'ORDER BY' => 'weight ASC, CHAR_LENGTH(page_title) ' . $sort_order )
+			);
+		} catch (Exception $e) {
+			$res = $dbr->select( 
+				'page', 
+				array( 'page_title', 'page_namespace' , "weight" => $weightSelect ),
+				array( 
+					'page_namespace IN ' . $namespacesClause, 
+					'LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
+					'page_title NOT IN ' . $blackList,
+				), 
+				__METHOD__, 
+				array( 'ORDER BY' => 'weight ASC, LENGTH(page_title) ' . $sort_order )
+			);
+		}
+
+		return $res;
 	}
 
 	// Build an anonymous callback function to be used in simple mode.
