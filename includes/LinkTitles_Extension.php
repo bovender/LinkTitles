@@ -141,6 +141,9 @@ class Extension {
 		foreach( self::$pageTitles as $row ) {
 			self::newTarget( $row->page_namespace, $row->page_title );
 
+			// Don't link current page
+			if ( self::$targetTitle->equals( self::$currentTitle ) ) { continue; }
+
 			// split the page content by [[...]] groups
 			// credits to inhan @ StackOverflow for suggesting preg_split
 			// see http://stackoverflow.com/questions/10672286
@@ -253,9 +256,7 @@ class Extension {
 		( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'ASC' : $sort_order = 'DESC';
 		// Build a blacklist of pages that are not supposed to be link 
 		// targets. This includes the current page.
-		$blackList = str_replace( ' ', '_',
-			'("' . implode( '","',$wgLinkTitlesBlackList ) . '","' .
-			addslashes( self::$currentTitle->getDbKey() ) . '")' );
+		$blackList = str_replace( ' ', '_', '("' . implode( '","',$wgLinkTitlesBlackList ) . '")' );
 
 		// Build our weight list. Make sure current namespace is first element
 		$namespaces = array_diff( $wgLinkTitlesNamespaces, [ $currentNamespace ] );
