@@ -1,6 +1,15 @@
+Version 4.0.7 (2017-01-02)
+------------------------------------------------------------------------
+
+- Improvement: Increase performance of special page and maintenance script.
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+
+
 Version 4.0.6 (2016-12-28)
 ------------------------------------------------------------------------
 
+- Fix: Bug fixes.
 - Fix: Custom namespace weights were not respected.
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
