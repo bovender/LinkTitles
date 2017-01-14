@@ -471,6 +471,7 @@ private static function BuildDelimiters() {
 			'<nowiki>.*?<.nowiki>|<code>.*?<\/code>|' . // nowiki/code
 			'<pre>.*?<\/pre>|<html>.*?<\/html>|' .      // pre/html
 			'<script>.*?<\/script>|' .                  // script
+			'<gallery>.*?<\/gallery>|' .                // gallery
 			'<div.+?>|<\/div>|' .                       // attributes of div elements
 			'<span.+?>|<\/span>|' .                     // attributes of span elements
 			'<file>[^<]*<\/file>|' .                    // stuff inside file elements
