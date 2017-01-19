@@ -133,7 +133,7 @@ class Special extends \SpecialPage {
 
 		// Iterate through the pages; break if a time limit is exceeded.
 		foreach ( $res as $row ) {
-			$curTitle = Title::makeTitleSafe( $row->page_namespace, $row->page_title);
+			$curTitle = \Title::makeTitleSafe( $row->page_namespace, $row->page_title);
 			Extension::processPage($curTitle, $this->getContext());
 			$start += 1;
 			
