@@ -220,11 +220,12 @@ class Extension {
 			$newText = self::parseContent($title, $text);
 			if ( $text != $newText ) {
 				$content = $content->getContentHandler()->unserializeContent( $newText );
-				$page->doQuickEditContent(
+				$page->doEditContent(
 					$content,
-					$context->getUser(),
 					"Links to existing pages added by LinkTitles bot.", // TODO: i18n
-					true // minor modification
+					EDIT_MINOR | EDIT_FORCE_BOT,
+					false, // baseRevId
+					$context->getUser()
 				);
 			};
 			return true;
@@ -471,6 +472,7 @@ private static function BuildDelimiters() {
 			'<nowiki>.*?<.nowiki>|<code>.*?<\/code>|' . // nowiki/code
 			'<pre>.*?<\/pre>|<html>.*?<\/html>|' .      // pre/html
 			'<script>.*?<\/script>|' .                  // script
+			'<gallery>.*?<\/gallery>|' .                // gallery
 			'<div.+?>|<\/div>|' .                       // attributes of div elements
 			'<span.+?>|<\/span>|' .                     // attributes of span elements
 			'<file>[^<]*<\/file>|' .                    // stuff inside file elements
