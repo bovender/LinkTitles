@@ -1,3 +1,13 @@
+Version 4.0.8 (2017-02-16)
+------------------------------------------------------------------------
+
+- Fix: Do not link inside <gallery>...</gallery> tags.
+- Fix: The special page and the maintenance script did not work in MW 1.28.
+- Fix: The special page did not work.
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+
+
 Version 4.0.7 (2017-01-02)
 ------------------------------------------------------------------------
 
