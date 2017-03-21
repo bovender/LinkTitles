@@ -109,7 +109,8 @@ class Extension {
 
 		// If the page contains the magic word '__NOAUTOLINKS__', do not parse it.
 		// Only process if page is in one of our namespaces we want to link
-		if ( !isset( $parser->mDoubleUnderScores[$text] ) && in_array( $title->getNamespace(), $wgLinkTitlesNamespaces ) ) {
+		if ( !\MagicWord::get( 'MAG_LINKTITLES_NOAUTOLINKS' )->match( $text ) &&
+				in_array( $title->getNamespace(), $wgLinkTitlesNamespaces ) ) {
 			$text = self::parseContent( $title, $text );
 		}
 		return true;
