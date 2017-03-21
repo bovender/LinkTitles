@@ -1,6 +1,6 @@
 @mainpage LinkTitles
 @author    [Daniel Kraus (bovender)](http://www.mediawiki.org/wiki/User:Bovender)
-@date      2012-2016
+@date      2012-2017
 @copyright [GNU GPL v2+](http://www.gnu.org/licenses/gpl-2.0.html)
 
 %LinkTitles source code documentation

@@ -1,17 +1,17 @@
 <?php
 /*
- *      Copyright 2012-2016 Daniel Kraus <bovender@bovender.de> ('bovender')
- *      
+ *      Copyright 2012-2017 Daniel Kraus <bovender@bovender.de> ('bovender')
+ *
  *      This program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
  *      the Free Software Foundation; either version 2 of the License, or
  *      (at your option) any later version.
- *      
+ *
  *      This program is distributed in the hope that it will be useful,
  *      but WITHOUT ANY WARRANTY; without even the implied warranty of
  *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *      GNU General Public License for more details.
- *      
+ *
  *      You should have received a copy of the GNU General Public License
  *      along with this program; if not, write to the Free Software
  *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -49,7 +49,7 @@ class Extension {
   private static $targetTitleValue;
 
 	/// The content object for the currently processed target page.
-	/// This variable is necessary to be able to prevent loading the target 
+	/// This variable is necessary to be able to prevent loading the target
 	/// content twice.
 	private static $targetContent;
 
@@ -84,7 +84,7 @@ class Extension {
 			$title = $wikiPage->getTitle();
 
 			// Only process if page is in one of our namespaces we want to link
-			// Fixes ugly autolinking of sidebar pages 
+			// Fixes ugly autolinking of sidebar pages
 			if ( in_array( $title->getNamespace(), $wgLinkTitlesNamespaces )) {
 					$text = $content->getContentHandler()->serializeContent( $content );
 					if ( !\MagicWord::get( 'MAG_LINKTITLES_NOAUTOLINKS' )->match( $text ) ) {
@@ -163,13 +163,13 @@ class Extension {
 			// way, or in a 'fuzzy' way where the first letter of the title may
 			// be either case.
 			if ( $wgCapitalLinks && ( $quotedTitle[0] != '\\' )) {
-				$searchTerm = '((?i)' . $quotedTitle[0] . '(?-i)' . 
+				$searchTerm = '((?i)' . $quotedTitle[0] . '(?-i)' .
 					substr($quotedTitle, 1) . ')';
 			}	else {
 				$searchTerm = '(' . $quotedTitle . ')';
 			}
 
-			$regex = '/(?<![\:\.\@\/\?\&])' . self::$wordStartDelim . 
+			$regex = '/(?<![\:\.\@\/\?\&])' . self::$wordStartDelim .
 				$searchTerm . self::$wordEndDelim . '/S';
 			for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 				// even indexes will point to text that is not enclosed by brackets
@@ -177,7 +177,7 @@ class Extension {
 					'LinkTitles\Extension::simpleModeCallback', $arr[$i], $limit, $count );
 				if ( $wgLinkTitlesFirstOnly && ( $count > 0 ) ) {
 					$limitReached = true;
-					break; 
+					break;
 				};
 			};
 			$newText = implode( '', $arr );
@@ -191,11 +191,11 @@ class Extension {
 				for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 					// even indexes will point to text that is not enclosed by brackets
 					$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
-						self::$wordStartDelim . '(' . $quotedTitle . ')' . 
+						self::$wordStartDelim . '(' . $quotedTitle . ')' .
 						self::$wordEndDelim . '/iS', 'LinkTitles\Extension::smartModeCallback',
 						$arr[$i], $limit, $count );
 					if ( $wgLinkTitlesFirstOnly && ( $count > 0  )) {
-						break; 
+						break;
 					};
 				};
 				$newText = implode( '', $arr );
@@ -205,10 +205,10 @@ class Extension {
 	}
 
 	/// Automatically processes a single page, given a $title Title object.
-	/// This function is called by the SpecialLinkTitles class and the 
+	/// This function is called by the SpecialLinkTitles class and the
 	/// LinkTitlesJob class.
 	/// @param Title 					$title            Title object.
-	/// @param RequestContext $context					Current request context. 
+	/// @param RequestContext $context					Current request context.
 	///                  If in doubt, call MediaWiki's `RequestContext::getMain()`
 	///                  to obtain such an object.
 	/// @returns boolean True if the page exists, false if the page does not exist
@@ -236,8 +236,8 @@ class Extension {
 		}
 	}
 
-	/// Adds the two magic words defined by this extension to the list of 
-	/// 'double-underscore' terms that are automatically removed before a 
+	/// Adds the two magic words defined by this extension to the list of
+	/// 'double-underscore' terms that are automatically removed before a
 	/// page is displayed.
 	/// @param $doubleUnderscoreIDs Array of magic word IDs.
 	/// @return true
@@ -256,7 +256,7 @@ class Extension {
 		global $wgLinkTitlesNamespaces;
 
 		( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'ASC' : $sort_order = 'DESC';
-		// Build a blacklist of pages that are not supposed to be link 
+		// Build a blacklist of pages that are not supposed to be link
 		// targets. This includes the current page.
 		$blackList = str_replace( ' ', '_', '("' . implode( '","',$wgLinkTitlesBlackList ) . '")' );
 
@@ -274,33 +274,33 @@ class Extension {
 		$weightSelect = $weightSelect . " END ";
 		$namespacesClause = '(' . implode( ', ', $namespaces ) . ')';
 
-		// Build an SQL query and fetch all page titles ordered by length from 
-		// shortest to longest. Only titles from 'normal' pages (namespace uid 
-		// = 0) are returned. Since the db may be sqlite, we need a try..catch 
+		// Build an SQL query and fetch all page titles ordered by length from
+		// shortest to longest. Only titles from 'normal' pages (namespace uid
+		// = 0) are returned. Since the db may be sqlite, we need a try..catch
 		// structure because sqlite does not support the CHAR_LENGTH function.
 		$dbr = wfGetDB( DB_SLAVE );
 		try {
-			$res = $dbr->select( 
-				'page', 
+			$res = $dbr->select(
+				'page',
 				array( 'page_title', 'page_namespace' , "weight" => $weightSelect),
-				array( 
-					'page_namespace IN ' . $namespacesClause, 
+				array(
+					'page_namespace IN ' . $namespacesClause,
 					'CHAR_LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
 					'page_title NOT IN ' . $blackList,
-				), 
-				__METHOD__, 
+				),
+				__METHOD__,
 				array( 'ORDER BY' => 'weight ASC, CHAR_LENGTH(page_title) ' . $sort_order )
 			);
 		} catch (Exception $e) {
-			$res = $dbr->select( 
-				'page', 
+			$res = $dbr->select(
+				'page',
 				array( 'page_title', 'page_namespace' , "weight" => $weightSelect ),
-				array( 
-					'page_namespace IN ' . $namespacesClause, 
+				array(
+					'page_namespace IN ' . $namespacesClause,
 					'LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
 					'page_title NOT IN ' . $blackList,
-				), 
-				__METHOD__, 
+				),
+				__METHOD__,
 				array( 'ORDER BY' => 'weight ASC, LENGTH(page_title) ' . $sort_order )
 			);
 		}
@@ -321,19 +321,19 @@ class Extension {
 	}
 
 	// Callback function for use with preg_replace_callback.
-	// This essentially performs a case-sensitive comparison of the 
-	// current page title and the occurrence found on the page; if 
+	// This essentially performs a case-sensitive comparison of the
+	// current page title and the occurrence found on the page; if
 	// the cases do not match, it builds an aliased (piped) link.
-	// If $wgCapitalLinks is set to true, the case of the first 
-	// letter is ignored by MediaWiki and we don't need to build a 
+	// If $wgCapitalLinks is set to true, the case of the first
+	// letter is ignored by MediaWiki and we don't need to build a
 	// piped link if only the case of the first letter is different.
 	private static function smartModeCallback( array $matches ) {
 		global $wgCapitalLinks;
 
 		if ( $wgCapitalLinks ) {
-			// With $wgCapitalLinks set to true we have a slightly more 
-			// complicated version of the callback than if it were false; 
-			// we need to ignore the first letter of the page titles, as 
+			// With $wgCapitalLinks set to true we have a slightly more
+			// complicated version of the callback than if it were false;
+			// we need to ignore the first letter of the page titles, as
 			// it does not matter for linking.
 			if ( self::checkTargetPage() ) {
 				self::ltLog( "Linking (smart) '$matches[0]' to '" . self::$targetTitle . "'" );
@@ -350,7 +350,7 @@ class Extension {
 				return $matches[0];
 			}
 		} else {
-			// If $wgCapitalLinks is false, we can use the simple variant 
+			// If $wgCapitalLinks is false, we can use the simple variant
 			// of the callback function.
 			if ( self::checkTargetPage() ) {
 				self::ltLog( "Linking (smart) '$matches[0]' to '" . self::$targetTitle . "'" );
@@ -379,10 +379,10 @@ class Extension {
 	}
 
 	/// Returns the content of the current target page.
-	/// This function serves to be used in preg_replace_callback callback 
-	/// functions, in order to load the target page content from the 
+	/// This function serves to be used in preg_replace_callback callback
+	/// functions, in order to load the target page content from the
 	/// database only when needed.
-	/// @note It is absolutely necessary that the newTarget() 
+	/// @note It is absolutely necessary that the newTarget()
 	/// function is called for every new page.
 	private static function getTargetContent() {
 		if ( ! isset( $targetContent ) ) {
@@ -392,18 +392,18 @@ class Extension {
 		return self::$targetContent;
 	}
 
-	/// Examines the current target page. Returns true if it may be linked; 
-	/// false if not. This depends on the settings 
-	/// $wgLinkTitlesCheckRedirect and $wgLinkTitlesEnableNoTargetMagicWord 
-	/// and whether the target page is a redirect or contains the 
+	/// Examines the current target page. Returns true if it may be linked;
+	/// false if not. This depends on the settings
+	/// $wgLinkTitlesCheckRedirect and $wgLinkTitlesEnableNoTargetMagicWord
+	/// and whether the target page is a redirect or contains the
 	/// __NOAUTOLINKTARGET__ magic word.
 	/// @returns boolean
 	private static function checkTargetPage() {
 		global $wgLinkTitlesEnableNoTargetMagicWord;
 		global $wgLinkTitlesCheckRedirect;
 
-		// If checking for redirects is enabled and the target page does 
-		// indeed redirect to the current page, return the page title as-is 
+		// If checking for redirects is enabled and the target page does
+		// indeed redirect to the current page, return the page title as-is
 		// (unlinked).
 		if ( $wgLinkTitlesCheckRedirect ) {
 			$redirectTitle = self::getTargetContent()->getUltimateRedirectTarget();
@@ -412,8 +412,8 @@ class Extension {
 			}
 		};
 
-		// If the magic word __NOAUTOLINKTARGET__ is enabled and the target 
-		// page does indeed contain this magic word, return the page title 
+		// If the magic word __NOAUTOLINKTARGET__ is enabled and the target
+		// page does indeed contain this magic word, return the page title
 		// as-is (unlinked).
 		if ( $wgLinkTitlesEnableNoTargetMagicWord ) {
 			if ( self::getTargetContent()->matchMagicWord(
@@ -436,7 +436,7 @@ private static function BuildDelimiters() {
 
 		// Use unicode character properties rather than \b escape sequences
 		// to detect whole words containing non-ASCII characters as well.
-		// Note that this requires a PCRE library that was compiled with 
+		// Note that this requires a PCRE library that was compiled with
 		// --enable-unicode-properties
 		( $wgLinkTitlesWordStartOnly ) ? self::$wordStartDelim = '(?<!\pL)' : self::$wordStartDelim = '';
 		( $wgLinkTitlesWordEndOnly ) ? self::$wordEndDelim = '(?!\pL)' : self::$wordEndDelim = '';
@@ -445,19 +445,19 @@ private static function BuildDelimiters() {
 		{
 			$templatesDelimiter = '{{[^}]+}}|';
 		} else {
-			// Match template names (ignoring any piped [[]] links in them) 
-			// along with the trailing pipe and parameter name or closing 
-			// braces; also match sequences of '|wordcharacters=' (without 
-			// spaces in them) that usually only occur as parameter names in 
+			// Match template names (ignoring any piped [[]] links in them)
+			// along with the trailing pipe and parameter name or closing
+			// braces; also match sequences of '|wordcharacters=' (without
+			// spaces in them) that usually only occur as parameter names in
 			// transclusions (but could also occur as wiki table cell contents).
-			// TODO: Find a way to match parameter names in transclusions, but 
-			// not in table cells or other sequences involving a pipe character 
+			// TODO: Find a way to match parameter names in transclusions, but
+			// not in table cells or other sequences involving a pipe character
 			// and equal sign.
 			$templatesDelimiter = '{{[^|]*?(?:(?:\[\[[^]]+]])?)[^|]*?(?:\|(?:\w+=)?|(?:}}))|\|\w+=|';
 		}
 
 		// Build a regular expression that will capture existing wiki links ("[[...]]"),
-		// wiki headings ("= ... =", "== ... ==" etc.),  
+		// wiki headings ("= ... =", "== ... ==" etc.),
 		// urls ("http://example.com", "[http://example.com]", "[http://example.com Description]",
 		// and email addresses ("mail@example.com").
 		// Since there is a user option to skip headings, we make this part of the expression
