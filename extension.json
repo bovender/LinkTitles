@@ -1,13 +1,13 @@
 {
         "name": "LinkTitles",
         "author": [
-                "[https://www.mediawiki.org/wiki/User:Bovender Daniel Kraus (bovender)]", 
+                "[https://www.mediawiki.org/wiki/User:Bovender Daniel Kraus (bovender)]",
                 "Ulrich Strauss (c0nnex)",
                 "Brent Laabs (labster)"
         ],
         "type": "parserhook",
         "url": "https://www.mediawiki.org/wiki/Extension:LinkTitles",
-        "version": "4.0.8",
+        "version": "4.0.9",
         "license-name": "GPL-2.0+",
         "descriptionmsg": "linktitles-desc",
         "requires": {
