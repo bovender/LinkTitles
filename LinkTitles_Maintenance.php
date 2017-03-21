@@ -1,6 +1,6 @@
 <?php
 /*
- *      Copyright 2012-2016 Daniel Kraus <bovender@bovender.de> @bovender
+ *      Copyright 2012-2017 Daniel Kraus <bovender@bovender.de> @bovender
  *
  *      This program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ require_once( __DIR__ . "/includes/LinkTitles_Extension.php" );
 /// Core class of the maintanance script.
 /// @note Note that the execution of maintenance scripts is prohibited for
 /// an Apache web server due to a `.htaccess` file that declares `deny from
-/// all`. Other webservers may exhibit different behavior. Be aware that 
+/// all`. Other webservers may exhibit different behavior. Be aware that
 /// anybody who is able to execute this script may place a high load on the
 /// server.
 /// @ingroup batch
@@ -116,7 +116,7 @@ class Cli extends \Maintenance {
 			$this->allPages( $startIndex);
 		}
 	}
-	
+
 	private function singlePage() {
 		$pageName = strval( $this->getOption( 'page' ) );
 		$this->output( "Processing single page: '$pageName'\n" );
@@ -130,7 +130,7 @@ class Cli extends \Maintenance {
 		}
 		return $success;
 	}
-	
+
 	private function allPages( $index = 0 ) {
 		global $wgLinkTitlesNamespaces;
 
