@@ -344,7 +344,7 @@ class Extension {
 		}
 		self::ltLog( "Linking (smart) '$matches[0]' to '" . self::$targetTitle . "'" );
 		if (self::$targetTitleNsText) {
-			return '[[' . self.$targetTitleNsText . ':' . self::$targetTitleText . '|' . $matches[0] . ']]';
+			return '[[' . self::$targetTitleNsText . ':' . self::$targetTitleText . '|' . $matches[0] . ']]';
 		}
 		if ($wgCapitalLinks) {
 			// With $wgCapitalLinks set to true we have a slightly more
