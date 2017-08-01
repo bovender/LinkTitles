@@ -56,6 +56,10 @@ class Extension {
 	/// Holds the page title of the currently processed target page
 	/// as a string.
 	private static $targetTitleText;
+	
+	/// Holds the page namespace of the currently processed target page
+	/// as a string or boolean (false at Main namespace).
+	private static $targetTitleNsText;
 
 	/// Delimiter used in a regexp split operation to seperate those parts
 	/// of the page that should be parsed from those that should not be
@@ -154,6 +158,8 @@ class Extension {
 			// regexp compilation errors
 			self::$targetTitleText = self::$targetTitle->getText();
 			$quotedTitle = preg_quote(self::$targetTitleText, '/');
+
+			self::$targetTitleNsText = self::$targetTitle->getNsText();
 
       self::ltDebugLog('TargetTitle='. self::$targetTitleText,"private");
       self::ltDebugLog('TargetTitleQuoted='. $quotedTitle,"private");
@@ -312,6 +318,9 @@ class Extension {
 	private static function simpleModeCallback( array $matches ) {
 		if ( self::checkTargetPage() ) {
 			self::ltLog( "Linking '$matches[0]' to '" . self::$targetTitle . "'" );
+			if (self::$targetTitleNsText) {
+				return '[[' . self::$targetTitleNsText . ':' . self::$targetTitleText . '|' . $matches[0] . ']]';
+			}
 			return '[[' . $matches[0] . ']]';
 		}
 		else
@@ -329,45 +338,33 @@ class Extension {
 	// piped link if only the case of the first letter is different.
 	private static function smartModeCallback( array $matches ) {
 		global $wgCapitalLinks;
-
-		if ( $wgCapitalLinks ) {
+		
+		if (!self::checkTargetPage()) {
+			return $matches[0];
+		}
+		self::ltLog( "Linking (smart) '$matches[0]' to '" . self::$targetTitle . "'" );
+		if (self::$targetTitleNsText) {
+			return '[[' . self.$targetTitleNsText . ':' . self::$targetTitleText . '|' . $matches[0] . ']]';
+		}
+		if ($wgCapitalLinks) {
 			// With $wgCapitalLinks set to true we have a slightly more
 			// complicated version of the callback than if it were false;
 			// we need to ignore the first letter of the page titles, as
-			// it does not matter for linking.
-			if ( self::checkTargetPage() ) {
-				self::ltLog( "Linking (smart) '$matches[0]' to '" . self::$targetTitle . "'" );
-				if ( strcmp(substr(self::$targetTitleText, 1), substr($matches[0], 1)) == 0 ) {
-					// Case-sensitive match: no need to bulid piped link.
-					return '[[' . $matches[0] . ']]';
-				} else  {
-					// Case-insensitive match: build piped link.
-					return '[[' . self::$targetTitleText . '|' . $matches[0] . ']]';
-				}
-			}
-			else
-			{
-				return $matches[0];
+			// it does not matter for linking
+			if (strcmp(substr(self::$targetTitleText, 1), substr($matches[0], 1)) == 0) {
+				// Case-sensitive match: no need to bulid piped link.
+				return '[[' . $matches[0] . ']]';
 			}
 		} else {
 			// If $wgCapitalLinks is false, we can use the simple variant
 			// of the callback function.
-			if ( self::checkTargetPage() ) {
-				self::ltLog( "Linking (smart) '$matches[0]' to '" . self::$targetTitle . "'" );
-				if ( strcmp(self::$targetTitleText, $matches[0]) == 0 ) {
-					// Case-sensitive match: no need to bulid piped link.
-					return '[[' . $matches[0] . ']]';
-				} else  {
-					// Case-insensitive match: build piped link.
-					return '[[' . self::$targetTitleText . '|' . $matches[0] . ']]';
-				}
-			}
-			else
-			{
-				return $matches[0];
+			if ( strcmp(self::$targetTitleText, $matches[0]) == 0 ) {
+				// Case-sensitive match: no need to bulid piped link.
+				return '[[' . $matches[0] . ']]';
 			}
 		}
-	}
+		return '[[' . self::$targetTitleText . '|' . $matches[0] . ']]';
+	}		
 
 	/// Sets member variables for the current target page.
 	private static function newTarget( $ns, $title ) {
