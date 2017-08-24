@@ -435,10 +435,10 @@ class Extension {
 		return true;
 	}
 
-/// Builds the delimiter that is used in a regexp to separate
-/// text that should be parsed from text that should not be
-/// parsed (e.g. inside existing links etc.)
-private static function BuildDelimiters() {
+	/// Builds the delimiter that is used in a regexp to separate
+	/// text that should be parsed from text that should not be
+	/// parsed (e.g. inside existing links etc.)
+	private static function BuildDelimiters() {
 		// Configuration variables need to be defined here as globals.
 		global $wgLinkTitlesParseHeadings;
 		global $wgLinkTitlesSkipTemplates;
@@ -493,25 +493,25 @@ private static function BuildDelimiters() {
 			'\[' . $urlPattern . '\s.+?\]|'. $urlPattern .  '(?=\s|$)|' . // urls
 			'(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b)' .        // email addresses
 			')/ismS';
-		}
+	}
 
-    /// Local Debugging output function which can send output to console as well
-    public static function ltDebugLog($text) {
-        if (self::$ltConsoleOutputDebug)
-        {
-            print $text . "\n";
-        }
-        wfDebugLog('LinkTitles', $text , 'private');
-    }
+  /// Local Debugging output function which can send output to console as well
+  public static function ltDebugLog($text) {
+      if (self::$ltConsoleOutputDebug)
+      {
+          print $text . "\n";
+      }
+      wfDebugLog('LinkTitles', $text , 'private');
+  }
 
-    /// Local Logging output function which can send output to console as well
-    public static function ltLog($text) {
-        if (self::$ltConsoleOutput)
-        {
-            print $text . "\n";
-        }
-        wfDebugLog('LinkTitles', $text , 'private');
-    }
+  /// Local Logging output function which can send output to console as well
+  public static function ltLog($text) {
+      if (self::$ltConsoleOutput)
+      {
+          print $text . "\n";
+      }
+      wfDebugLog('LinkTitles', $text , 'private');
+  }
 }
 
 // vim: ts=2:sw=2:noet:comments^=\:///
