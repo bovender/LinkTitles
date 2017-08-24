@@ -248,14 +248,24 @@ class Extension {
 	}
 
 	public static function onParserFirstCallInit( \Parser $parser ) {
-		$parser->setHook( 'noautolinks', 'LinkTitles\Extension::removeExtraTags' );
+		$parser->setHook( 'noautolinks', 'LinkTitles\Extension::doNoautolinksTag' );
+		$parser->setHook( 'autolinks', 'LinkTitles\Extension::doAutolinksTag' );
 	}
 
 	///	Removes the extra tag that this extension provides (<noautolinks>)
 	///	by simply returning the text between the tags (if any).
 	///	See https://www.mediawiki.org/wiki/Manual:Tag_extensions#Example
-	public static function removeExtraTags( $input, array $args, \Parser $parser, \PPFrame $frame ) {
+	public static function doNoautolinksTag( $input, array $args, \Parser $parser, \PPFrame $frame ) {
 		return htmlspecialchars( $input );
+	}
+
+	///	Removes the extra tag that this extension provides (<noautolinks>)
+	///	by simply returning the text between the tags (if any).
+	///	See https://www.mediawiki.org/wiki/Manual:Tag_extensions#How_do_I_render_wikitext_in_my_extension.3F
+	public static function doAutolinksTag( $input, array $args, \Parser $parser, \PPFrame $frame ) {
+		$withLinks = self::parseContent( $parser->getTitle(), $input );
+		$output = $parser->recursiveTagParse( $withLinks, $frame );
+		return $output;
 	}
 
 	// Fetches the page titles from the database.
