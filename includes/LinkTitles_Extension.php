@@ -464,7 +464,9 @@ class Extension {
 
 		if ( $wgLinkTitlesSkipTemplates )
 		{
-			$templatesDelimiter = '{{[^}]+}}|';
+			// Use recursive regex to balance curly braces;
+			// see http://www.regular-expressions.info/recurse.html
+			$templatesDelimiter = '{{(?>[^{}]|(?R))*}}|';
 		} else {
 			// Match template names (ignoring any piped [[]] links in them)
 			// along with the trailing pipe and parameter name or closing
