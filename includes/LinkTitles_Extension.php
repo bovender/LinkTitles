@@ -247,6 +247,17 @@ class Extension {
 		return true;
 	}
 
+	public static function onParserFirstCallInit( \Parser $parser ) {
+		$parser->setHook( 'noautolinks', 'LinkTitles\Extension::removeExtraTags' );
+	}
+
+	///	Removes the extra tag that this extension provides (<noautolinks>)
+	///	by simply returning the text between the tags (if any).
+	///	See https://www.mediawiki.org/wiki/Manual:Tag_extensions#Example
+	public static function removeExtraTags( $input, array $args, \Parser $parser, \PPFrame $frame ) {
+		return htmlspecialchars( $input );
+	}
+
 	// Fetches the page titles from the database.
 	// @param $currentNamespace String holding the namespace of the page currently being processed.
 	private static function fetchPageTitles( $currentNamespace ) {
@@ -478,6 +489,7 @@ private static function BuildDelimiters() {
 			'<span.+?>|<\/span>|' .                     // attributes of span elements
 			'<file>[^<]*<\/file>|' .                    // stuff inside file elements
 			'style=".+?"|class=".+?"|' .                // styles and classes (e.g. of wikitables)
+			'<noautolinks>.*?<\/noautolinks>|' .        // custom tag 'noautolinks'
 			'\[' . $urlPattern . '\s.+?\]|'. $urlPattern .  '(?=\s|$)|' . // urls
 			'(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b)' .        // email addresses
 			')/ismS';
