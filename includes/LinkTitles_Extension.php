@@ -45,8 +45,8 @@ class Extension {
 	/// A Title object for the target page currently being examined.
 	private static $targetTitle;
 
-  // The TitleValue object of the target page
-  private static $targetTitleValue;
+	// The TitleValue object of the target page
+	private static $targetTitleValue;
 
 	/// The content object for the currently processed target page.
 	/// This variable is necessary to be able to prevent loading the target
@@ -153,10 +153,10 @@ class Extension {
 			// Escape certain special characters in the page title to prevent
 			// regexp compilation errors
 			self::$targetTitleText = self::$targetTitle->getText();
-			$quotedTitle = preg_quote(self::$targetTitleText, '/');
+			$quotedTitle = preg_quote( self::$targetTitleText, '/' );
 
-      self::ltDebugLog('TargetTitle='. self::$targetTitleText,"private");
-      self::ltDebugLog('TargetTitleQuoted='. $quotedTitle,"private");
+			self::ltDebugLog( 'TargetTitle='. self::$targetTitleText, 'private' );
+			self::ltDebugLog( 'TargetTitleQuoted='. $quotedTitle, 'private' );
 
 			// Depending on the global configuration setting $wgCapitalLinks,
 			// the title has to be searched for either in a strictly case-sensitive
@@ -495,23 +495,21 @@ class Extension {
 			')/ismS';
 	}
 
-  /// Local Debugging output function which can send output to console as well
-  public static function ltDebugLog($text) {
-      if (self::$ltConsoleOutputDebug)
-      {
-          print $text . "\n";
-      }
-      wfDebugLog('LinkTitles', $text , 'private');
-  }
+	/// Local Debugging output function which can send output to console as well
+	public static function ltDebugLog($text) {
+		if ( self::$ltConsoleOutputDebug ) {
+			print $text . "\n";
+		}
+		wfDebugLog( 'LinkTitles', $text , 'private' );
+	}
 
-  /// Local Logging output function which can send output to console as well
-  public static function ltLog($text) {
-      if (self::$ltConsoleOutput)
-      {
-          print $text . "\n";
-      }
-      wfDebugLog('LinkTitles', $text , 'private');
-  }
+	/// Local Logging output function which can send output to console as well
+	public static function ltLog($text) {
+		if (self::$ltConsoleOutput) {
+			print $text . "\n";
+		}
+		wfDebugLog( 'LinkTitles', $text , 'private' );
+	}
 }
 
 // vim: ts=2:sw=2:noet:comments^=\:///
