@@ -17,10 +17,13 @@ This extension is [semantically versioned](http://semver.org).
 Contributing
 ------------
 
-If you wish to contribute, please issue pull requests against the `develop` 
-branch, as I follow Vincent Driessen's advice on [A successful Git branching 
-model](http://nvie.com/git-model) (knowing that there are [alternative 
+If you wish to contribute, please issue pull requests against the `develop`
+branch, as I follow Vincent Driessen's advice on [A successful Git branching
+model](http://nvie.com/git-model) (knowing that there are [alternative
 workflows](http://scottchacon.com/2011/08/31/github-flow.html)).
+
+The `master` branch contains stable releases only, so it is safe to pull the
+master branch if you want to install the extension for your own wiki.
 
 
 Contributors

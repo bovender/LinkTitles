@@ -45,8 +45,8 @@ class Extension {
 	/// A Title object for the target page currently being examined.
 	private static $targetTitle;
 
-  // The TitleValue object of the target page
-  private static $targetTitleValue;
+	// The TitleValue object of the target page
+	private static $targetTitleValue;
 
 	/// The content object for the currently processed target page.
 	/// This variable is necessary to be able to prevent loading the target
@@ -153,10 +153,10 @@ class Extension {
 			// Escape certain special characters in the page title to prevent
 			// regexp compilation errors
 			self::$targetTitleText = self::$targetTitle->getText();
-			$quotedTitle = preg_quote(self::$targetTitleText, '/');
+			$quotedTitle = preg_quote( self::$targetTitleText, '/' );
 
-      self::ltDebugLog('TargetTitle='. self::$targetTitleText,"private");
-      self::ltDebugLog('TargetTitleQuoted='. $quotedTitle,"private");
+			self::ltDebugLog( 'TargetTitle='. self::$targetTitleText, 'private' );
+			self::ltDebugLog( 'TargetTitleQuoted='. $quotedTitle, 'private' );
 
 			// Depending on the global configuration setting $wgCapitalLinks,
 			// the title has to be searched for either in a strictly case-sensitive
@@ -245,6 +245,27 @@ class Extension {
 		$doubleUnderscoreIDs[] = 'MAG_LINKTITLES_NOTARGET';
 		$doubleUnderscoreIDs[] = 'MAG_LINKTITLES_NOAUTOLINKS';
 		return true;
+	}
+
+	public static function onParserFirstCallInit( \Parser $parser ) {
+		$parser->setHook( 'noautolinks', 'LinkTitles\Extension::doNoautolinksTag' );
+		$parser->setHook( 'autolinks', 'LinkTitles\Extension::doAutolinksTag' );
+	}
+
+	///	Removes the extra tag that this extension provides (<noautolinks>)
+	///	by simply returning the text between the tags (if any).
+	///	See https://www.mediawiki.org/wiki/Manual:Tag_extensions#Example
+	public static function doNoautolinksTag( $input, array $args, \Parser $parser, \PPFrame $frame ) {
+		return htmlspecialchars( $input );
+	}
+
+	///	Removes the extra tag that this extension provides (<noautolinks>)
+	///	by simply returning the text between the tags (if any).
+	///	See https://www.mediawiki.org/wiki/Manual:Tag_extensions#How_do_I_render_wikitext_in_my_extension.3F
+	public static function doAutolinksTag( $input, array $args, \Parser $parser, \PPFrame $frame ) {
+		$withLinks = self::parseContent( $parser->getTitle(), $input );
+		$output = $parser->recursiveTagParse( $withLinks, $frame );
+		return $output;
 	}
 
 	// Fetches the page titles from the database.
@@ -424,10 +445,10 @@ class Extension {
 		return true;
 	}
 
-/// Builds the delimiter that is used in a regexp to separate
-/// text that should be parsed from text that should not be
-/// parsed (e.g. inside existing links etc.)
-private static function BuildDelimiters() {
+	/// Builds the delimiter that is used in a regexp to separate
+	/// text that should be parsed from text that should not be
+	/// parsed (e.g. inside existing links etc.)
+	private static function BuildDelimiters() {
 		// Configuration variables need to be defined here as globals.
 		global $wgLinkTitlesParseHeadings;
 		global $wgLinkTitlesSkipTemplates;
@@ -443,7 +464,9 @@ private static function BuildDelimiters() {
 
 		if ( $wgLinkTitlesSkipTemplates )
 		{
-			$templatesDelimiter = '{{[^}]+}}|';
+			// Use recursive regex to balance curly braces;
+			// see http://www.regular-expressions.info/recurse.html
+			$templatesDelimiter = '{{(?>[^{}]|(?R))*}}|';
 		} else {
 			// Match template names (ignoring any piped [[]] links in them)
 			// along with the trailing pipe and parameter name or closing
@@ -478,28 +501,27 @@ private static function BuildDelimiters() {
 			'<span.+?>|<\/span>|' .                     // attributes of span elements
 			'<file>[^<]*<\/file>|' .                    // stuff inside file elements
 			'style=".+?"|class=".+?"|' .                // styles and classes (e.g. of wikitables)
+			'<noautolinks>.*?<\/noautolinks>|' .        // custom tag 'noautolinks'
 			'\[' . $urlPattern . '\s.+?\]|'. $urlPattern .  '(?=\s|$)|' . // urls
 			'(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b)' .        // email addresses
 			')/ismS';
+	}
+
+	/// Local Debugging output function which can send output to console as well
+	public static function ltDebugLog($text) {
+		if ( self::$ltConsoleOutputDebug ) {
+			print $text . "\n";
 		}
+		wfDebugLog( 'LinkTitles', $text , 'private' );
+	}
 
-    /// Local Debugging output function which can send output to console as well
-    public static function ltDebugLog($text) {
-        if (self::$ltConsoleOutputDebug)
-        {
-            print $text . "\n";
-        }
-        wfDebugLog('LinkTitles', $text , 'private');
-    }
-
-    /// Local Logging output function which can send output to console as well
-    public static function ltLog($text) {
-        if (self::$ltConsoleOutput)
-        {
-            print $text . "\n";
-        }
-        wfDebugLog('LinkTitles', $text , 'private');
-    }
+	/// Local Logging output function which can send output to console as well
+	public static function ltLog($text) {
+		if (self::$ltConsoleOutput) {
+			print $text . "\n";
+		}
+		wfDebugLog( 'LinkTitles', $text , 'private' );
+	}
 }
 
 // vim: ts=2:sw=2:noet:comments^=\:///
