@@ -2,7 +2,6 @@ var NAVTREE =
 [
   [ "LinkTitles extension for MediaWiki", "index.html", [
     [ "LinkTitles", "index.html", null ],
-    [ "README_DOC", "md_README_DOC.html", null ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
