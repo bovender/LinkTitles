@@ -33,7 +33,7 @@
                 ]
         },
         "AutoloadClasses": {
-                "LinkTitles\\Extension": "includes/LinkTitles_Extension.php",
+                "LinkTitles\\Extension": "includes/Extension.php",
                 "LinkTitles\\Targets": "includes/Targets.php",
                 "LinkTitles\\Config": "includes/Config.php",
                 "LinkTitles\\Special": "includes/Special.php",
