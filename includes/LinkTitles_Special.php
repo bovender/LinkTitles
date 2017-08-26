@@ -1,21 +1,25 @@
 <?php
-/*
- *      Copyright 2012-2017 Daniel Kraus <bovender@bovender.de> ('bovender')
+/**
+ * Provides a special page for the LinkTitles extension.
  *
- *      This program is free software; you can redistribute it and/or modify
- *      it under the terms of the GNU General Public License as published by
- *      the Free Software Foundation; either version 2 of the License, or
- *      (at your option) any later version.
+ * Copyright 2012-2017 Daniel Kraus <bovender@bovender.de> ('bovender')
  *
- *      This program is distributed in the hope that it will be useful,
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *      GNU General Public License for more details.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *      You should have received a copy of the GNU General Public License
- *      along with this program; if not, write to the Free Software
- *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- *      MA 02110-1301, USA.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ *
+ * @author Daniel Kraus <bovender@bovender.de>
  */
 namespace LinkTitles;
 /// @defgroup batch Batch processing
@@ -25,17 +29,21 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 	die( 'Not an entry point.' );
 }
 /// @endcond
- 
-/// Provides a special page that can be used to batch-process all pages in 
-/// the wiki. By default, this can only be performed by sysops.
-/// @ingroup batch
+
+/**
+ * Provides a special page that can be used to batch-process all pages in
+ * the wiki. By default, this can only be performed by sysops.
+ * @ingroup batch
+ *
+ */
 class Special extends \SpecialPage {
 
-	/// Constructor. Announces the special page title and required user right 
-	/// to the parent constructor.
+	/**
+	 * Constructor. Announces the special page title and required user right to the parent constructor.
+	 */
 	function __construct() {
-		// the second parameter in the following function call ensures that only 
-		// users who have the 'linktitles-batch' right get to see this page (by 
+		// the second parameter in the following function call ensures that only
+		// users who have the 'linktitles-batch' right get to see this page (by
 		// default, this are all sysop users).
 		parent::__construct( 'LinkTitles', 'linktitles-batch' );
 	}
@@ -44,9 +52,11 @@ class Special extends \SpecialPage {
 		return 'pagetools';
 	}
 
-	/// Entry function of the special page class. Will abort if the user does 
-	/// not have appropriate permissions ('linktitles-batch').
-	/// @return undefined
+
+	/**
+	 * Entry function of the special page class. Will abort if the user does not have appropriate permissions ('linktitles-batch').
+	 * @param  $par Additional parameters (required by interface; currently not used)
+	 */
 	function execute($par) {
 		// Prevent non-authorized users from executing the batch processing.
 		if ( !$this->userCanExecute( $this->getUser() ) ) {
@@ -76,18 +86,19 @@ class Special extends \SpecialPage {
 		}
 	}
 
-	/// Processes wiki articles, starting at the page indicated by 
-	/// $startTitle. If $wgLinkTitlesTimeLimit is reached before all pages are 
-	/// processed, returns the title of the next page that needs processing.
-	/// @param WebRequest $request WebRequest object that is associated with the special 
-	///                            page.
-	/// @param OutputPage $output  Output page for the special page.
+	/**
+	 * Processes wiki articles, starting at the page indicated by
+	 * $startTitle. If $wgLinkTitlesTimeLimit is reached before all pages are
+	 * processed, returns the title of the next page that needs processing.
+	 * @param WebRequest $request WebRequest object that is associated with the special page.
+	 * @param OutputPage $output  Output page for the special page.
+	 */
 	private function process( \WebRequest &$request, \OutputPage &$output) {
 		global $wgLinkTitlesTimeLimit;
-        global $wgLinkTitlesNamespaces;
+		global $wgLinkTitlesNamespaces;
 
-        // get our Namespaces
-        $namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$wgLinkTitlesNamespaces ) . ')' );
+		// get our Namespaces
+		$namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$wgLinkTitlesNamespaces ) . ')' );
 
 		// Start the stopwatch
 		$startTime = microtime(true);
@@ -95,7 +106,7 @@ class Special extends \SpecialPage {
 		// Connect to the database
 		$dbr = wfGetDB( DB_SLAVE );
 
-		// Fetch the start index and max number of records from the POST 
+		// Fetch the start index and max number of records from the POST
 		// request.
 		$postValues = $request->getValues();
 
@@ -107,26 +118,24 @@ class Special extends \SpecialPage {
 		if ( array_key_exists('e', $postValues) ) {
 			$end = intval($postValues['e']);
 		}
-		else 
+		else
 		{
 			// No end index was given. Therefore, count pages now.
 			$end = $this->countPages($dbr, $namespacesClause );
 		};
 
-		array_key_exists('r', $postValues) ?
-				$reloads = $postValues['r'] :
-				$reloads = 0;
+		array_key_exists('r', $postValues) ? $reloads = $postValues['r'] : $reloads = 0;
 
 		// Retrieve page names from the database.
-		$res = $dbr->select( 
+		$res = $dbr->select(
 			'page',
 			array('page_title', 'page_namespace'),
-			array( 
-				'page_namespace IN ' . $namespacesClause, 
-			), 
-			__METHOD__, 
 			array(
-		 		'LIMIT' => 999999999,
+				'page_namespace IN ' . $namespacesClause,
+			),
+			__METHOD__,
+			array(
+				'LIMIT' => 999999999,
 				'OFFSET' => $start
 			)
 		);
@@ -136,7 +145,7 @@ class Special extends \SpecialPage {
 			$curTitle = \Title::makeTitleSafe( $row->page_namespace, $row->page_title);
 			Extension::processPage($curTitle, $this->getContext());
 			$start += 1;
-			
+
 			// Check if the time limit is exceeded
 			if ( microtime(true)-$startTime > $wgLinkTitlesTimeLimit )
 			{
@@ -149,11 +158,11 @@ class Special extends \SpecialPage {
 		// If we have not reached the last page yet, produce code to reload
 		// the extension's special page.
 		if ( $start < $end )
-	 	{
+		{
 			$reloads += 1;
-			// Build a form with hidden values and output JavaScript code that 
+			// Build a form with hidden values and output JavaScript code that
 			// immediately submits the form in order to continue the process.
-			$output->addHTML($this->getReloaderForm($request->getRequestURL(), 
+			$output->addHTML($this->getReloaderForm($request->getRequestURL(),
 				$start, $end, $reloads));
 		}
 		else // Last page has been processed
@@ -162,8 +171,10 @@ class Special extends \SpecialPage {
 		}
 	}
 
-	/// Adds WikiText to the output containing information about the extension 
-	/// and a form and button to start linking.
+	/*
+	 * Adds WikiText to the output containing information about the extension
+	 * and a form and button to start linking.
+	 */
 	private function buildInfoPage( &$request, &$output ) {
 		$url = $request->getRequestURL();
 
@@ -176,8 +187,8 @@ Source code: http://github.com/bovender/LinkTitles
 
 == Batch Linking ==
 You can start a batch linking process by clicking on the button below.
-This will go through every page in the normal namespace of your Wiki and 
-insert links automatically. This page will repeatedly reload itself, in 
+This will go through every page in the normal namespace of your Wiki and
+insert links automatically. This page will repeatedly reload itself, in
 order to prevent blocking the server. To interrupt the process, simply
 close this page.
 EOF
@@ -192,12 +203,13 @@ EOF
 		);
 	}
 
-	/// Produces informative output in WikiText format to show while working.
-	/// @param $output    Output object.
-	/// @param $curTitle  Title of the currently processed page.
-	/// @param $index     Index of the currently processed page.     
-	/// @param $end       Last index that will be processed (i.e., number of 
-	///                   pages).
+  /*
+	 * Produces informative output in WikiText format to show while working.
+	 * @param $output    Output object.
+	 * @param $curTitle  Title of the currently processed page.
+	 * @param $index     Index of the currently processed page.
+	 * @param $end       Last index that will be processed (i.e., number of pages).
+	 */
 	private function addProgressInfo( &$output, $curTitle, $index, $end ) {
 		$progress = $index / $end * 100;
 		$percent = sprintf("%01.1f", $progress);
@@ -205,8 +217,8 @@ EOF
 		$output->addWikiText(
 <<<EOF
 == Processing pages... ==
-The [http://www.mediawiki.org/wiki/Extension:LinkTitles LinkTitles] 
-extension is currently going through every page of your wiki, adding links to 
+The [http://www.mediawiki.org/wiki/Extension:LinkTitles LinkTitles]
+extension is currently going through every page of your wiki, adding links to
 existing pages as appropriate.
 
 === Current page: $curTitle ===
@@ -232,14 +244,15 @@ EOF
 		);
 	}
 
-	/// Generates an HTML form and JavaScript to automatically submit the 
-	/// form.
-	/// @param $url     URL to reload with a POST request.
-	/// @param $start   Index of the next page that shall be processed.
-	/// @param $end     Index of the last page to be processed.
-	/// @param $reloads Counter that holds the number of reloads so far.
-	/// @returns        String that holds the HTML for a form and a
-	///                 JavaScript command.
+	/*
+	 * Generates an HTML form and JavaScript to automatically submit the
+	 * form.
+	 * @param $url     URL to reload with a POST request.
+	 * @param $start   Index of the next page that shall be processed.
+	 * @param $end     Index of the last page to be processed.
+	 * @param $reloads Counter that holds the number of reloads so far.
+	 * @returns        String that holds the HTML for a form and a JavaScript command.
+	 */
 	private function getReloaderForm( $url, $start, $end, $reloads ) {
 		return
 <<<EOF
@@ -255,12 +268,14 @@ EOF
 		;
 	}
 
-	/// Adds statistics to the page when all processing is done.
-	/// @param $output  Output object
-	/// @param $start   Index of the first page that was processed.
-	/// @param $end     Index of the last processed page.
-	/// @param $reloads Number of reloads of the page.
-	/// @returns undefined
+  /*
+	 * Adds statistics to the page when all processing is done.
+	 * @param $output  Output object
+	 * @param $start   Index of the first page that was processed.
+	 * @param $end     Index of the last processed page.
+	 * @param $reloads Number of reloads of the page.
+	 * @returns undefined
+	 */
 	private function addCompletedInfo( &$output, $start, $end, $reloads ) {
 		global $wgLinkTitlesTimeLimit;
 		$pagesPerReload = sprintf('%0.1f', $end / $reloads);
@@ -281,19 +296,21 @@ EOF
 			);
 	}
 
-	/// Counts the number of pages in a read-access wiki database ($dbr).
-	/// @param $dbr Read-only `Database` object.
-	/// @returns Number of pages in the default namespace (0) of the wiki.
+	/*
+	 * Counts the number of pages in a read-access wiki database ($dbr).
+	 * @param $dbr Read-only `Database` object.
+	 * @returns Number of pages in the default namespace (0) of the wiki.
+	 */
 	private function countPages(&$dbr, $namespacesClause) {
 		$res = $dbr->select(
 			'page',
 			array('pagecount' => "COUNT(page_id)"),
-			array( 
-				'page_namespace IN ' . $namespacesClause, 
-			), 
-			__METHOD__ 
+			array(
+				'page_namespace IN ' . $namespacesClause,
+			),
+			__METHOD__
 		);
-        
+
 		return $res->current()->pagecount;
 	}
 }
