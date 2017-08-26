@@ -5,7 +5,7 @@ abstract class TestCase extends \MediaWikiTestCase {
   protected function setUp() {
     parent::setUp();
     $this->insertPage( 'link target', 'This page serves as a link target' );
-    Extension::invalidateCache();
+    Targets::invalidate(); // force re-querying the pages table
   }
 
   protected function tearDown() {

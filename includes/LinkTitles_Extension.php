@@ -1,44 +1,32 @@
 <?php
-/*
- *      Copyright 2012-2017 Daniel Kraus <bovender@bovender.de> ('bovender')
+/**
+ * The LinkTitles\Extension class provides entry points for the extension.
  *
- *      This program is free software; you can redistribute it and/or modify
- *      it under the terms of the GNU General Public License as published by
- *      the Free Software Foundation; either version 2 of the License, or
- *      (at your option) any later version.
+ * Copyright 2012-2017 Daniel Kraus <bovender@bovender.de> ('bovender')
  *
- *      This program is distributed in the hope that it will be useful,
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *      GNU General Public License for more details.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *      You should have received a copy of the GNU General Public License
- *      along with this program; if not, write to the Free Software
- *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- *      MA 02110-1301, USA.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ *
+ * @author Daniel Kraus <bovender@bovender.de>
  */
-/// @file
 namespace LinkTitles;
 
-/// Helper function for development and debugging.
-/// @param $var Any variable. Raw content will be dumped to stderr.
-/// @return undefined
-function dump($var) {
-		error_log(print_r($var, TRUE) . "\n", 3, 'php://stderr');
-};
-
-/// Central class of the extension. Sets up parser hooks.
-/// This class contains only static functions; do not instantiate.
+/**
+ * Provides entry points for the extension.
+ */
 class Extension {
-	/// Caching variable for page titles that are fetched from the DB.
-	private static $pageTitles;
-
-	/// Caching variable for the current namespace.
-	/// This is needed because the sort order of the page titles that
-	/// are cached in self::$pageTitles depends on the namespace of
-	/// the page currently being processed.
-	private static $currentNamespace;
-
 	/// A Title object for the page that is being parsed.
 	private static $currentTitle;
 
@@ -71,12 +59,6 @@ class Extension {
 	/// Setup method
 	public static function setup() {
 		self::BuildDelimiters();
-	}
-
-	/// Helper method to be used in unit testing, were everything takes place
-	/// in one request.
-	public static function invalidateCache() {
-		self::fetchPageTitles();
 	}
 
 	/// Event handler that is hooked to the PageContentSave event.
@@ -136,16 +118,12 @@ class Extension {
 		( $wgLinkTitlesFirstOnly ) ? $limit = 1 : $limit = -1;
 		$limitReached = false;
 		self::$currentTitle = $title;
-		$currentNamespace = $title->getNamespace();
 		$newText = $text;
 
-		if ( !isset( self::$pageTitles ) || ( $currentNamespace != self::$currentNamespace ) ) {
-			self::$currentNamespace = $currentNamespace;
-			self::fetchPageTitles();
-		}
+		$targets = Targets::default( $title, new Config() );
 
 		// Iterate through the page titles
-		foreach( self::$pageTitles as $row ) {
+		foreach( $targets->queryResult as $row ) {
 			self::newTarget( $row->page_namespace, $row->page_title );
 
 			// Don't link current page
@@ -272,67 +250,6 @@ class Extension {
 		$withLinks = self::parseContent( $parser->getTitle(), $input );
 		$output = $parser->recursiveTagParse( $withLinks, $frame );
 		return $output;
-	}
-
-	// Fetches the page titles from the database.
-	private static function fetchPageTitles() {
-		global $wgLinkTitlesPreferShortTitles;
-		global $wgLinkTitlesMinimumTitleLength;
-		global $wgLinkTitlesBlackList;
-		global $wgLinkTitlesNamespaces;
-
-		( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'ASC' : $sort_order = 'DESC';
-		// Build a blacklist of pages that are not supposed to be link
-		// targets. This includes the current page.
-		$blackList = str_replace( ' ', '_', '("' . implode( '","',$wgLinkTitlesBlackList ) . '")' );
-
-		// Build our weight list. Make sure current namespace is first element
-		$namespaces = array_diff( $wgLinkTitlesNamespaces, [ self::$currentNamespace ] );
-		array_unshift( $namespaces,  self::$currentNamespace );
-
-		// No need for sanitiy check. we are sure that we have at least one element in the array
-		$weightSelect = "CASE page_namespace ";
-		$currentWeight = 0;
-		foreach ($namespaces as &$namspacevalue) {
-				$currentWeight = $currentWeight + 100;
-				$weightSelect = $weightSelect . " WHEN " . $namspacevalue . " THEN " . $currentWeight . PHP_EOL;
-		}
-		$weightSelect = $weightSelect . " END ";
-		$namespacesClause = '(' . implode( ', ', $namespaces ) . ')';
-
-		// Build an SQL query and fetch all page titles ordered by length from
-		// shortest to longest. Only titles from 'normal' pages (namespace uid
-		// = 0) are returned. Since the db may be sqlite, we need a try..catch
-		// structure because sqlite does not support the CHAR_LENGTH function.
-		$dbr = wfGetDB( DB_SLAVE );
-		try {
-			$res = $dbr->select(
-				'page',
-				array( 'page_title', 'page_namespace' , "weight" => $weightSelect),
-				array(
-					'page_namespace IN ' . $namespacesClause,
-					'CHAR_LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
-					'page_title NOT IN ' . $blackList,
-				),
-				__METHOD__,
-				array( 'ORDER BY' => 'weight ASC, CHAR_LENGTH(page_title) ' . $sort_order )
-			);
-		} catch (Exception $e) {
-			$res = $dbr->select(
-				'page',
-				array( 'page_title', 'page_namespace' , "weight" => $weightSelect ),
-				array(
-					'page_namespace IN ' . $namespacesClause,
-					'LENGTH(page_title) >= ' . $wgLinkTitlesMinimumTitleLength,
-					'page_title NOT IN ' . $blackList,
-				),
-				__METHOD__,
-				array( 'ORDER BY' => 'weight ASC, LENGTH(page_title) ' . $sort_order )
-			);
-		}
-
-		self::$pageTitles = $res;
-		return true;
 	}
 
 	// Build an anonymous callback function to be used in simple mode.
