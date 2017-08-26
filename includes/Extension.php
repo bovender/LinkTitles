@@ -45,21 +45,8 @@ class Extension {
 	/// as a string.
 	private static $targetTitleText;
 
-	/// Delimiter used in a regexp split operation to seperate those parts
-	/// of the page that should be parsed from those that should not be
-	/// parsed (e.g. inside pre-existing links etc.).
-	private static $delimiter;
-
-	private static $wordStartDelim;
-	private static $wordEndDelim;
-
 	public static $ltConsoleOutput;
 	public static $ltConsoleOutputDebug;
-
-	/// Setup method
-	public static function setup() {
-		self::BuildDelimiters();
-	}
 
 	/// Event handler that is hooked to the PageContentSave event.
 	public static function onPageContentSave( &$wikiPage, &$user, &$content, &$summary,
@@ -120,7 +107,9 @@ class Extension {
 		self::$currentTitle = $title;
 		$newText = $text;
 
-		$targets = Targets::default( $title, new Config() );
+		$config = new Config();
+		$delimiters = Delimiters::default( $config );
+		$targets = Targets::default( $title, $config );
 
 		// Iterate through the page titles
 		foreach( $targets->queryResult as $row ) {
@@ -132,7 +121,7 @@ class Extension {
 			// split the page content by [[...]] groups
 			// credits to inhan @ StackOverflow for suggesting preg_split
 			// see http://stackoverflow.com/questions/10672286
-			$arr = preg_split( self::$delimiter, $newText, -1, PREG_SPLIT_DELIM_CAPTURE );
+			$arr = preg_split( $delimiters->splitter, $newText, -1, PREG_SPLIT_DELIM_CAPTURE );
 
 			// Escape certain special characters in the page title to prevent
 			// regexp compilation errors
@@ -146,20 +135,19 @@ class Extension {
 			// the title has to be searched for either in a strictly case-sensitive
 			// way, or in a 'fuzzy' way where the first letter of the title may
 			// be either case.
-			if ( $wgCapitalLinks && ( $quotedTitle[0] != '\\' )) {
+			if ( $config->capitalLinks && ( $quotedTitle[0] != '\\' )) {
 				$searchTerm = '((?i)' . $quotedTitle[0] . '(?-i)' .
 					substr($quotedTitle, 1) . ')';
 			}	else {
 				$searchTerm = '(' . $quotedTitle . ')';
 			}
 
-			$regex = '/(?<![\:\.\@\/\?\&])' . self::$wordStartDelim .
-				$searchTerm . self::$wordEndDelim . '/S';
+			$regex = '/(?<![\:\.\@\/\?\&])' . $delimiters->wordStart . $searchTerm . $delimiters->wordEnd . '/S';
 			for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 				// even indexes will point to text that is not enclosed by brackets
 				$arr[$i] = preg_replace_callback( $regex,
 					'LinkTitles\Extension::simpleModeCallback', $arr[$i], $limit, $count );
-				if ( $wgLinkTitlesFirstOnly && ( $count > 0 ) ) {
+				if ( $config->firstOnly && ( $count > 0 ) ) {
 					$limitReached = true;
 					break;
 				};
@@ -169,16 +157,16 @@ class Extension {
 			// If smart mode is turned on, the extension will perform a second
 			// pass on the page and add links with aliases where the case does
 			// not match.
-			if ( $wgLinkTitlesSmartMode && !$limitReached ) {
-				$arr = preg_split( self::$delimiter, $newText, -1, PREG_SPLIT_DELIM_CAPTURE );
+			if ( $config->smartMode && !$limitReached ) {
+				$arr = preg_split( $delimiters->splitter, $newText, -1, PREG_SPLIT_DELIM_CAPTURE );
 
 				for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 					// even indexes will point to text that is not enclosed by brackets
 					$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
-						self::$wordStartDelim . '(' . $quotedTitle . ')' .
-						self::$wordEndDelim . '/iS', 'LinkTitles\Extension::smartModeCallback',
+						$delimiters->wordStart . '(' . $quotedTitle . ')' .
+						$delimiters->wordEnd . '/iS', 'LinkTitles\Extension::smartModeCallback',
 						$arr[$i], $limit, $count );
-					if ( $wgLinkTitlesFirstOnly && ( $count > 0  )) {
+					if ( $config->firstOnly && ( $count > 0  )) {
 						break;
 					};
 				};
@@ -366,68 +354,6 @@ class Extension {
 			}
 		};
 		return true;
-	}
-
-	/// Builds the delimiter that is used in a regexp to separate
-	/// text that should be parsed from text that should not be
-	/// parsed (e.g. inside existing links etc.)
-	private static function BuildDelimiters() {
-		// Configuration variables need to be defined here as globals.
-		global $wgLinkTitlesParseHeadings;
-		global $wgLinkTitlesSkipTemplates;
-		global $wgLinkTitlesWordStartOnly;
-		global $wgLinkTitlesWordEndOnly;
-
-		// Use unicode character properties rather than \b escape sequences
-		// to detect whole words containing non-ASCII characters as well.
-		// Note that this requires a PCRE library that was compiled with
-		// --enable-unicode-properties
-		( $wgLinkTitlesWordStartOnly ) ? self::$wordStartDelim = '(?<!\pL)' : self::$wordStartDelim = '';
-		( $wgLinkTitlesWordEndOnly ) ? self::$wordEndDelim = '(?!\pL)' : self::$wordEndDelim = '';
-
-		if ( $wgLinkTitlesSkipTemplates )
-		{
-			// Use recursive regex to balance curly braces;
-			// see http://www.regular-expressions.info/recurse.html
-			$templatesDelimiter = '{{(?>[^{}]|(?R))*}}|';
-		} else {
-			// Match template names (ignoring any piped [[]] links in them)
-			// along with the trailing pipe and parameter name or closing
-			// braces; also match sequences of '|wordcharacters=' (without
-			// spaces in them) that usually only occur as parameter names in
-			// transclusions (but could also occur as wiki table cell contents).
-			// TODO: Find a way to match parameter names in transclusions, but
-			// not in table cells or other sequences involving a pipe character
-			// and equal sign.
-			$templatesDelimiter = '{{[^|]*?(?:(?:\[\[[^]]+]])?)[^|]*?(?:\|(?:\w+=)?|(?:}}))|\|\w+=|';
-		}
-
-		// Build a regular expression that will capture existing wiki links ("[[...]]"),
-		// wiki headings ("= ... =", "== ... ==" etc.),
-		// urls ("http://example.com", "[http://example.com]", "[http://example.com Description]",
-		// and email addresses ("mail@example.com").
-		// Since there is a user option to skip headings, we make this part of the expression
-		// optional. Note that in order to use preg_split(), it is important to have only one
-		// capturing subpattern (which precludes the use of conditional subpatterns).
-		( $wgLinkTitlesParseHeadings ) ? $delimiter = '' : $delimiter = '=+.+?=+|';
-		$urlPattern = '[a-z]+?\:\/\/(?:\S+\.)+\S+(?:\/.*)?';
-		self::$delimiter = '/(' .                     // exclude from linking:
-			'\[\[.*?\]\]|' .                            // links
-			$delimiter .                                // titles (if requested)
-			$templatesDelimiter .                       // templates (if requested)
-			'^ .+?\n|\n .+?\n|\n .+?$|^ .+?$|' .        // preformatted text
-			'<nowiki>.*?<.nowiki>|<code>.*?<\/code>|' . // nowiki/code
-			'<pre>.*?<\/pre>|<html>.*?<\/html>|' .      // pre/html
-			'<script>.*?<\/script>|' .                  // script
-			'<gallery>.*?<\/gallery>|' .                // gallery
-			'<div.+?>|<\/div>|' .                       // attributes of div elements
-			'<span.+?>|<\/span>|' .                     // attributes of span elements
-			'<file>[^<]*<\/file>|' .                    // stuff inside file elements
-			'style=".+?"|class=".+?"|' .                // styles and classes (e.g. of wikitables)
-			'<noautolinks>.*?<\/noautolinks>|' .        // custom tag 'noautolinks'
-			'\[' . $urlPattern . '\s.+?\]|'. $urlPattern .  '(?=\s|$)|' . // urls
-			'(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b)' .        // email addresses
-			')/ismS';
 	}
 
 	/// Local Debugging output function which can send output to console as well

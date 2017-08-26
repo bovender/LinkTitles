@@ -97,6 +97,43 @@ class Config {
 	public $capitalLinks;
 
 	/**
+	 * Whether or not to link to pages only if the page title appears at the
+	 * start of a word on the target page (i.e., link 'MediaWiki' to a page
+	 * 'Media', but not to a page 'Wiki').
+	 *
+	 * Set both $wordStartOnly and $wordEndOnly to true to enforce matching
+	 * whole titles.
+	 *
+	 * @var bool $wordStartOnly;
+	 */
+	public $wordStartOnly;
+
+	/**
+	 * Whether or not to link to pages only if the page title appears at the
+	 * end of a word on the target page (i.e., link 'MediaWiki' to a page
+	 * 'Wiki', but not to a page 'Media').
+	 *
+	 * Set both $wordStartOnly and $wordEndOnly to true to enforce matching
+	 * whole titles.
+	 *
+	 * @var bool $wordEndOnly;
+	 */
+	public $wordEndOnly;
+
+	/**
+	 * Whether or not to skip templates. If set to true, text inside transclusions
+	 * will not be linked.
+	 * @var bool $skipTemplates
+	 */
+	public $skipTemplates;
+
+	/**
+	 * Whether or not to parse headings.
+	 * @var bool $parseHeadings
+	 */
+	public $parseHeadings;
+
+	/**
 	 * Constructs a new Config object.
 	 *
 	 * The object's member variables will automatically be set with the values
@@ -112,6 +149,10 @@ class Config {
 		global $wgLinkTitlesFirstOnly;
 		global $wgLinkTitlesSmartMode;
 		global $wgCapitalLinks;
+		global $wgLinkTitlesWordStartOnly;
+		global $wgLinkTitlesWordEndOnly;
+		global $wgLinkTitlesSkipTemplates;
+		global $wgLinkTitlesParseHeadings;
 		$this->parseOnEdit = $wgLinkTitlesParseOnEdit;
 		$this->parseOnRender = $wgLinkTitlesParseOnRender;
 		$this->preferShortTitles = $wgLinkTitlesPreferShortTitles;
@@ -121,6 +162,10 @@ class Config {
 		$this->firstOnly = $wgLinkTitlesFirstOnly;
 		$this->smartMode = $wgLinkTitlesSmartMode;
 		$this->capitalLinks = $wgCapitalLinks; // MediaWiki global variable
+		$this->wordStartOnly = $wgLinkTitlesWordStartOnly;
+		$this->wordEndOnly = $wgLinkTitlesWordEndOnly;
+		$this->skipTemplates = $wgLinkTitlesSkipTemplates;
+		$this->parseHeadings = $wgLinkTitlesParseHeadings;
 	}
 
 }
