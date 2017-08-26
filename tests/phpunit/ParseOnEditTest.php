@@ -10,9 +10,9 @@ class ParseOnEditTest extends LinkTitles\TestCase {
       'wgLinkTitlesParseOnEdit' => true,
       'wgLinkTitlesParseOnRender' => false
     ] );
-    $pageId = $this->insertPage( 'test page', 'This page should link to the link target' )['id'];
+    $pageId = $this->insertPage( 'test page', 'This page should link to the link target but not to test page' )['id'];
     $page = WikiPage::newFromId( $pageId );
-    $this->assertSame( 'This page should link to the [[link target]]', self::getPageText( $page ) );
+    $this->assertSame( 'This page should link to the [[link target]] but not to test page', self::getPageText( $page ) );
   }
 
   public function testDoNotParseOnEdit() {

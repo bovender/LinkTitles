@@ -17,10 +17,10 @@ class TargetsTest extends LinkTitles\TestCase {
 
 		// Count number of articles: Inspired by updateArticleCount.php maintenance
 		// script: https://doc.wikimedia.org/mediawiki-core/master/php/updateArticleCount_8php_source.html
-		$dbr = $this->getDB( DB_MASTER );
+		$dbr = wfGetDB( DB_SLAVE );
 		$counter = new SiteStatsInit( $dbr );
-		$count = $counter->articles();
+		$count = $counter->pages();
 
-		$this->assertSame( $targets->queryResult->numRows(), $count );
+		$this->assertEquals( $targets->queryResult->numRows(), $count );
 	}
 }
