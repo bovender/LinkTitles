@@ -73,6 +73,12 @@ class Extension {
 		self::BuildDelimiters();
 	}
 
+	/// Helper method to be used in unit testing, were everything takes place
+	/// in one request.
+	public static function invalidateCache() {
+		self::fetchPageTitles();
+	}
+
 	/// Event handler that is hooked to the PageContentSave event.
 	public static function onPageContentSave( &$wikiPage, &$user, &$content, &$summary,
 			$isMinor, $isWatch, $section, &$flags, &$status ) {
@@ -135,7 +141,7 @@ class Extension {
 
 		if ( !isset( self::$pageTitles ) || ( $currentNamespace != self::$currentNamespace ) ) {
 			self::$currentNamespace = $currentNamespace;
-			self::$pageTitles = self::fetchPageTitles( $currentNamespace );
+			self::fetchPageTitles();
 		}
 
 		// Iterate through the page titles
@@ -269,8 +275,7 @@ class Extension {
 	}
 
 	// Fetches the page titles from the database.
-	// @param $currentNamespace String holding the namespace of the page currently being processed.
-	private static function fetchPageTitles( $currentNamespace ) {
+	private static function fetchPageTitles() {
 		global $wgLinkTitlesPreferShortTitles;
 		global $wgLinkTitlesMinimumTitleLength;
 		global $wgLinkTitlesBlackList;
@@ -282,8 +287,8 @@ class Extension {
 		$blackList = str_replace( ' ', '_', '("' . implode( '","',$wgLinkTitlesBlackList ) . '")' );
 
 		// Build our weight list. Make sure current namespace is first element
-		$namespaces = array_diff( $wgLinkTitlesNamespaces, [ $currentNamespace ] );
-		array_unshift( $namespaces,  $currentNamespace );
+		$namespaces = array_diff( $wgLinkTitlesNamespaces, [ self::$currentNamespace ] );
+		array_unshift( $namespaces,  self::$currentNamespace );
 
 		// No need for sanitiy check. we are sure that we have at least one element in the array
 		$weightSelect = "CASE page_namespace ";
@@ -326,7 +331,8 @@ class Extension {
 			);
 		}
 
-		return $res;
+		self::$pageTitles = $res;
+		return true;
 	}
 
 	// Build an anonymous callback function to be used in simple mode.

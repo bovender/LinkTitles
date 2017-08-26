@@ -34,7 +34,8 @@
         },
         "AutoloadClasses": {
                 "LinkTitles\\Extension": "includes/LinkTitles_Extension.php",
-                "LinkTitles\\Special": "includes/LinkTitles_Special.php"
+                "LinkTitles\\Special": "includes/LinkTitles_Special.php",
+                "LinkTitles\\TestCase": "tests/phpunit/TestCase.php"
         },
         "SpecialPages": {
                 "LinkTitles": "LinkTitles\\Special"
