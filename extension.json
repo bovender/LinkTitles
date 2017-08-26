@@ -36,7 +36,7 @@
                 "LinkTitles\\Extension": "includes/LinkTitles_Extension.php",
                 "LinkTitles\\Targets": "includes/Targets.php",
                 "LinkTitles\\Config": "includes/Config.php",
-                "LinkTitles\\Special": "includes/LinkTitles_Special.php",
+                "LinkTitles\\Special": "includes/Special.php",
                 "LinkTitles\\TestCase": "tests/phpunit/TestCase.php"
         },
         "SpecialPages": {
