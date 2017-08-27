@@ -28,10 +28,17 @@ namespace LinkTitles;
  */
 class Target {
 	/**
-	 * \TitleValue object for the current target page title.
-	 * @var \TitleValue $titleValue;
+	 * A Title object for the target page currently being examined.
+	 * @var \Title $title
 	 */
-	public $titleValue;
+	private $title;
+
+	/**
+	 * Caches the target page content as a \Content object.
+	 *
+	 * @var \Content $content
+	 */
+	private $content;
 
 	/**
 	 * Regex that matches the start of a word; this expression depends on the
@@ -48,19 +55,6 @@ class Target {
 	public $wordEnd;
 
 	/**
-	 * A Title object for the target page currently being examined.
-	 * @var \Title $title
-	 */
-	private $title;
-
-	/**
-	 * Caches the target page content as a \Content object.
-	 *
-	 * @var \Content $content
-	 */
-	private $content;
-
-	/**
 	 * LinkTitles configuration.
 	 * @var Config $config
 	 */
@@ -74,7 +68,7 @@ class Target {
 	 * @param Int $nameSpace Name space of the target page
 	 * @param String &$title Title of the target page
 	 */
-	public function __construct( $nameSpace, &$title, Config &$config ) {
+	public function __construct( $nameSpace, $title, Config &$config ) {
 		$this->title = \Title::makeTitleSafe( $nameSpace, $title );
 		$this->titleValue = $this->title->getTitleValue();
 		$this->config = $config;

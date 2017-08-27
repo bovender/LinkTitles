@@ -3,40 +3,19 @@
  * @group bovender
  */
 class DelimitersTest extends MediaWikiTestCase {
-
 	/**
-	 * @dataProvider provideStartOnly
+	 * @dataProvider provideSplitData
 	 */
-	public function testDelimitersWordStartOnly( $enabled, $delimiter ) {
-		$config = new LinkTitles\Config();
-		$config->wordStartOnly = $enabled;
-		LinkTitles\Delimiters::invalidate();
-		$d = LinkTitles\Delimiters::default( $config );
-		$this->assertSame( $delimiter, $d->wordStart );
+	public function testSplit( $input, $output ) {
+
 	}
 
-	public static function provideStartOnly() {
+	public static function provideSplitData() {
 		return [
-			[ true, '(?<!\pL)' ],
-			[ false, '' ]
-		];
-	}
-
-	/**
-	 * @dataProvider provideEndOnly
-	 */
-	public function testDelimitersWordEndOnly( $enabled, $delimiter ) {
-		$config = new LinkTitles\Config();
-		$config->wordEndOnly = $enabled;
-		LinkTitles\Delimiters::invalidate();
-		$d = LinkTitles\Delimiters::default( $config );
-		$this->assertSame( $delimiter, $d->wordEnd );
-	}
-
-	public static function provideEndOnly() {
-		return [
-			[ true, '(?!\pL)' ],
-			[ false, '' ]
+			[
+				'this may be linked [[this may not be linked]]',
+				[ 'this may be linked', '[[this may not be linked]]']
+			]
 		];
 	}
 }
