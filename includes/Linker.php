@@ -72,7 +72,7 @@ class Linker {
 		$limitReached = false;
 		$newText = $text;
 
-		$delimiters = Delimiters::default( $this->config );
+		$splitter = Splitter::default( $this->config );
 		$targets = Targets::default( $title, $this->config );
 
 		// Iterate through the target page titles
@@ -89,7 +89,7 @@ class Linker {
 			// Split the page content by non-linkable sections.
 			// Credits to inhan @ StackOverflow for suggesting preg_split.
 			// See http://stackoverflow.com/questions/10672286
-			$arr = $delimiters->split( $newText );
+			$arr = $splitter->split( $newText );
 			$count = 0;
 
 			// Cache the target title text for the regex callbacks
@@ -113,7 +113,7 @@ class Linker {
 			if ( $this->config->smartMode && !$limitReached ) {
 				if ( $count > 0 ) {
 					// Split the text again because it was changed in the first pass.
-					$arr = $delimiters->split( $newText );
+					$arr = $splitter->split( $newText );
 				}
 
 				for ( $i = 0; $i < count( $arr ); $i+=2 ) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * The Delimiters class caches a regular expression that delimits text to be parsed.
+ * The Splitter class caches a regular expression that delimits text to be parsed.
  *
  * Copyright 2012-2017 Daniel Kraus <bovender@bovender.de> ('bovender')
  *
@@ -26,7 +26,7 @@ namespace LinkTitles;
 /**
  * Caches a regular expression that delimits text to be parsed.
  */
-class Delimiters {
+class Splitter {
 	/**
 	 * The splitting expression that separates text to be parsed from text that
 	 * must not be parsed.
@@ -35,7 +35,7 @@ class Delimiters {
 	public $splitter;
 
 	/**
-	 * The LinkTitles configuration for this Delimiters instance.
+	 * The LinkTitles configuration for this Splitter instance.
 	 * @var Config $config
 	 */
 	public $config;
@@ -43,12 +43,12 @@ class Delimiters {
 	private static $instance;
 
 	/**
-	 * Gets the Delimiters singleton; may build one with the given config or the
+	 * Gets the Splitter singleton; may build one with the given config or the
 	 * default config if none is given.
 	 *
 	 * If the instance was already created, it does not matter what Config this
 	 * method is called with. To re-create an instance with a different Config,
-	 * call Delimiters::invalidate() first.
+	 * call Splitter::invalidate() first.
 	 *
 	 * @param  Config|null $config LinkTitles configuration.
 	 */
@@ -57,7 +57,7 @@ class Delimiters {
 			if ( $config === null ) {
 				$config = new Config();
 			}
-			self::$instance = new Delimiters( $config );
+			self::$instance = new Splitter( $config );
 		}
 		return self::$instance;
 	}
@@ -73,7 +73,7 @@ class Delimiters {
 
 	protected function __construct( Config $config) {
 		$this->config = $config;
-		$this->buildDelimiters();
+		$this->buildSplitter();
 	}
 
 	/**
@@ -92,7 +92,7 @@ class Delimiters {
 	 * text that should be parsed from text that should not be
 	 * parsed (e.g. inside existing links etc.)
 	 */
-	private function buildDelimiters() {
+	private function buildSplitter() {
 		if ( $this->config->skipTemplates )
 		{
 			// Use recursive regex to balance curly braces;

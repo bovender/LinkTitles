@@ -37,7 +37,7 @@
                 "LinkTitles\\Linker": "includes/Linker.php",
                 "LinkTitles\\Target": "includes/Target.php",
                 "LinkTitles\\Targets": "includes/Targets.php",
-                "LinkTitles\\Delimiters": "includes/Delimiters.php",
+                "LinkTitles\\Splitter": "includes/Splitter.php",
                 "LinkTitles\\Config": "includes/Config.php",
                 "LinkTitles\\Special": "includes/Special.php",
                 "LinkTitles\\TestCase": "tests/phpunit/TestCase.php"
