@@ -84,7 +84,6 @@ class Extension {
 	 * @returns bool True if the page exists, false if the page does not exist
 	 */
 	public static function processPage( \Title $title, \RequestContext $context ) {
-		self::ltLog('Processing '. $title->getPrefixedText());
 		$page = \WikiPage::factory($title);
 		$content = $page->getContent();
 		if ( $content != null ) {
@@ -138,11 +137,11 @@ class Extension {
 	public static function doAutolinksTag( $input, array $args, \Parser $parser, \PPFrame $frame ) {
 		$config = new Config();
 		$linker = new Linker( $config );
-		$withLinks = $linker->linkContent( $parser->getTitle(), $input );
+		$title = $parser->getTitle();
+		$withLinks = $linker->linkContent( $title, $input );
 		$output = $parser->recursiveTagParse( $withLinks, $frame );
 		return $output;
 	}
-
 }
 
 // vim: ts=2:sw=2:noet:comments^=\:///

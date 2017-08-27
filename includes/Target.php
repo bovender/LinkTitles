@@ -168,7 +168,7 @@ class Target {
 		// (unlinked).
 		if ( $this->config->checkRedirect ) {
 			$redirectTitle = $this->getContent()->getUltimateRedirectTarget();
-			if ( $redirectTitle && $redirectTitle->equals( $fromtitle ) ) {
+			if ( $redirectTitle && $redirectTitle->equals( $fromTitle ) ) {
 				return false;
 			}
 		};
