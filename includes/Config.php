@@ -133,6 +133,22 @@ class Config {
 	 */
 	public $parseHeadings;
 
+	/**
+	 * Whether to check if a potential target page links back to the source page.
+	 * Set this to true to avoid indirect linkbacks.
+	 *
+	 * @var bool $checkRedirect
+	 */
+	public $checkRedirect;
+
+	/**
+	 * Whether to enable the __NOAUTOLINKTARGET__ magic word which prevents
+	 * a potential target page from being linked to.
+	 *
+	 * @var bool $enableNoTargetMagicWord
+	 */
+	public $enableNoTargetMagicWord;
+
 	public $enableConsoleOutput;
 	public $enableDebugConsoleOutput;
 
@@ -156,6 +172,8 @@ class Config {
 		global $wgLinkTitlesWordEndOnly;
 		global $wgLinkTitlesSkipTemplates;
 		global $wgLinkTitlesParseHeadings;
+		global $wgLinkTitlesEnableNoTargetMagicWord;
+		global $wgLinkTitlesCheckRedirect;
 		$this->parseOnEdit = $wgLinkTitlesParseOnEdit;
 		$this->parseOnRender = $wgLinkTitlesParseOnRender;
 		$this->preferShortTitles = $wgLinkTitlesPreferShortTitles;
@@ -169,6 +187,8 @@ class Config {
 		$this->wordEndOnly = $wgLinkTitlesWordEndOnly;
 		$this->skipTemplates = $wgLinkTitlesSkipTemplates;
 		$this->parseHeadings = $wgLinkTitlesParseHeadings;
+		$this->enableNoTargetMagicWord = $wgLinkTitlesEnableNoTargetMagicWord;;
+		$this->checkRedirect = $wgLinkTitlesCheckRedirect;;
 		$this->enableConsoleOutput = false;
 		$this->enableDebugConsoleOutput = false;
 	}

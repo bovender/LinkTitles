@@ -27,15 +27,36 @@ namespace LinkTitles;
  * Caches a regular expression that delimits text to be parsed.
  */
 class Delimiters {
+	/**
+	 * The splitting expression that separates text to be parsed from text that
+	 * must not be parsed.
+	 * @var String $splitter
+	 */
+	public $splitter;
+
+	/**
+	 * The LinkTitles configuration for this Delimiters instance.
+	 * @var Config $config
+	 */
+	public $config;
+
 	private static $instance;
 
 	/**
-	 * Singleton factory.
+	 * Gets the Delimiters singleton; may build one with the given config or the
+	 * default config if none is given.
 	 *
-	 * @param  Config $config LinkTitles configuration.
+	 * If the instance was already created, it does not matter what Config this
+	 * method is called with. To re-create an instance with a different Config,
+	 * call Delimiters::invalidate() first.
+	 *
+	 * @param  Config|null $config LinkTitles configuration.
 	 */
-	public static function default( Config $config ) {
+	public static function default( Config &$config = null ) {
 		if ( self::$instance === null ) {
+			if ( $config === null ) {
+				$config = new Config();
+			}
 			self::$instance = new Delimiters( $config );
 		}
 		return self::$instance;
@@ -56,27 +77,15 @@ class Delimiters {
 	}
 
 	/**
-	 * The splitting expression that separates text to be parsed from text that
-	 * must not be parsed.
-	 * @var String $splitter
+	 * Splits a text into sections that may be linked and sections that may not
+	 * be linked (e.g., because they already are a link, or a template, etc.).
+	 *
+	 * @param  String &$text Text to split.
+	 * @return Array of strings where even indexes point to linkable sections.
 	 */
-	public $splitter;
-
-	/**
-	 * Regex that matches the start of a word; this expression depends on the
-	 * setting of LinkTitles\Config->wordStartOnly;
-	 * @var String $wordStart
-	 */
-	public $wordStart;
-
-	/**
-	 * Regex that matches the end of a word; this expression depends on the
-	 * setting of LinkTitles\Config->wordEndOnly;
-	 * @var String $wordEnd
-	 */
-	public $wordEnd;
-
-	private $config;
+	public function split( &$text ) {
+		return preg_split( $this->splitter, $text, -1, PREG_SPLIT_DELIM_CAPTURE );
+	}
 
 	/*
 	 * Builds the delimiter that is used in a regexp to separate
@@ -84,13 +93,6 @@ class Delimiters {
 	 * parsed (e.g. inside existing links etc.)
 	 */
 	private function buildDelimiters() {
-		// Use unicode character properties rather than \b escape sequences
-		// to detect whole words containing non-ASCII characters as well.
-		// Note that this requires a PCRE library that was compiled with
-		// --enable-unicode-properties
-		( $this->config->wordStartOnly ) ? $this->wordStart = '(?<!\pL)' : $this->wordStart = '';
-		( $this->config->wordEndOnly ) ? $this->wordEnd = '(?!\pL)' : $this->wordEnd = '';
-
 		if ( $this->config->skipTemplates )
 		{
 			// Use recursive regex to balance curly braces;
