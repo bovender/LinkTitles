@@ -31,24 +31,21 @@ class Extension {
 	/// Event handler that is hooked to the PageContentSave event.
 	public static function onPageContentSave( &$wikiPage, &$user, &$content, &$summary,
 			$isMinor, $isWatch, $section, &$flags, &$status ) {
-		global $wgLinkTitlesParseOnEdit;
-		global $wgLinkTitlesNamespaces;
-		if ( !$wgLinkTitlesParseOnEdit ) return true; // TODO: refactor with following if
 
-		if ( !$isMinor ) {
-			$title = $wikiPage->getTitle();
+		$config = new Config();
+		if ( !$config->parseOnEdit || $isMinor ) return true;
 
-			// Only process if page is in one of our namespaces we want to link
-			// Fixes ugly autolinking of sidebar pages
-			if ( in_array( $title->getNamespace(), $wgLinkTitlesNamespaces )) {
-				$text = $content->getContentHandler()->serializeContent( $content );
-				if ( !\MagicWord::get( 'MAG_LINKTITLES_NOAUTOLINKS' )->match( $text ) ) {
-					$config = new Config();
-					$linker = new Linker( $config );
-					$newText = $linker->linkContent( $title, $text );
-					if ( $newText != $text ) {
-						$content = $content->getContentHandler()->unserializeContent( $newText );
-					}
+		$title = $wikiPage->getTitle();
+
+		// Only process if page is in one of our namespaces we want to link
+		// Fixes ugly autolinking of sidebar pages
+		if ( in_array( $title->getNamespace(), $config->nameSpaces )) {
+			$text = $content->getContentHandler()->serializeContent( $content );
+			if ( !\MagicWord::get( 'MAG_LINKTITLES_NOAUTOLINKS' )->match( $text ) ) {
+				$linker = new Linker( $config );
+				$newText = $linker->linkContent( $title, $text );
+				if ( $newText != $text ) {
+					$content = $content->getContentHandler()->unserializeContent( $newText );
 				}
 			}
 		};
@@ -62,7 +59,7 @@ class Extension {
 	 */
 	public static function onInternalParseBeforeLinks( \Parser &$parser, &$text ) {
 		$config = new Config();
-		if (!$config->parseOnRender) return true;
+		if ( !$config->parseOnRender ) return true;
 		$title = $parser->getTitle();
 
 		// If the page contains the magic word '__NOAUTOLINKS__', do not parse it.
