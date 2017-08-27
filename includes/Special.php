@@ -37,6 +37,7 @@ if ( !defined( 'MEDIAWIKI' ) ) {
  *
  */
 class Special extends \SpecialPage {
+	private $config;
 
 	/**
 	 * Constructor. Announces the special page title and required user right to the parent constructor.
@@ -46,6 +47,7 @@ class Special extends \SpecialPage {
 		// users who have the 'linktitles-batch' right get to see this page (by
 		// default, this are all sysop users).
 		parent::__construct( 'LinkTitles', 'linktitles-batch' );
+		$this->config = new Config();
 	}
 
 	function getGroupName() {
@@ -57,7 +59,7 @@ class Special extends \SpecialPage {
 	 * Entry function of the special page class. Will abort if the user does not have appropriate permissions ('linktitles-batch').
 	 * @param  $par Additional parameters (required by interface; currently not used)
 	 */
-	function execute($par) {
+	function execute( $par ) {
 		// Prevent non-authorized users from executing the batch processing.
 		if ( !$this->userCanExecute( $this->getUser() ) ) {
 			$this->displayRestrictionError();
@@ -94,14 +96,11 @@ class Special extends \SpecialPage {
 	 * @param OutputPage $output  Output page for the special page.
 	 */
 	private function process( \WebRequest &$request, \OutputPage &$output) {
-		global $wgLinkTitlesTimeLimit;
-		global $wgLinkTitlesNamespaces;
-
 		// get our Namespaces
-		$namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$wgLinkTitlesNamespaces ) . ')' );
+		$namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$this->config->nameSpaces ) . ')' );
 
 		// Start the stopwatch
-		$startTime = microtime(true);
+		$startTime = microtime( true );
 
 		// Connect to the database
 		$dbr = wfGetDB( DB_SLAVE );
@@ -112,11 +111,11 @@ class Special extends \SpecialPage {
 
 		// Convert the start index to an integer; this helps preventing
 		// SQL injection attacks via forged POST requests.
-		$start = intval($postValues['s']);
+		$start = intval( $postValues['s'] );
 
 		// If an end index was given, we don't need to query the database
-		if ( array_key_exists('e', $postValues) ) {
-			$end = intval($postValues['e']);
+		if ( array_key_exists( 'e', $postValues ) ) {
+			$end = intval( $postValues['e'] );
 		}
 		else
 		{
@@ -124,7 +123,7 @@ class Special extends \SpecialPage {
 			$end = $this->countPages($dbr, $namespacesClause );
 		};
 
-		array_key_exists('r', $postValues) ? $reloads = $postValues['r'] : $reloads = 0;
+		array_key_exists( 'r', $postValues ) ? $reloads = $postValues['r'] : $reloads = 0;
 
 		// Retrieve page names from the database.
 		$res = $dbr->select(
@@ -143,17 +142,17 @@ class Special extends \SpecialPage {
 		// Iterate through the pages; break if a time limit is exceeded.
 		foreach ( $res as $row ) {
 			$curTitle = \Title::makeTitleSafe( $row->page_namespace, $row->page_title);
-			Extension::processPage($curTitle, $this->getContext());
+			Extension::processPage( $curTitle, $this->getContext() );
 			$start += 1;
 
 			// Check if the time limit is exceeded
-			if ( microtime(true)-$startTime > $wgLinkTitlesTimeLimit )
+			if ( microtime( true ) - $startTime > $config->specialPageReloadAfter )
 			{
 				break;
 			}
 		}
 
-		$this->addProgressInfo($output, $curTitle, $start, $end);
+		$this->addProgressInfo( $output, $curTitle, $start, $end );
 
 		// If we have not reached the last page yet, produce code to reload
 		// the extension's special page.
@@ -162,12 +161,12 @@ class Special extends \SpecialPage {
 			$reloads += 1;
 			// Build a form with hidden values and output JavaScript code that
 			// immediately submits the form in order to continue the process.
-			$output->addHTML($this->getReloaderForm($request->getRequestURL(),
-				$start, $end, $reloads));
+			$output->addHTML( $this->getReloaderForm( $request->getRequestURL(),
+				$start, $end, $reloads) );
 		}
 		else // Last page has been processed
 		{
-			$this->addCompletedInfo($output, $start, $end, $reloads);
+			$this->addCompletedInfo( $output, $start, $end, $reloads );
 		}
 	}
 
@@ -244,14 +243,14 @@ EOF
 		);
 	}
 
-	/*
+	/**
 	 * Generates an HTML form and JavaScript to automatically submit the
 	 * form.
 	 * @param $url     URL to reload with a POST request.
 	 * @param $start   Index of the next page that shall be processed.
 	 * @param $end     Index of the last page to be processed.
 	 * @param $reloads Counter that holds the number of reloads so far.
-	 * @returns        String that holds the HTML for a form and a JavaScript command.
+	 * @return         String that holds the HTML for a form and a JavaScript command.
 	 */
 	private function getReloaderForm( $url, $start, $end, $reloads ) {
 		return
@@ -268,16 +267,15 @@ EOF
 		;
 	}
 
-  /*
+  /**
 	 * Adds statistics to the page when all processing is done.
 	 * @param $output  Output object
 	 * @param $start   Index of the first page that was processed.
 	 * @param $end     Index of the last processed page.
 	 * @param $reloads Number of reloads of the page.
-	 * @returns undefined
+	 * @return undefined
 	 */
 	private function addCompletedInfo( &$output, $start, $end, $reloads ) {
-		global $wgLinkTitlesTimeLimit;
 		$pagesPerReload = sprintf('%0.1f', $end / $reloads);
 		$output->addWikiText(
 <<<EOF
@@ -286,7 +284,7 @@ EOF
 |-
 | total number of pages: || ${end}
 |-
-| timeout setting [s]: || ${wgLinkTitlesTimeLimit}
+| timeout setting [s]: || {$config->specialPageReloadAfter}
 |-
 | webpage reloads: || ${reloads}
 |-
@@ -296,12 +294,12 @@ EOF
 			);
 	}
 
-	/*
+	/**
 	 * Counts the number of pages in a read-access wiki database ($dbr).
 	 * @param $dbr Read-only `Database` object.
-	 * @returns Number of pages in the default namespace (0) of the wiki.
+	 * @return Number of pages in the default namespace (0) of the wiki.
 	 */
-	private function countPages(&$dbr, $namespacesClause) {
+	private function countPages( &$dbr, $namespacesClause ) {
 		$res = $dbr->select(
 			'page',
 			array('pagecount' => "COUNT(page_id)"),

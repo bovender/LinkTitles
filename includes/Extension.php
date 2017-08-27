@@ -84,13 +84,13 @@ class Extension {
 	 * @returns bool True if the page exists, false if the page does not exist
 	 */
 	public static function processPage( \Title $title, \RequestContext $context ) {
-		$page = \WikiPage::factory($title);
+		$page = \WikiPage::factory( $title );
 		$content = $page->getContent();
 		if ( $content != null ) {
-			$text = $content->getContentHandler()->serializeContent($content);
+			$text = $content->getContentHandler()->serializeContent( $content );
 			$config = new Config();
 			$linker = new Linker( $config );
-			$newText = $linker->linkContent($title, $text);
+			$newText = $linker->linkContent( $title, $text );
 			if ( $text != $newText ) {
 				$content = $content->getContentHandler()->unserializeContent( $newText );
 				$page->doEditContent(

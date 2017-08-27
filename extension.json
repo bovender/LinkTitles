@@ -27,7 +27,7 @@
                 "LinkTitlesSmartMode": true,
                 "LinkTitlesWordStartOnly": true,
                 "LinkTitlesWordEndOnly": true,
-                "LinkTitlesBatchTimeLimit": 1,
+                "LinkTitlesSpecialPageReloadAfter": 1,
                 "LinkTitlesNamespaces": [
                         0
                 ]

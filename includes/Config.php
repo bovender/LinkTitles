@@ -149,6 +149,12 @@ class Config {
 	 */
 	public $enableNoTargetMagicWord;
 
+	/**
+	 * Time (in seconds) after which to reload the special page.
+	 * @var integer reload interval (in seconds)
+	 */
+	public $specialPageReloadAfter;
+
 	public $enableConsoleOutput;
 	public $enableDebugConsoleOutput;
 
@@ -174,6 +180,7 @@ class Config {
 		global $wgLinkTitlesParseHeadings;
 		global $wgLinkTitlesEnableNoTargetMagicWord;
 		global $wgLinkTitlesCheckRedirect;
+		global $wgLinkTitlesSpecialPageReloadAfter;
 		$this->parseOnEdit = $wgLinkTitlesParseOnEdit;
 		$this->parseOnRender = $wgLinkTitlesParseOnRender;
 		$this->preferShortTitles = $wgLinkTitlesPreferShortTitles;
@@ -189,6 +196,7 @@ class Config {
 		$this->parseHeadings = $wgLinkTitlesParseHeadings;
 		$this->enableNoTargetMagicWord = $wgLinkTitlesEnableNoTargetMagicWord;;
 		$this->checkRedirect = $wgLinkTitlesCheckRedirect;;
+		$this->specialPageReloadAfter = $wgLinkTitlesSpecialPageReloadAfter;
 		$this->enableConsoleOutput = false;
 		$this->enableDebugConsoleOutput = false;
 	}
