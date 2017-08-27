@@ -1,21 +1,23 @@
 <?php
-/*
- *      Copyright 2012-2017 Daniel Kraus <bovender@bovender.de> @bovender
+/**
+ * LinkTitles command line interface (CLI)/maintenance script
  *
- *      This program is free software; you can redistribute it and/or modify
- *      it under the terms of the GNU General Public License as published by
- *      the Free Software Foundation; either version 2 of the License, or
- *      (at your option) any later version.
+ *  Copyright 2012-2017 Daniel Kraus <bovender@bovender.de> @bovender
  *
- *      This program is distributed in the hope that it will be useful,
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *      GNU General Public License for more details.
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
  *
- *      You should have received a copy of the GNU General Public License
- *      along with this program; if not, write to the Free Software
- *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- *      MA 02110-1301, USA.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ *  MA 02110-1301, USA.
  */
 namespace LinkTitles;
 
@@ -44,17 +46,21 @@ else
 	}
 };
 
-require_once( __DIR__ . "/includes/LinkTitles_Extension.php" );
+require_once( __DIR__ . "/includes/Extension.php" );
 
-/// Core class of the maintanance script.
-/// @note Note that the execution of maintenance scripts is prohibited for
-/// an Apache web server due to a `.htaccess` file that declares `deny from
-/// all`. Other webservers may exhibit different behavior. Be aware that
-/// anybody who is able to execute this script may place a high load on the
-/// server.
-/// @ingroup batch
+/**
+ * Core class of the maintanance script.
+ * @note Note that the execution of maintenance scripts is prohibited for
+ * an Apache web server due to a `.htaccess` file that declares `deny from
+ * all`. Other webservers may exhibit different behavior. Be aware that
+ * anybody who is able to execute this script may place a high load on the
+ * server.
+ * @ingroup batch
+ */
 class Cli extends \Maintenance {
-	/// The constructor adds a description and one option.
+	/**
+	 * Constructor.
+	 */
 	public function __construct() {
 		parent::__construct();
 		$this->addDescription("Iterates over wiki pages and automatically adds links to other pages.");
@@ -65,41 +71,45 @@ class Cli extends \Maintenance {
 			true,  // requires argument
 			"s"
 		);
-				$this->addOption(
+		$this->addOption(
 			"page",
 			"page name to process",
 			false, // not required
 			true,  // requires argument
 			"p"
 		);
-				$this->addOption(
-			"log",
-			"enables logging to console",
-			false, // not required
-			false,  // requires no argument
-			"l"
-		);
-				$this->addOption(
-			"debug",
-			"enables debug logging to console",
-			false, // not required
-			false  // requires no argument
-		);
+		// TODO: Add back logging options.
+		// TODO: Add configuration options.
+		// $this->addOption(
+		// 	"log",
+		// 	"enables logging to console",
+		// 	false, // not required
+		// 	false,  // requires no argument
+		// 	"l"
+		// );
+		// $this->addOption(
+		// 	"debug",
+		// 	"enables debug logging to console",
+		// 	false, // not required
+		// 	false  // requires no argument
+		// );
 	}
 
-	/// Main function of the maintenance script.
-	/// Will iterate over all pages in the wiki (starting at a certain index,
-	/// if the `--start` option is given) and call LinkTitles::processPage() for
-	/// each page.
+	/*
+	 * Main function of the maintenance script.
+	 * Will iterate over all pages in the wiki (starting at a certain index,
+	 * if the `--start` option is given) and call LinkTitles::processPage() for
+	 * each page.
+	 */
 	public function execute() {
-		if ($this->hasOption('log'))
-		{
-				Extension::$ltConsoleOutput = true;
-		}
-		if ($this->hasOption('debug'))
-		{
-				Extension::$ltConsoleOutputDebug = true;
-		}
+		// if ($this->hasOption('log'))
+		// {
+		// 	Extension::$ltConsoleOutput = true;
+		// }
+		// if ($this->hasOption('debug'))
+		// {
+		// 	Extension::$ltConsoleOutputDebug = true;
+		// }
 		if ( $this->hasOption('page') ) {
 			if ( !$this->hasOption( 'start' ) ) {
 				$this->singlePage();
@@ -113,10 +123,14 @@ class Cli extends \Maintenance {
 			if ( $startIndex < 0 ) {
 				$this->error( 'FATAL: Start index must be 0 or greater.', 1 );
 			};
-			$this->allPages( $startIndex);
+			$this->allPages( $startIndex );
 		}
 	}
 
+	/**
+	 * Processes a single page.
+	 * @return bool True on success, false on failure.
+	 */
 	private function singlePage() {
 		$pageName = strval( $this->getOption( 'page' ) );
 		$this->output( "Processing single page: '$pageName'\n" );
@@ -131,17 +145,22 @@ class Cli extends \Maintenance {
 		return $success;
 	}
 
+	/**
+	 * Process all pages in the Wiki.
+	 * @param  integer $index Index of the start page.
+	 * @return bool           True on success, false on failure.
+	 */
 	private function allPages( $index = 0 ) {
-		global $wgLinkTitlesNamespaces;
+		$config = new Config();
 
 		// Retrieve page names from the database.
 		$dbr = $this->getDB( DB_SLAVE );
-		$namespacesClause = str_replace( '_', ' ','(' . implode( ', ', $wgLinkTitlesNamespaces ) . ')' );
+		$nameSpacesClause = str_replace( '_', ' ','(' . implode( ', ', $config->nameSpaces ) . ')' );
 		$res = $dbr->select(
 			'page',
 			array( 'page_title', 'page_namespace' ),
 			array(
-				'page_namespace IN ' . $namespacesClause,
+				'page_namespace IN ' . $nameSpacesClause,
 			),
 			__METHOD__,
 			array(

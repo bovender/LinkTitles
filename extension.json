@@ -33,8 +33,14 @@
                 ]
         },
         "AutoloadClasses": {
-                "LinkTitles\\Extension": "includes/LinkTitles_Extension.php",
-                "LinkTitles\\Special": "includes/LinkTitles_Special.php"
+                "LinkTitles\\Extension": "includes/Extension.php",
+                "LinkTitles\\Linker": "includes/Linker.php",
+                "LinkTitles\\Target": "includes/Target.php",
+                "LinkTitles\\Targets": "includes/Targets.php",
+                "LinkTitles\\Splitter": "includes/Splitter.php",
+                "LinkTitles\\Config": "includes/Config.php",
+                "LinkTitles\\Special": "includes/Special.php",
+                "LinkTitles\\TestCase": "tests/phpunit/TestCase.php"
         },
         "SpecialPages": {
                 "LinkTitles": "LinkTitles\\Special"
@@ -61,9 +67,8 @@
                         "LinkTitles\\Extension::onParserFirstCallInit"
                 ]
         },
-        "callback": "LinkTitles\\Extension::setup",
         "ExtensionMessagesFiles": {
-                "LinkTitlesMagic": "includes/LinkTitles_Magic.php"
+                "LinkTitlesMagic": "includes/Magic.php"
         },
         "MessagesDirs": {
                 "LinkTitles": [
