@@ -24,56 +24,66 @@
 namespace LinkTitles;
 
 /**
- * Provides entry points for the extension.
+ * Performs the actual linking of content to existing pages.
  */
 class Linker {
 	/// A Title object for the page that is being parsed.
-	private static $currentTitle;
+	private $currentTitle;
 
 	/// A Title object for the target page currently being examined.
-	private static $targetTitle;
+	private $targetTitle;
 
 	// The TitleValue object of the target page
-	private static $targetTitleValue;
+	private $targetTitleValue;
 
 	/// The content object for the currently processed target page.
 	/// This variable is necessary to be able to prevent loading the target
 	/// content twice.
-	private static $targetContent;
+	private $targetContent;
 
 	/// Holds the page title of the currently processed target page
 	/// as a string.
-	private static $targetTitleText;
+	private $targetTitleText;
 
-	public static $ltConsoleOutput;
-	public static $ltConsoleOutputDebug;
+	/**
+	 * LinkTitles configuration.
+	 *
+	 * @var Config $config
+	 */
+	public $config;
 
-	/// Core function of the extension, performs the actual parsing of the content.
-	/// @param Parser $parser Parser instance for the current page
-	/// @param $text          String that holds the article content
-	/// @returns string: parsed text with links added if needed
-	public static function linkContent( $title, &$text ) {
+	/**
+	 * Constructs a new instance of the Linker class.
+	 *
+	 * @param Config $config LinkTitles configuration object.
+	 */
+	public function __construct( Config &$config ) {
+		$this->config = $config;
+	}
 
-		// Configuration variables need to be defined here as globals.
-		global $wgLinkTitlesFirstOnly;
-		global $wgLinkTitlesSmartMode;
-		global $wgCapitalLinks;
+	/*
+	 * Core function of the extension, performs the actual parsing of the content.
+	 *
+	 * @param Parser $parser Parser instance for the current page
+	 * @param String $text String that holds the article content
+	 * @returns String String with links to target pages
+	 */
+	public function linkContent( \Title &$title, &$text ) {
 
-		( $wgLinkTitlesFirstOnly ) ? $limit = 1 : $limit = -1;
+		( $this->config->firstOnly ) ? $limit = 1 : $limit = -1;
 		$limitReached = false;
-		self::$currentTitle = $title;
+		$this->currentTitle = $title;
 		$newText = $text;
 
-		$config = new Config();
-		$delimiters = Delimiters::default( $config );
-		$targets = Targets::default( $title, $config );
+		$delimiters = Delimiters::default( $this->config );
+		$targets = Targets::default( $title, $this->config );
 
 		// Iterate through the page titles
 		foreach( $targets->queryResult as $row ) {
-			self::newTarget( $row->page_namespace, $row->page_title );
+			$this->newTarget( $row->page_namespace, $row->page_title );
 
 			// Don't link current page
-			if ( self::$targetTitle->equals( self::$currentTitle ) ) { continue; }
+			if ( $this->targetTitle->equals( $this->currentTitle ) ) { continue; }
 
 			// split the page content by [[...]] groups
 			// credits to inhan @ StackOverflow for suggesting preg_split
@@ -82,17 +92,17 @@ class Linker {
 
 			// Escape certain special characters in the page title to prevent
 			// regexp compilation errors
-			self::$targetTitleText = self::$targetTitle->getText();
-			$quotedTitle = preg_quote( self::$targetTitleText, '/' );
+			$this->targetTitleText = $this->targetTitle->getText();
+			$quotedTitle = preg_quote( $this->targetTitleText, '/' );
 
-			self::ltDebugLog( 'TargetTitle='. self::$targetTitleText, 'private' );
-			self::ltDebugLog( 'TargetTitleQuoted='. $quotedTitle, 'private' );
+			$this->ltDebugLog( 'TargetTitle='. $this->targetTitleText, 'private' );
+			$this->ltDebugLog( 'TargetTitleQuoted='. $quotedTitle, 'private' );
 
 			// Depending on the global configuration setting $wgCapitalLinks,
 			// the title has to be searched for either in a strictly case-sensitive
 			// way, or in a 'fuzzy' way where the first letter of the title may
 			// be either case.
-			if ( $config->capitalLinks && ( $quotedTitle[0] != '\\' )) {
+			if ( $this->config->capitalLinks && ( $quotedTitle[0] != '\\' )) {
 				$searchTerm = '((?i)' . $quotedTitle[0] . '(?-i)' .
 					substr($quotedTitle, 1) . ')';
 			}	else {
@@ -103,8 +113,9 @@ class Linker {
 			for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 				// even indexes will point to text that is not enclosed by brackets
 				$arr[$i] = preg_replace_callback( $regex,
-					'LinkTitles\Linker::simpleModeCallback', $arr[$i], $limit, $count );
-				if ( $config->firstOnly && ( $count > 0 ) ) {
+					array( $this, 'simpleModeCallback'),
+					$arr[$i], $limit, $count );
+				if ( $this->config->firstOnly && ( $count > 0 ) ) {
 					$limitReached = true;
 					break;
 				};
@@ -114,16 +125,17 @@ class Linker {
 			// If smart mode is turned on, the extension will perform a second
 			// pass on the page and add links with aliases where the case does
 			// not match.
-			if ( $config->smartMode && !$limitReached ) {
+			if ( $this->config->smartMode && !$limitReached ) {
 				$arr = preg_split( $delimiters->splitter, $newText, -1, PREG_SPLIT_DELIM_CAPTURE );
 
 				for ( $i = 0; $i < count( $arr ); $i+=2 ) {
 					// even indexes will point to text that is not enclosed by brackets
 					$arr[$i] = preg_replace_callback( '/(?<![\:\.\@\/\?\&])' .
 						$delimiters->wordStart . '(' . $quotedTitle . ')' .
-						$delimiters->wordEnd . '/iS', 'LinkTitles\Linker::smartModeCallback',
+						$delimiters->wordEnd . '/iS',
+						array( $this, 'smartModeCallback'),
 						$arr[$i], $limit, $count );
-					if ( $config->firstOnly && ( $count > 0  )) {
+					if ( $this->config->firstOnly && ( $count > 0  )) {
 						break;
 					};
 				};
@@ -134,9 +146,9 @@ class Linker {
 	}
 
 	// Build an anonymous callback function to be used in simple mode.
-	private static function simpleModeCallback( array $matches ) {
-		if ( self::checkTargetPage() ) {
-			self::ltLog( "Linking '$matches[0]' to '" . self::$targetTitle . "'" );
+	private function simpleModeCallback( array $matches ) {
+		if ( $this->checkTargetPage() ) {
+			$this->ltLog( "Linking '$matches[0]' to '" . $this->targetTitle . "'" );
 			return '[[' . $matches[0] . ']]';
 		}
 		else
@@ -152,22 +164,21 @@ class Linker {
 	// If $wgCapitalLinks is set to true, the case of the first
 	// letter is ignored by MediaWiki and we don't need to build a
 	// piped link if only the case of the first letter is different.
-	private static function smartModeCallback( array $matches ) {
-		global $wgCapitalLinks;
+	private function smartModeCallback( array $matches ) {
 
-		if ( $wgCapitalLinks ) {
+		if ( $this->config->capitalLinks ) {
 			// With $wgCapitalLinks set to true we have a slightly more
 			// complicated version of the callback than if it were false;
 			// we need to ignore the first letter of the page titles, as
 			// it does not matter for linking.
-			if ( self::checkTargetPage() ) {
-				self::ltLog( "Linking (smart) '$matches[0]' to '" . self::$targetTitle . "'" );
-				if ( strcmp(substr(self::$targetTitleText, 1), substr($matches[0], 1)) == 0 ) {
+			if ( $this->checkTargetPage() ) {
+				$this->ltLog( "Linking (smart) '$matches[0]' to '" . $this->targetTitle . "'" );
+				if ( strcmp(substr($this->targetTitleText, 1), substr($matches[0], 1)) == 0 ) {
 					// Case-sensitive match: no need to bulid piped link.
 					return '[[' . $matches[0] . ']]';
 				} else  {
 					// Case-insensitive match: build piped link.
-					return '[[' . self::$targetTitleText . '|' . $matches[0] . ']]';
+					return '[[' . $this->targetTitleText . '|' . $matches[0] . ']]';
 				}
 			}
 			else
@@ -177,14 +188,14 @@ class Linker {
 		} else {
 			// If $wgCapitalLinks is false, we can use the simple variant
 			// of the callback function.
-			if ( self::checkTargetPage() ) {
-				self::ltLog( "Linking (smart) '$matches[0]' to '" . self::$targetTitle . "'" );
-				if ( strcmp(self::$targetTitleText, $matches[0]) == 0 ) {
+			if ( $this->checkTargetPage() ) {
+				$this->ltLog( "Linking (smart) '$matches[0]' to '" . $this->targetTitle . "'" );
+				if ( strcmp($this->targetTitleText, $matches[0]) == 0 ) {
 					// Case-sensitive match: no need to bulid piped link.
 					return '[[' . $matches[0] . ']]';
 				} else  {
 					// Case-insensitive match: build piped link.
-					return '[[' . self::$targetTitleText . '|' . $matches[0] . ']]';
+					return '[[' . $this->targetTitleText . '|' . $matches[0] . ']]';
 				}
 			}
 			else
@@ -195,12 +206,12 @@ class Linker {
 	}
 
 	/// Sets member variables for the current target page.
-	private static function newTarget( $ns, $title ) {
-		self::$targetTitle = \Title::makeTitleSafe( $ns, $title );
-		self::ltDebugLog( 'newtarget='.  self::$targetTitle->getText(), "private" );
-		self::$targetTitleValue = self::$targetTitle->getTitleValue();
-		self::ltDebugLog( 'altTarget='. self::$targetTitleValue->getText(), "private" );
-		self::$targetContent = null;
+	private function newTarget( $ns, $title ) {
+		$this->targetTitle = \Title::makeTitleSafe( $ns, $title );
+		$this->ltDebugLog( 'newtarget='.  $this->targetTitle->getText(), "private" );
+		$this->targetTitleValue = $this->targetTitle->getTitleValue();
+		$this->ltDebugLog( 'altTarget='. $this->targetTitleValue->getText(), "private" );
+		$this->targetContent = null;
 	}
 
 	/// Returns the content of the current target page.
@@ -209,12 +220,11 @@ class Linker {
 	/// database only when needed.
 	/// @note It is absolutely necessary that the newTarget()
 	/// function is called for every new page.
-	private static function getTargetContent() {
+	private function getTargetContent() {
 		if ( ! isset( $targetContent ) ) {
-			self::$targetContent = \WikiPage::factory(
-				self::$targetTitle)->getContent();
+			$this->targetContent = \WikiPage::factory( $this->targetTitle )->getContent();
 		};
-		return self::$targetContent;
+		return $this->targetContent;
 	}
 
 	/// Examines the current target page. Returns true if it may be linked;
@@ -223,7 +233,7 @@ class Linker {
 	/// and whether the target page is a redirect or contains the
 	/// __NOAUTOLINKTARGET__ magic word.
 	/// @returns boolean
-	private static function checkTargetPage() {
+	private function checkTargetPage() {
 		global $wgLinkTitlesEnableNoTargetMagicWord;
 		global $wgLinkTitlesCheckRedirect;
 
@@ -231,8 +241,8 @@ class Linker {
 		// indeed redirect to the current page, return the page title as-is
 		// (unlinked).
 		if ( $wgLinkTitlesCheckRedirect ) {
-			$redirectTitle = self::getTargetContent()->getUltimateRedirectTarget();
-			if ( $redirectTitle && $redirectTitle->equals(self::$currentTitle) ) {
+			$redirectTitle = $this->getTargetContent()->getUltimateRedirectTarget();
+			if ( $redirectTitle && $redirectTitle->equals($this->currentTitle) ) {
 				return false;
 			}
 		};
@@ -241,7 +251,7 @@ class Linker {
 		// page does indeed contain this magic word, return the page title
 		// as-is (unlinked).
 		if ( $wgLinkTitlesEnableNoTargetMagicWord ) {
-			if ( self::getTargetContent()->matchMagicWord(
+			if ( $this->getTargetContent()->matchMagicWord(
 					\MagicWord::get('MAG_LINKTITLES_NOTARGET') ) ) {
 				return false;
 			}
@@ -250,16 +260,16 @@ class Linker {
 	}
 
 	/// Local Debugging output function which can send output to console as well
-	public static function ltDebugLog($text) {
-		if ( self::$ltConsoleOutputDebug ) {
+	public function ltDebugLog($text) {
+		if ( $this->config->enableDebugConsoleOutput ) {
 			print $text . "\n";
 		}
 		wfDebugLog( 'LinkTitles', $text , 'private' );
 	}
 
 	/// Local Logging output function which can send output to console as well
-	public static function ltLog($text) {
-		if (self::$ltConsoleOutput) {
+	public function ltLog($text) {
+		if ( $this->config->enableConsoleOutput) {
 			print $text . "\n";
 		}
 		wfDebugLog( 'LinkTitles', $text , 'private' );

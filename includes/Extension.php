@@ -1,6 +1,6 @@
 <?php
 /**
- * The LinkTitles\Extension class provides entry points for the extension.
+ * The LinkTitles\Extension class provides event handlers and entry points for the extension.
  *
  * Copyright 2012-2017 Daniel Kraus <bovender@bovender.de> ('bovender')
  *
@@ -24,7 +24,7 @@
 namespace LinkTitles;
 
 /**
- * Provides entry points for the extension.
+ * Provides event handlers and entry points for the extension.
  */
 class Extension {
 
@@ -33,7 +33,7 @@ class Extension {
 			$isMinor, $isWatch, $section, &$flags, &$status ) {
 		global $wgLinkTitlesParseOnEdit;
 		global $wgLinkTitlesNamespaces;
-		if ( !$wgLinkTitlesParseOnEdit ) return true;
+		if ( !$wgLinkTitlesParseOnEdit ) return true; // TODO: refactor with following if
 
 		if ( !$isMinor ) {
 			$title = $wikiPage->getTitle();
@@ -43,7 +43,9 @@ class Extension {
 			if ( in_array( $title->getNamespace(), $wgLinkTitlesNamespaces )) {
 				$text = $content->getContentHandler()->serializeContent( $content );
 				if ( !\MagicWord::get( 'MAG_LINKTITLES_NOAUTOLINKS' )->match( $text ) ) {
-					$newText = Linker::linkContent( $title, $text );
+					$config = new Config();
+					$linker = new Linker( $config );
+					$newText = $linker->linkContent( $title, $text );
 					if ( $newText != $text ) {
 						$content = $content->getContentHandler()->unserializeContent( $newText );
 					}
@@ -53,39 +55,43 @@ class Extension {
 		return true;
 	}
 
-	/// Event handler that is hooked to the InternalParseBeforeLinks event.
-	/// @param Parser $parser Parser that raised the event.
-	/// @param $text          Preprocessed text of the page.
+	/*
+	 * Event handler that is hooked to the InternalParseBeforeLinks event.
+	 * @param Parser $parser Parser that raised the event.
+	 * @param $text          Preprocessed text of the page
+	 */
 	public static function onInternalParseBeforeLinks( \Parser &$parser, &$text ) {
-		global $wgLinkTitlesParseOnRender;
-		if (!$wgLinkTitlesParseOnRender) return true;
-		global $wgLinkTitlesNamespaces;
+		$config = new Config();
+		if (!$config->parseOnRender) return true;
 		$title = $parser->getTitle();
 
 		// If the page contains the magic word '__NOAUTOLINKS__', do not parse it.
 		// Only process if page is in one of our namespaces we want to link
 		if ( !\MagicWord::get( 'MAG_LINKTITLES_NOAUTOLINKS' )->match( $text ) &&
-				in_array( $title->getNamespace(), $wgLinkTitlesNamespaces ) ) {
-			$text = Linker::linkContent( $title, $text );
+				in_array( $title->getNamespace(), $config->nameSpaces ) ) {
+			$linker = new Linker( $config );
+			$text = $linker->linkContent( $title, $text );
 		}
 		return true;
 	}
 
-	/// Automatically processes a single page, given a $title Title object.
-	/// This function is called by the SpecialLinkTitles class and the
-	/// LinkTitlesJob class.
-	/// @param Title 					$title            Title object.
-	/// @param RequestContext $context					Current request context.
-	///                  If in doubt, call MediaWiki's `RequestContext::getMain()`
-	///                  to obtain such an object.
-	/// @returns boolean True if the page exists, false if the page does not exist
+	/*
+	 * Automatically processes a single page, given a $title Title object.
+	 * This function is called by the SpecialLinkTitles class and the
+	 * LinkTitlesJob class.
+	 * @param Title $title Title object.
+	 * @param RequestContext $context Current request context. If in doubt, call MediaWiki's `RequestContext::getMain()` to obtain such an object.
+	 * @returns bool True if the page exists, false if the page does not exist
+	 */
 	public static function processPage( \Title $title, \RequestContext $context ) {
 		self::ltLog('Processing '. $title->getPrefixedText());
 		$page = \WikiPage::factory($title);
 		$content = $page->getContent();
 		if ( $content != null ) {
 			$text = $content->getContentHandler()->serializeContent($content);
-			$newText = Linker::linkContent($title, $text);
+			$config = new Config();
+			$linker = new Linker( $config );
+			$newText = $linker->linkContent($title, $text);
 			if ( $text != $newText ) {
 				$content = $content->getContentHandler()->unserializeContent( $newText );
 				$page->doEditContent(
@@ -130,7 +136,9 @@ class Extension {
 	///	by simply returning the text between the tags (if any).
 	///	See https://www.mediawiki.org/wiki/Manual:Tag_extensions#How_do_I_render_wikitext_in_my_extension.3F
 	public static function doAutolinksTag( $input, array $args, \Parser $parser, \PPFrame $frame ) {
-		$withLinks = Linker::linkContent( $parser->getTitle(), $input );
+		$config = new Config();
+		$linker = new Linker( $config );
+		$withLinks = $linker->linkContent( $parser->getTitle(), $input );
 		$output = $parser->recursiveTagParse( $withLinks, $frame );
 		return $output;
 	}

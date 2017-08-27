@@ -44,7 +44,7 @@ else
 	}
 };
 
-require_once( __DIR__ . "/includes/LinkTitles_Extension.php" );
+require_once( __DIR__ . "/includes/Extension.php" );
 
 /// Core class of the maintanance script.
 /// @note Note that the execution of maintenance scripts is prohibited for

@@ -133,6 +133,9 @@ class Config {
 	 */
 	public $parseHeadings;
 
+	public $enableConsoleOutput;
+	public $enableDebugConsoleOutput;
+
 	/**
 	 * Constructs a new Config object.
 	 *
@@ -166,6 +169,8 @@ class Config {
 		$this->wordEndOnly = $wgLinkTitlesWordEndOnly;
 		$this->skipTemplates = $wgLinkTitlesSkipTemplates;
 		$this->parseHeadings = $wgLinkTitlesParseHeadings;
+		$this->enableConsoleOutput = false;
+		$this->enableDebugConsoleOutput = false;
 	}
 
 }
