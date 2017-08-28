@@ -3,7 +3,7 @@
  * @group bovender
  * @group Database
  */
-class ParseOnEditTest extends LinkTitles\TestCase {
+class ExtensionTest extends LinkTitles\TestCase {
 
   public function testParseOnEdit() {
     $this->setMwGlobals( [
