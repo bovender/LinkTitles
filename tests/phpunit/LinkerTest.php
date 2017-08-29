@@ -1,5 +1,13 @@
 <?php
 /**
+ * Unit tests for the LinkTitles\Linker class.
+ *
+ * The test class is prefixed with 'LinkTitles' to avoid a naming collision
+ * with a class that exists in the MediaWiki core.
+ *
+ * Ideally the test classes should be namespaced, but when you do that, they
+ * will no longer be automatically discovered.
+ *
  * @group bovender
  * @group Database
  */
@@ -17,12 +25,13 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
   public function testLinkContentSmartMode( $capitalLinks, $smartMode, $input, $expectedOutput) {
     $this->setMwGlobals( 'wgCapitalLinks', $capitalLinks );
     $config = new LinkTitles\Config();
+    $config->firstOnly = false;
     $config->smartMode = $smartMode;
     $linker = new LinkTitles\Linker( $config );
     $this->assertSame( $expectedOutput, $linker->linkContent( $this->title, $input ));
   }
 
-  public static function provideLinkContentSmartModeData() {
+  public function provideLinkContentSmartModeData() {
     return [
       [
         true, // wgCapitalLinks
@@ -83,6 +92,41 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
         false, // smartMode
         'With smart mode off and $wgCapitalLinks = false, this page should not link to Link Target',
         'With smart mode off and $wgCapitalLinks = false, this page should not link to Link Target'
+      ],
+    ];
+  }
+
+  /**
+   * @dataProvider provideLinkContentFirstOnlyData
+   */
+  public function testLinkContentFirstOnly( $firstOnly, $input, $expectedOutput ) {
+    $config = new LinkTitles\Config();
+    $config->firstOnly = $firstOnly;
+    $linker = new LinkTitles\Linker( $config );
+    $this->assertSame( $expectedOutput, $linker->linkContent( $this->title, $input ));
+  }
+
+  public function provideLinkContentFirstOnlyData() {
+    return [
+      [
+        false, // firstOnly
+        'With firstOnly = false, link target is a link target multiple times',
+        'With firstOnly = false, [[link target]] is a [[link target]] multiple times'
+      ],
+      [
+        false, // firstOnly
+        'With firstOnly = false, [[link target]] is a link target multiple times',
+        'With firstOnly = false, [[link target]] is a [[link target]] multiple times'
+      ],
+      [
+        true, // firstOnly
+        'With firstOnly = true, link target is a link target only once',
+        'With firstOnly = true, [[link target]] is a link target only once'
+      ],
+      [
+        true, // firstOnly
+        'With firstOnly = true, [[link target]] is a link target only once',
+        'With firstOnly = true, [[link target]] is a link target only once'
       ],
     ];
   }

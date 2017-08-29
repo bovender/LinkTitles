@@ -60,6 +60,8 @@ class Target {
 	 */
 	private $config;
 
+	private $caseSensitiveLinkValueRegex;
+
 	/**
 	 * Constructs a new Target object
 	 *
@@ -103,20 +105,7 @@ class Target {
 	 * @return String regular expression for this title.
 	 */
 	public function getCaseSensitiveRegex() {
-		$regexSafeTitle = $this->getRegexSafeTitle();
-
-		// Depending on the $config->capitalLinks setting,
-		// the title has to be searched for either in a strictly case-sensitive
-		// way, or in a 'fuzzy' way where the first letter of the title may
-		// be either case.
-		//
-		if ( $this->config->capitalLinks && ( $regexSafeTitle[0] != '\\' )) {
-			$searchTerm = '((?i)' . $regexSafeTitle[0] . '(?-i)' . substr($regexSafeTitle, 1) . ')';
-		}	else {
-			$searchTerm = '(' . $regexSafeTitle . ')';
-		}
-
-		return $this->buildRegex( $searchTerm );
+		return $this->buildRegex( $this->getCaseSensitiveLinkValueRegex() );
 	}
 
 	/**
@@ -136,6 +125,27 @@ class Target {
 	 */
 	private function buildRegex( $searchTerm ) {
 		return '/(?<![\:\.\@\/\?\&])' . $this->wordStart . $searchTerm . $this->wordEnd . '/S';
+	}
+
+	/**
+	 * Gets the (cached) regex for the link value.
+	 *
+	 * Depending on the $config->capitalLinks setting, the title has to be
+	 * searched for either in a strictly case-sensitive way, or in a 'fuzzy' way
+	 * where the first letter of the title may be either case.
+	 *
+	 * @return String regular expression pattern for the link value.
+	 */
+	public function getCaseSensitiveLinkValueRegex() {
+		if ( $this->caseSensitiveLinkValueRegex === null ) {
+			$regexSafeTitle = $this->getRegexSafeTitle();
+			if ( $this->config->capitalLinks && ( $regexSafeTitle[0] != '\\' )) {
+				$this->caseSensitiveLinkValueRegex = '((?i)' . $regexSafeTitle[0] . '(?-i)' . substr($regexSafeTitle, 1) . ')';
+			}	else {
+				$this->caseSensitiveLinkValueRegex = '(' . $regexSafeTitle . ')';
+			}
+		}
+		return $this->caseSensitiveLinkValueRegex;
 	}
 
 	/**

@@ -86,6 +86,14 @@ class Linker {
 				continue;
 			}
 
+			// Dealing with existing links if the firstOnly option is set:
+			// A link to the current page should only be recognized if it appears in
+			// clear text, i.e. we do not count piped links as existing links.
+			// (Similarly, by design, redirections should not be counted as existing links.)
+			if ( $limit == 1 && preg_match( '/[[' . $target->getCaseSensitiveLinkValueRegex() . ']]/' , $text ) ) {
+				continue;
+			}
+
 			// Split the page content by non-linkable sections.
 			// Credits to inhan @ StackOverflow for suggesting preg_split.
 			// See http://stackoverflow.com/questions/10672286
@@ -161,7 +169,7 @@ class Linker {
 			// we need to ignore the first letter of the page titles, as
 			// it does not matter for linking.
 			if ( strcmp( substr( $this->targetTitleText, 1 ), substr( $matches[ 0 ], 1) ) == 0 ) {
-				// Case-sensitive match: no need to bulid piped link.
+				// Case-sensitive match: no need to build piped link.
 				return '[[' . $matches[ 0 ]  . ']]';
 			} else  {
 				// Case-insensitive match: build piped link.
@@ -171,7 +179,7 @@ class Linker {
 			// If $wgCapitalLinks is false, we can use the simple variant
 			// of the callback function.
 			if ( strcmp( $this->targetTitleText, $matches[ 0 ] ) == 0 ) {
-				// Case-sensitive match: no need to bulid piped link.
+				// Case-sensitive match: no need to build piped link.
 				return '[[' . $matches[ 0 ] . ']]';
 			} else  {
 				// Case-insensitive match: build piped link.
