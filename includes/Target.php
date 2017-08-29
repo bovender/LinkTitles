@@ -139,7 +139,7 @@ class Target {
 	public function getCaseSensitiveLinkValueRegex() {
 		if ( $this->caseSensitiveLinkValueRegex === null ) {
 			$regexSafeTitle = $this->getRegexSafeTitle();
-			if ( $this->config->capitalLinks && ( $regexSafeTitle[0] != '\\' )) {
+			if ( $this->config->capitalLinks && preg_match( '/[a-zA-Z]/', $regexSafeTitle[0] ) ) {
 				$this->caseSensitiveLinkValueRegex = '((?i)' . $regexSafeTitle[0] . '(?-i)' . substr($regexSafeTitle, 1) . ')';
 			}	else {
 				$this->caseSensitiveLinkValueRegex = '(' . $regexSafeTitle . ')';

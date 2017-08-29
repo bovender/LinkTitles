@@ -3,7 +3,8 @@
         "author": [
                 "[https://www.mediawiki.org/wiki/User:Bovender Daniel Kraus (bovender)]",
                 "Ulrich Strauss (c0nnex)",
-                "Brent Laabs (labster)"
+                "Brent Laabs (labster)",
+                "tetsuya-zama"
         ],
         "type": "parserhook",
         "url": "https://www.mediawiki.org/wiki/Extension:LinkTitles",

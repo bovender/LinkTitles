@@ -31,6 +31,7 @@ Contributors
 - Daniel Kraus (@bovender), main developer
 - Ulrich Strauss (@c0nnex), namespaces
 - Brent Laabs (@labster), code review and bug fixes
+- @tetsuya-zama, bug fix
 
 
 Testing
