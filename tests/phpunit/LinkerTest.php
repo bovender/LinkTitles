@@ -22,7 +22,7 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
   /**
    * @dataProvider provideLinkContentSmartModeData
    */
-  public function testLinkContentSmartMode( $capitalLinks, $smartMode, $input, $expectedOutput) {
+  public function testLinkContentSmartMode( $capitalLinks, $smartMode, $input, $expectedOutput ) {
     $this->setMwGlobals( 'wgCapitalLinks', $capitalLinks );
     $config = new LinkTitles\Config();
     $config->firstOnly = false;
@@ -129,5 +129,13 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
         'With firstOnly = true, [[link target]] is a link target only once'
       ],
     ];
+  }
+
+  public function testLinkContentBlackList() {
+    $config = new LinkTitles\Config();
+    $config->blackList = [ 'Foo', 'Link target', 'Bar' ];
+    $linker = new LinkTitles\Linker( $config );
+    $text = 'If the link target is blacklisted, it should not be linked';
+    $this->assertSame( $text, $linker->linkContent( $this->title, $text ) );
   }
 }
