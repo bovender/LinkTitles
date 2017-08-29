@@ -275,15 +275,20 @@ class Extension {
 		global $wgLinkTitlesMinimumTitleLength;
 		global $wgLinkTitlesBlackList;
 		global $wgLinkTitlesNamespaces;
+		global $wgLinkTitlesSameNamespaceOnly;
 
 		( $wgLinkTitlesPreferShortTitles ) ? $sort_order = 'ASC' : $sort_order = 'DESC';
 		// Build a blacklist of pages that are not supposed to be link
 		// targets. This includes the current page.
 		$blackList = str_replace( ' ', '_', '("' . implode( '","',$wgLinkTitlesBlackList ) . '")' );
 
-		// Build our weight list. Make sure current namespace is first element
-		$namespaces = array_diff( $wgLinkTitlesNamespaces, [ $currentNamespace ] );
-		array_unshift( $namespaces,  $currentNamespace );
+		if (isset($wgLinkTitlesSameNamespaceOnly) && $wgLinkTitlesSameNamespaceOnly) {
+			$namespaces = [ $currentNamespace ];
+		} else {
+			// Build our weight list. Make sure current namespace is first element
+			$namespaces = array_diff( $wgLinkTitlesNamespaces, [ $currentNamespace ] );
+			array_unshift( $namespaces,  $currentNamespace );
+		}
 
 		// No need for sanitiy check. we are sure that we have at least one element in the array
 		$weightSelect = "CASE page_namespace ";
