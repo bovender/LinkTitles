@@ -90,9 +90,15 @@ class Targets {
 	private function fetch() {
 
 		( $this->config->preferShortTitles ) ? $sortOrder = 'ASC' : $sortOrder = 'DESC';
+
 		// Build a blacklist of pages that are not supposed to be link
 		// targets. This includes the current page.
-		$blackList = str_replace( ' ', '_', '("' . implode( '","',$this->config->blackList ) . '")' );
+		if ( $this->config->blackList ) {
+			$blackList = 'page_title NOT IN ' .
+				str_replace( ' ', '_', '("' . implode( '","', str_replace( '"', '\"', $this->config->blackList ) ) . '")' );
+		} else {
+			$blackList = null;
+		}
 
 		// Build our weight list. Make sure current namespace is first element
 		$nameSpaces = array_diff( $this->config->nameSpaces, [ $this->nameSpace ] );
@@ -117,10 +123,12 @@ class Targets {
 			$this->queryResult = $dbr->select(
 				'page',
 				array( 'page_title', 'page_namespace' , "weight" => $weightSelect),
-				array(
-					'page_namespace IN ' . $nameSpacesClause,
-					'CHAR_LENGTH(page_title) >= ' . $this->config->minimumTitleLength,
-					'page_title NOT IN ' . $blackList,
+				array_filter(
+					array(
+						'page_namespace IN ' . $nameSpacesClause,
+						'CHAR_LENGTH(page_title) >= ' . $this->config->minimumTitleLength,
+						$blackList,
+					)
 				),
 				__METHOD__,
 				array( 'ORDER BY' => 'weight ASC, CHAR_LENGTH(page_title) ' . $sortOrder )
@@ -129,10 +137,12 @@ class Targets {
 			$this->queryResult = $dbr->select(
 				'page',
 				array( 'page_title', 'page_namespace' , "weight" => $weightSelect ),
-				array(
-					'page_namespace IN ' . $nameSpacesClause,
-					'LENGTH(page_title) >= ' . $this->config->minimumTitleLength,
-					'page_title NOT IN ' . $blackList,
+				array_filter(
+					array(
+						'page_namespace IN ' . $nameSpacesClause,
+						'LENGTH(page_title) >= ' . $this->config->minimumTitleLength,
+						$blackList,
+					)
 				),
 				__METHOD__,
 				array( 'ORDER BY' => 'weight ASC, LENGTH(page_title) ' . $sortOrder )

@@ -31,6 +31,7 @@
  * (Ideally the test classes should be namespaced, but when you do that, they
  * will no longer be automatically discovered.)
  *
+ * @group bovender
  * @group Database
  */
 class LinkTitlesLinkerTest extends LinkTitles\TestCase {
@@ -49,12 +50,13 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 
 
 	/**
-	 * @dataProvider provideLinkContentData
+	 * @dataProvider provideLinkContentTemplatesData
 	 */
 	public function testLinkContentTemplates( $skipTemplates, $input, $expectedOutput ) {
 		$config = new LinkTitles\Config();
 		$config->firstOnly = false;
 		$config->skipTemplates = $skipTemplates;
+		LinkTitles\Splitter::invalidate();
 		$linker = new LinkTitles\Linker( $config );
 		$this->assertSame( $expectedOutput, $linker->linkContent( $this->title, $input ));
 	}
@@ -145,8 +147,8 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 			[
 				false, // wgCapitalLinks
 				true, // smartMode
-				'With smart mode on and $wgCapitalLinks = false, this page should link to Link Target',
-				'With smart mode on and $wgCapitalLinks = false, this page should link to [[Link target|Link Target]]'
+				'With smart mode on and $wgCapitalLinks = false, this page should link to Link target',
+				'With smart mode on and $wgCapitalLinks = false, this page should link to [[Link target]]'
 			],
 			[
 				false, // wgCapitalLinks
@@ -194,7 +196,8 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 
 	public function testLinkContentBlackList() {
 		$config = new LinkTitles\Config();
-		$config->blackList = [ 'Foo', 'link target', 'Bar' ];
+		$config->blackList = [ 'Foo', 'Link target', 'Bar' ];
+		LinkTitles\Targets::invalidate();
 		$linker = new LinkTitles\Linker( $config );
 		$text = 'If the link target is blacklisted, it should not be linked';
 		$this->assertSame( $text, $linker->linkContent( $this->title, $text ) );
@@ -220,12 +223,12 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 			[
 				[], // nameSpaces
 				'With nameSpaces = [], page in custom namespace should not be linked',
-				'With firstOnly = [], page in custom namespace should not be linked'
+				'With nameSpaces = [], page in custom namespace should not be linked'
 			],
 			[
 				[ 3000 ], // nameSpaces
-				'With nameSpaces = [], page in custom namespace should be linked',
-				'With firstOnly = [], page [[in custom namespace]] should be linked'
+				'With nameSpaces = 3000, page in custom namespace should be linked',
+				'With nameSpaces = 3000, page [[custom_namespace:in custom namespace]] should be linked'
 			],
 		];
 	}
