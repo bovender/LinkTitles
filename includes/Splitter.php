@@ -114,14 +114,21 @@ class Splitter {
 		// wiki headings ("= ... =", "== ... ==" etc.),
 		// urls ("http://example.com", "[http://example.com]", "[http://example.com Description]",
 		// and email addresses ("mail@example.com").
-		// Since there is a user option to skip headings, we make this part of the expression
-		// optional. Note that in order to use preg_split(), it is important to have only one
-		// capturing subpattern (which precludes the use of conditional subpatterns).
-		( $this->config->parseHeadings ) ? $delimiter = '' : $delimiter = '^=+.+?=+|';
+
+		// Match WikiText headings.
+		// Since there is a user option to skip headings, we make this part of the
+		// expression optional. Note that in order to use preg_split(), it is
+		// important to have only one capturing subpattern (which precludes the use
+		// of conditional subpatterns).
+		// Caveat: This regex pattern should be improved to deal with balanced '='s
+		// only. However, this would require grouping in the pattern which does not
+		// agree with preg_split.
+		$headingsDelimiter = $this->config->parseHeadings ? '' : '^=+[^=]+=+$|';
+
 		$urlPattern = '[a-z]+?\:\/\/(?:\S+\.)+\S+(?:\/.*)?';
 		$this->splitter = '/(' .                     // exclude from linking:
 			'\[\[.*?\]\]|' .                            // links
-			$delimiter .                                // titles (if requested)
+			$headingsDelimiter .                        // headings (if requested)
 			$templatesDelimiter .                       // templates (if requested)
 			'^ .+?\n|\n .+?\n|\n .+?$|^ .+?$|' .        // preformatted text
 			'<nowiki>.*?<.nowiki>|<code>.*?<\/code>|' . // nowiki/code

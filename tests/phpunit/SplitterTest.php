@@ -73,6 +73,26 @@ class SplitterTest extends MediaWikiTestCase {
 				'With skipTemplates = true, this may be linked {{mytemplate|param={{transcluded}}}}',
 				[ 'With skipTemplates = true, this may be linked ', '{{mytemplate|param={{transcluded}}}}', '' ]
 			],
+			[
+				true, // skipTemplates
+				true, // parseHeadings
+				"With parseHeadings = true,\n==a heading may be linked==\n",
+				[ "With parseHeadings = true,\n==a heading may be linked==\n" ]
+			],
+			[
+				true, // skipTemplates
+				false, // parseHeadings
+				// no trailing newline in the following string because it would be swallowed
+				"With parseHeadings = false,\n==a heading may not be linked==",
+				[ "With parseHeadings = false,\n", "==a heading may not be linked==", '' ]
+			],
+			// Improperly formatted headings cannot be dealt with appropriately for now
+			// [
+			// 	true, // skipTemplates
+			// 	false, // parseHeadings
+			// 	"With parseHeadings = false,\n==an improperly formatted heading may be linked=\n",
+			// 	[ "With parseHeadings = false,\n==an improperly formatted heading may be linked=\n" ]
+			// ],
 		];
 	}
 }
