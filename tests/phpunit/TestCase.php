@@ -31,6 +31,7 @@ abstract class TestCase extends \MediaWikiTestCase {
   }
 
   public function addDBDataOnce() {
+    parent::addDBDataOnce();
     $this->insertPage( 'link target', 'This page serves as a link target' );
     Targets::invalidate(); // force re-querying the pages table
   }
