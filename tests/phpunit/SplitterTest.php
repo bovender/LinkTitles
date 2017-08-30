@@ -22,15 +22,21 @@
 
 /**
  * Tests the LinKTitles\Splitter class.
- * 
+ *
  * @group bovender
  */
 class SplitterTest extends MediaWikiTestCase {
 	/**
 	 * @dataProvider provideSplitData
 	 */
-	public function testSplit( $input, $expectedOutput ) {
-		$splitter = LinkTitles\Splitter::default();
+	public function testSplit( $skipTemplates, $parseHeadings, $input, $expectedOutput ) {
+		$config = new LinkTitles\Config();
+		$config->skipTemplates = $skipTemplates;
+		$config->parseHeadings = $parseHeadings;
+		LinkTitles\Splitter::invalidate();
+		$splitter = LinkTitles\Splitter::default( $config );
+		$this->assertSame( $skipTemplates, $splitter->config->skipTemplates, 'Splitter has incorrect skipTemplates config');
+		$this->assertSame( $parseHeadings, $splitter->config->parseHeadings, 'Splitter has incorrect parseHeadings config');
 		$this->assertSame( $expectedOutput, $splitter->split( $input ) );
 	}
 
@@ -38,16 +44,34 @@ class SplitterTest extends MediaWikiTestCase {
 	public static function provideSplitData() {
 		return [
 			[
+				true, // skipTemplates
+				false, // parseHeadings
 				'this may be linked [[this may not be linked]]',
 				[ 'this may be linked ', '[[this may not be linked]]', '' ]
 			],
 			[
+				true, // skipTemplates
+				false, // parseHeadings
 				'this may be linked <gallery>this may not be linked</gallery>',
 				[ 'this may be linked ', '<gallery>this may not be linked</gallery>', '' ]
 			],
 			[
-				'this may be linked {{mytemplate|param={{transcluded}}}}',
-				[ 'this may be linked ', '{{mytemplate|param={{transcluded}}}}', '' ]
+				true, // skipTemplates
+				false, // parseHeadings
+				'With skipTemplates = true, this may be linked {{mytemplate|param=link target}}',
+				[ 'With skipTemplates = true, this may be linked ', '{{mytemplate|param=link target}}', '' ]
+			],
+			[
+				false, // skipTemplates
+				false, // parseHeadings
+				'With skipTemplates = false, this may be linked {{mytemplate|param=link target}}',
+				[ 'With skipTemplates = false, this may be linked ', '{{mytemplate|param=', 'link target}}' ]
+			],
+			[
+				true, // skipTemplates
+				false, // parseHeadings
+				'With skipTemplates = true, this may be linked {{mytemplate|param={{transcluded}}}}',
+				[ 'With skipTemplates = true, this may be linked ', '{{mytemplate|param={{transcluded}}}}', '' ]
 			],
 		];
 	}

@@ -117,7 +117,7 @@ class Splitter {
 		// Since there is a user option to skip headings, we make this part of the expression
 		// optional. Note that in order to use preg_split(), it is important to have only one
 		// capturing subpattern (which precludes the use of conditional subpatterns).
-		( $this->config->parseHeadings ) ? $delimiter = '' : $delimiter = '=+.+?=+|';
+		( $this->config->parseHeadings ) ? $delimiter = '' : $delimiter = '^=+.+?=+|';
 		$urlPattern = '[a-z]+?\:\/\/(?:\S+\.)+\S+(?:\/.*)?';
 		$this->splitter = '/(' .                     // exclude from linking:
 			'\[\[.*?\]\]|' .                            // links
