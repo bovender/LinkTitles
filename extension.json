@@ -30,7 +30,8 @@
                 "LinkTitlesWordEndOnly": true,
                 "LinkTitlesSpecialPageReloadAfter": 1,
                 "LinkTitlesSourceNamespaces": [],
-                "LinkTitlesTargetNamespaces": []
+                "LinkTitlesTargetNamespaces": [],
+                "LinkTitlesSameNamespace": true
         },
         "AutoloadClasses": {
                 "LinkTitles\\Extension": "includes/Extension.php",

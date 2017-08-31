@@ -89,7 +89,6 @@ class Targets {
 	 * Fetches the page titles from the database.
 	 */
 	private function fetch() {
-
 		( $this->config->preferShortTitles ) ? $sortOrder = 'ASC' : $sortOrder = 'DESC';
 
 		// Build a blacklist of pages that are not supposed to be link
@@ -101,9 +100,19 @@ class Targets {
 			$blackList = null;
 		}
 
-		// Build our weight list. Make sure current namespace is first element
-		$namespaces = array_diff( $this->config->targetNamespaces, [ $this->sourceNamespace ] );
-		array_unshift( $namespaces,  $this->sourceNamespace );
+		if ( $this->config->sameNamespace ) {
+			// Build our weight list. Make sure current namespace is first element
+			$namespaces = array_diff( $this->config->targetNamespaces, [ $this->sourceNamespace ] );
+			array_unshift( $namespaces, $this->sourceNamespace );
+		} else {
+			$namespaces = $this->config->targetNamespaces;
+		}
+
+		if ( !$namespaces) {
+			// If there are absolutely no target namespaces (not even the one of the
+			// source page), we can just return.
+			return;
+		}
 
 		// No need for sanitiy check. we are sure that we have at least one element in the array
 		$weightSelect = "CASE page_namespace ";

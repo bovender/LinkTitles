@@ -163,6 +163,12 @@ class Config {
 	 */
 	public $specialPageReloadAfter;
 
+	/**
+	 * Whether to link to pages in the same namespace (default is true).
+	 * @var bool $sameNamespace;
+	 */
+	public $sameNamespace;
+
 	public $enableConsoleOutput;
 	public $enableDebugConsoleOutput;
 
@@ -180,6 +186,7 @@ class Config {
 		global $wgLinkTitlesBlackList;
 		global $wgLinkTitlesSourceNamespaces;
 		global $wgLinkTitlesTargetNamespaces;
+		global $wgLinkTitlesSameNamespace;
 		global $wgLinkTitlesFirstOnly;
 		global $wgLinkTitlesSmartMode;
 		global $wgCapitalLinks;
@@ -197,6 +204,7 @@ class Config {
 		$this->blackList = $wgLinkTitlesBlackList;
 		$this->sourceNamespaces = $wgLinkTitlesSourceNamespaces ? $wgLinkTitlesSourceNamespaces : [ NS_MAIN ];
 		$this->targetNamespaces = $wgLinkTitlesTargetNamespaces;
+		$this->sameNamespace = $wgLinkTitlesSameNamespace;
 		$this->firstOnly = $wgLinkTitlesFirstOnly;
 		$this->smartMode = $wgLinkTitlesSmartMode;
 		$this->capitalLinks = $wgCapitalLinks; // MediaWiki global variable
@@ -210,5 +218,4 @@ class Config {
 		$this->enableConsoleOutput = false;
 		$this->enableDebugConsoleOutput = false;
 	}
-
 }
