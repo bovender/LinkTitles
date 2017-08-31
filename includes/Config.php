@@ -69,10 +69,18 @@ class Config {
 	public $blackList;
 
 	/**
-	 * Array of those name spaces (integer constants) whose pages may be linked.
-	 * @var Array $namespaces
+	 * Array of those namespaces (integer constants) whose pages may be linked
+	 * when edited.
+	 * @var Array $sourceNamespaces
 	 */
-	public $namespaces;
+	public $sourceNamespaces;
+
+	/**
+	 * Array of those namespaces (integer constants) whose pages may be linked
+	 * to a source page.
+	 * @var Array $targetNamespaces
+	 */
+	public $targetNamespaces;
 
 	/**
 	 * Indicates whether to add a link to the first occurrence of a page title
@@ -170,7 +178,8 @@ class Config {
 		global $wgLinkTitlesPreferShortTitles;
 		global $wgLinkTitlesMinimumTitleLength;
 		global $wgLinkTitlesBlackList;
-		global $wgLinkTitlesNamespaces;
+		global $wgLinkTitlesSourceNamespaces;
+		global $wgLinkTitlesTargetNamespaces;
 		global $wgLinkTitlesFirstOnly;
 		global $wgLinkTitlesSmartMode;
 		global $wgCapitalLinks;
@@ -186,7 +195,8 @@ class Config {
 		$this->preferShortTitles = $wgLinkTitlesPreferShortTitles;
 		$this->minimumTitleLength = $wgLinkTitlesMinimumTitleLength;
 		$this->blackList = $wgLinkTitlesBlackList;
-		$this->namespaces = $wgLinkTitlesNamespaces;
+		$this->sourceNamespaces = $wgLinkTitlesSourceNamespaces ? $wgLinkTitlesSourceNamespaces : [ NS_MAIN ];
+		$this->targetNamespaces = $wgLinkTitlesTargetNamespaces;
 		$this->firstOnly = $wgLinkTitlesFirstOnly;
 		$this->smartMode = $wgLinkTitlesSmartMode;
 		$this->capitalLinks = $wgCapitalLinks; // MediaWiki global variable

@@ -33,15 +33,15 @@ class Targets {
 	 * Singleton factory that returns a (cached) database query results with
 	 * potential target page titles.
 	 *
-	 * The subset of pages that may serve as target pages depends on the
-	 * name space of the source page. Therefore, if the $namespace differs from
-	 * the cached name space, the database is queried again.
+	 * The subset of pages that may serve as target pages depends on the namespace
+	 * of the source page. Therefore, if the $sourceNamespace differs from the
+	 * cached namespace, the database is queried again.
 	 *
-	 * @param  String $namespace The namespace of the current page.
+	 * @param  String $sourceNamespace The namespace of the current page.
 	 * @param  Config $config    LinkTitles configuration.
 	 */
 	public static function default( \Title $title, Config $config ) {
-		if ( ( self::$instance === null ) || ( self::$instance->namespace != $title->getNamespace() ) ) {
+		if ( ( self::$instance === null ) || ( self::$instance->sourceNamespace != $title->getNamespace() ) ) {
 			self::$instance = new Targets( $title, $config );
 		}
 		return self::$instance;
@@ -66,10 +66,11 @@ class Targets {
 	public $queryResult;
 
 	/**
-	 * Holds the name space (integer) for which the list of target pages was built.
-	 * @var Int $namespace
+	 * Holds the source page's namespace (integer) for which the list of target
+	 * pages was built.
+	 * @var Int $sourceNamespace
 	 */
-	public $namespace;
+	public $sourceNamespace;
 
 	private $config;
 
@@ -79,7 +80,7 @@ class Targets {
 	 */
 	private function __construct( \Title $title, Config $config) {
 		$this->config = $config;
-		$this->namespace = $title->getNamespace();
+		$this->sourceNamespace = $title->getNamespace();
 		$this->fetch();
 	}
 
@@ -101,8 +102,8 @@ class Targets {
 		}
 
 		// Build our weight list. Make sure current namespace is first element
-		$namespaces = array_diff( $this->config->namespaces, [ $this->namespace ] );
-		array_unshift( $namespaces,  $this->namespace );
+		$namespaces = array_diff( $this->config->targetNamespaces, [ $this->sourceNamespace ] );
+		array_unshift( $namespaces,  $this->sourceNamespace );
 
 		// No need for sanitiy check. we are sure that we have at least one element in the array
 		$weightSelect = "CASE page_namespace ";

@@ -29,13 +29,13 @@
                 "LinkTitlesWordStartOnly": true,
                 "LinkTitlesWordEndOnly": true,
                 "LinkTitlesSpecialPageReloadAfter": 1,
-                "LinkTitlesNamespaces": [
-                        0
-                ]
+                "LinkTitlesSourceNamespaces": [],
+                "LinkTitlesTargetNamespaces": []
         },
         "AutoloadClasses": {
                 "LinkTitles\\Extension": "includes/Extension.php",
                 "LinkTitles\\Linker": "includes/Linker.php",
+                "LinkTitles\\Source": "includes/Source.php",
                 "LinkTitles\\Target": "includes/Target.php",
                 "LinkTitles\\Targets": "includes/Targets.php",
                 "LinkTitles\\Splitter": "includes/Splitter.php",

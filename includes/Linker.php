@@ -65,16 +65,19 @@ class Linker {
 	 *
 	 * @param \Title &$title Title object for the current page.
 	 * @param String $text String that holds the article content
-	 * @return String with links to target pages
+	 * @return String|null Source page text with links to target pages, or null if no links were added
 	 */
-	public function linkContent( \Title &$title, &$text ) {
+	public function linkContent( Source $source ) {
+		if ( !$source->canBeLinked() ) {
+			return;
+		}
 
 		( $this->config->firstOnly ) ? $limit = 1 : $limit = -1;
 		$limitReached = false;
-		$newText = $text;
-
+		$newLinks = false; // whether or not new links were added
+		$newText = $source->getText();
 		$splitter = Splitter::default( $this->config );
-		$targets = Targets::default( $title, $this->config );
+		$targets = Targets::default( $source->getTitle(), $this->config );
 
 		// Iterate through the target page titles
 		foreach( $targets->queryResult as $row ) {
@@ -83,7 +86,7 @@ class Linker {
 			// Don't link current page and don't link if the target page redirects
 			// to the current page or has the __NOAUTOLINKTARGET__ magic word
 			// (as required by the actual LinkTitles configuration).
-			if ( $target->isSameTitle( $title ) || !$target->mayLinkTo( $title ) ) {
+			if ( $target->isSameTitle( $source ) || !$target->mayLinkTo( $source ) ) {
 				continue;
 			}
 
@@ -91,7 +94,7 @@ class Linker {
 			// A link to the current page should only be recognized if it appears in
 			// clear text, i.e. we do not count piped links as existing links.
 			// (Similarly, by design, redirections should not be counted as existing links.)
-			if ( $limit == 1 && preg_match( '/[[' . $target->getCaseSensitiveLinkValueRegex() . ']]/' , $text ) ) {
+			if ( $limit == 1 && preg_match( '/[[' . $target->getCaseSensitiveLinkValueRegex() . ']]/' , $source->getText() ) ) {
 				continue;
 			}
 
@@ -114,7 +117,10 @@ class Linker {
 					break;
 				};
 			};
-			$newText = implode( '', $arr );
+			if ( $count > 0 ) {
+				$newLinks = true;
+				$newText = implode( '', $arr );
+			}
 
 			// If smart mode is turned on, the extension will perform a second
 			// pass on the page and add links with aliases where the case does
@@ -134,11 +140,16 @@ class Linker {
 						break;
 					};
 				};
-				$newText = implode( '', $arr );
+				if ( $count > 0 ) {
+					$newLinks = true;
+					$newText = implode( '', $arr );
+				}
 			} // $wgLinkTitlesSmartMode
 		}; // foreach $res as $row
 
-		return $newText;
+		if ( $newLinks ) {
+			return $newText;
+		}
 	}
 
 	/**

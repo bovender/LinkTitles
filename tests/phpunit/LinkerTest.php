@@ -38,16 +38,15 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 	protected $title;
 
 	protected function setUp() {
-		$this->title = $this->insertPage( 'source page', 'This page is the test page' )['title'];
 		parent::setUp(); // call last to have the Targets object invalidated after inserting the page
 	}
 
 
-  public function addDBDataOnce() {
+  public function addDBData() {
+		$this->title = $this->insertPage( 'source page', 'This page is the test page' )['title'];
     $this->insertPage( 'link target', 'This page serves as a link target' );
 		parent::addDBDataOnce(); // call parent after adding page to have targets invalidated
   }
-
 
 	/**
 	 * @dataProvider provideLinkContentTemplatesData
@@ -57,8 +56,11 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 		$config->firstOnly = false;
 		$config->skipTemplates = $skipTemplates;
 		LinkTitles\Splitter::invalidate();
+		$source = LinkTitles\Source::createFromTitleAndText( $this->title, $input, $config );
 		$linker = new LinkTitles\Linker( $config );
-		$this->assertSame( $expectedOutput, $linker->linkContent( $this->title, $input ));
+		$result = $linker->linkContent( $source );
+		if ( !$result ) { $result = $input; }
+		$this->assertSame( $expectedOutput, $result );
 	}
 
 	public function provideLinkContentTemplatesData() {
@@ -91,7 +93,10 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 		$config->firstOnly = false;
 		$config->smartMode = $smartMode;
 		$linker = new LinkTitles\Linker( $config );
-		$this->assertSame( $expectedOutput, $linker->linkContent( $this->title, $input ));
+		$source = LinkTitles\Source::createFromTitleAndText( $this->title, $input, $config );
+		$result = $linker->linkContent( $source );
+		if ( !$result ) { $result = $input; }
+		$this->assertSame( $expectedOutput, $result );
 	}
 
 	public function provideLinkContentSmartModeData() {
@@ -166,7 +171,10 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 		$config = new LinkTitles\Config();
 		$config->firstOnly = $firstOnly;
 		$linker = new LinkTitles\Linker( $config );
-		$this->assertSame( $expectedOutput, $linker->linkContent( $this->title, $input ));
+		$source = LinkTitles\Source::createFromTitleAndText( $this->title, $input, $config );
+		$result = $linker->linkContent( $source );
+		if ( !$result ) { $result = $input; }
+		$this->assertSame( $expectedOutput, $result );
 	}
 
 	public function provideLinkContentFirstOnlyData() {
@@ -200,7 +208,10 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 		LinkTitles\Targets::invalidate();
 		$linker = new LinkTitles\Linker( $config );
 		$text = 'If the link target is blacklisted, it should not be linked';
-		$this->assertSame( $text, $linker->linkContent( $this->title, $text ) );
+		$source = LinkTitles\Source::createFromTitleAndText( $this->title, $text, $config );
+		$result = $linker->linkContent( $source );
+		if ( !$result ) { $result = $text; }
+		$this->assertSame( $text, $result );
 	}
 
 	// Tests for namespace handling are commented out until I find a way to add

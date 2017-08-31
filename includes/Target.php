@@ -197,17 +197,16 @@ class Target {
 	 * and whether the target page is a redirect or contains the
 	 * __NOAUTOLINKTARGET__ magic word.
 	 *
-	 * @param \Title $fromTitle
-	 *
+	 * @param Source source
 	 * @return boolean
 	 */
-	public function mayLinkTo( \Title $fromTitle ) {
+	public function mayLinkTo( Source $source ) {
 		// If checking for redirects is enabled and the target page does
 		// indeed redirect to the current page, return the page title as-is
 		// (unlinked).
 		if ( $this->config->checkRedirect ) {
 			$redirectTitle = $this->getContent()->getUltimateRedirectTarget();
-			if ( $redirectTitle && $redirectTitle->equals( $fromTitle ) ) {
+			if ( $redirectTitle && $redirectTitle->equals( $source->getTitle() ) ) {
 				return false;
 			}
 		};
@@ -224,10 +223,10 @@ class Target {
 
 	/**
 	 * Determines if the Target's title is the same as another title.
-	 * @param  Title   $otherTitle Other title
-	 * @return boolean             True if the $otherTitle is the same, false if not.
+	 * @param  Source   $source Source object.
+	 * @return boolean          True if the $otherTitle is the same, false if not.
 	 */
-	public function isSameTitle( \Title $otherTitle) {
-		return $this->title->equals( $otherTitle );
+	public function isSameTitle( Source $source) {
+		return $this->title->equals( $source->getTitle() );
 	}
 }

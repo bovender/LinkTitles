@@ -28,69 +28,60 @@ namespace LinkTitles;
  */
 class Extension {
 
-	/// Event handler that is hooked to the PageContentSave event.
+	/**
+	 * Event handler for the PageContentSave hook.
+	 *
+	 * This handler is used if the parseOnEdit configuration option is set.
+	 */
 	public static function onPageContentSave( &$wikiPage, &$user, &$content, &$summary,
 			$isMinor, $isWatch, $section, &$flags, &$status ) {
-
 		$config = new Config();
 		if ( !$config->parseOnEdit || $isMinor ) return true;
-
-		$title = $wikiPage->getTitle();
-
-		// Only process if page is in one of our namespaces we want to link
-		// Fixes ugly autolinking of sidebar pages
-		if ( in_array( $title->getNamespace(), $config->namespaces )) {
-			$text = $content->getContentHandler()->serializeContent( $content );
-			if ( !\MagicWord::get( 'MAG_LINKTITLES_NOAUTOLINKS' )->match( $text ) ) {
-				$linker = new Linker( $config );
-				$newText = $linker->linkContent( $title, $text );
-				if ( $newText != $text ) {
-					$content = $content->getContentHandler()->unserializeContent( $newText );
-				}
-			}
-		};
-		return true;
-	}
-
-	/*
-	 * Event handler that is hooked to the InternalParseBeforeLinks event.
-	 * @param Parser $parser Parser that raised the event.
-	 * @param $text          Preprocessed text of the page
-	 */
-	public static function onInternalParseBeforeLinks( \Parser &$parser, &$text ) {
-		$config = new Config();
-		if ( !$config->parseOnRender ) return true;
-		$title = $parser->getTitle();
-
-		// If the page contains the magic word '__NOAUTOLINKS__', do not parse it.
-		// Only process if page is in one of our namespaces we want to link
-		if ( !\MagicWord::get( 'MAG_LINKTITLES_NOAUTOLINKS' )->match( $text ) &&
-				in_array( $title->getNamespace(), $config->namespaces ) ) {
-			$linker = new Linker( $config );
-			$text = $linker->linkContent( $title, $text );
+		$source = Source::createFromPageandContent( $wikiPage, $content, $config );
+		$linker = new Linker( $config );
+		$result = $linker->linkContent( $source );
+		if ( $result ) {
+			$content = $source->setText( $result );
 		}
 		return true;
 	}
 
 	/*
-	 * Automatically processes a single page, given a $title Title object.
-	 * This function is called by the SpecialLinkTitles class and the
-	 * LinkTitlesJob class.
-	 * @param Title $title Title object.
-	 * @param RequestContext $context Current request context. If in doubt, call MediaWiki's `RequestContext::getMain()` to obtain such an object.
-	 * @returns bool True if the page exists, false if the page does not exist
+	 * Event handler for the InternalParseBeforeLinks hook.
+	 *
+	 * This handler is used if the parseOnRender configuration option is set.
+	 */
+	public static function onInternalParseBeforeLinks( \Parser &$parser, &$text ) {
+		$config = new Config();
+		if ( !$config->parseOnRender ) return true;
+		$title = $parser->getTitle();
+		$source = Source::createFromParserAndText( $parser, $text, $config );
+		$linker = new Linker( $config );
+		$result = $linker->linkContent( $source );
+		if ( $result ) {
+			$text = $result;
+		}
+		return true;
+	}
+
+	/**
+	 * Adds links to a single page.
+	 *
+	 * Entry point for the SpecialLinkTitles class and the LinkTitlesJob class.
+	 *
+	 * @param  \Title $title Title object.
+	 * @param  \RequestContext $context Current request context. If in doubt, call MediaWiki's `RequestContext::getMain()` to obtain such an object.
+	 * @return bool True if the page exists, false if the page does not exist
 	 */
 	public static function processPage( \Title $title, \RequestContext $context ) {
-		$page = \WikiPage::factory( $title );
-		$content = $page->getContent();
-		if ( $content != null ) {
-			$text = $content->getContentHandler()->serializeContent( $content );
-			$config = new Config();
+		$config = new Config();
+		$source = Source::createFromTitle( $title, $config );
+		if ( $source->hasContent ) {
 			$linker = new Linker( $config );
-			$newText = $linker->linkContent( $title, $text );
-			if ( $text != $newText ) {
-				$content = $content->getContentHandler()->unserializeContent( $newText );
-				$page->doEditContent(
+			$result = $linker->linkContent( $source );
+			if ( $result ) {
+				$content = $source->getContent()->getContentHandler()->unserializeContent( $result );
+				$source->getPage()->doEditContent(
 					$content,
 					"Links to existing pages added by LinkTitles bot.", // TODO: i18n
 					EDIT_MINOR | EDIT_FORCE_BOT,
@@ -105,39 +96,53 @@ class Extension {
 		}
 	}
 
-	/// Adds the two magic words defined by this extension to the list of
-	/// 'double-underscore' terms that are automatically removed before a
-	/// page is displayed.
-	/// @param $doubleUnderscoreIDs Array of magic word IDs.
-	/// @return true
+	/*
+	 * Adds the two magic words defined by this extension to the list of
+	 * 'double-underscore' terms that are automatically removed before a
+	 * page is displayed.
+	 *
+	 * @param  Array $doubleUnderscoreIDs Array of magic word IDs.
+	 * @return true
+	 */
 	public static function onGetDoubleUnderscoreIDs( array &$doubleUnderscoreIDs ) {
 		$doubleUnderscoreIDs[] = 'MAG_LINKTITLES_NOTARGET';
 		$doubleUnderscoreIDs[] = 'MAG_LINKTITLES_NOAUTOLINKS';
 		return true;
 	}
 
+	/**
+	 * Handles the ParserFirstCallInit hook and adds the <autolink>/</noautolink>
+	 * tags.
+	 */
 	public static function onParserFirstCallInit( \Parser $parser ) {
 		$parser->setHook( 'noautolinks', 'LinkTitles\Extension::doNoautolinksTag' );
 		$parser->setHook( 'autolinks', 'LinkTitles\Extension::doAutolinksTag' );
 	}
 
-	///	Removes the extra tag that this extension provides (<noautolinks>)
-	///	by simply returning the text between the tags (if any).
-	///	See https://www.mediawiki.org/wiki/Manual:Tag_extensions#Example
+	/*
+	 *	Removes the extra tag that this extension provides (<noautolinks>)
+	 *	by simply returning the text between the tags (if any).
+	 *	See https://www.mediawiki.org/wiki/Manual:Tag_extensions#Example
+	 */
 	public static function doNoautolinksTag( $input, array $args, \Parser $parser, \PPFrame $frame ) {
 		return htmlspecialchars( $input );
 	}
 
-	///	Removes the extra tag that this extension provides (<noautolinks>)
-	///	by simply returning the text between the tags (if any).
-	///	See https://www.mediawiki.org/wiki/Manual:Tag_extensions#How_do_I_render_wikitext_in_my_extension.3F
+	/*
+	 *	Removes the extra tag that this extension provides (<noautolinks>)
+	 *	by simply returning the text between the tags (if any).
+	 *	See https://www.mediawiki.org/wiki/Manual:Tag_extensions#How_do_I_render_wikitext_in_my_extension.3F
+	 */
 	public static function doAutolinksTag( $input, array $args, \Parser $parser, \PPFrame $frame ) {
 		$config = new Config();
 		$linker = new Linker( $config );
-		$title = $parser->getTitle();
-		$withLinks = $linker->linkContent( $title, $input );
-		$output = $parser->recursiveTagParse( $withLinks, $frame );
-		return $output;
+		$source = Source::createFromParser( $parser, $config );
+		$result = $linker->linkContent( $source );
+		if ( $result ) {
+			return $parser->recursiveTagParse( $result, $frame );
+		} else {
+			return $parser->recursiveTagParse( $input, $frame );
+		}
 	}
 }
 
