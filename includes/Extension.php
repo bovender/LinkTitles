@@ -125,7 +125,7 @@ class Extension {
 	 *	See https://www.mediawiki.org/wiki/Manual:Tag_extensions#Example
 	 */
 	public static function doNoautolinksTag( $input, array $args, \Parser $parser, \PPFrame $frame ) {
-		return htmlspecialchars( $input );
+		return $parser->recursiveTagParse( $input, $frame );
 	}
 
 	/*
