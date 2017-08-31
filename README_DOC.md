@@ -9,16 +9,10 @@
 This is the [source code][] documentation for the [LinkTitles][] extension
 for [MediaWiki][].
 
-The central class is LinkTitles, which contains only static functions. If
-you are looking for the linking algorithm, inspect the
-LinkTitles\\Extension::parseContent() function.
-
-The extension provides two methods for batch-processing of pages. One is a
-@link LinkTitles\\Special special page @endlink that provides web-access (by
-default restricted to sysops). The other is a @link LinkTitles\\Cli
-maintenance script @endlink that can be called from the command line if you
-have access to your server and are authorized to run php from the command
-line.
+With version 5.0, the code is more extensively commented than ever. Version 5
+brought a major refactoring, and the extension now consists of several classes
+with clearly defined concerns. Look at the class comments to find out what they
+do.
 
 @note The source code that is referenced in this documentation may not
 necessarily reflect the latest code in the repository! Make sure to check
