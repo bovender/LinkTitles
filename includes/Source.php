@@ -197,7 +197,7 @@ class Source {
 	 * @return boolean True if the source page has content.
 	 */
 	public function hasContent() {
-		return $this->content != null;
+		return $this->getContent() != null;
 	}
 
 	/**

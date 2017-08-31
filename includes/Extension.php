@@ -76,7 +76,7 @@ class Extension {
 	public static function processPage( \Title $title, \RequestContext $context ) {
 		$config = new Config();
 		$source = Source::createFromTitle( $title, $config );
-		if ( $source->hasContent ) {
+		if ( $source->hasContent() ) {
 			$linker = new Linker( $config );
 			$result = $linker->linkContent( $source );
 			if ( $result ) {

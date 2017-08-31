@@ -155,7 +155,7 @@ class Cli extends \Maintenance {
 
 		// Retrieve page names from the database.
 		$dbr = $this->getDB( DB_SLAVE );
-		$namespacesClause = str_replace( '_', ' ','(' . implode( ', ', $config->namespaces ) . ')' );
+		$namespacesClause = str_replace( '_', ' ','(' . implode( ', ', $config->sourceNamespaces ) . ')' );
 		$res = $dbr->select(
 			'page',
 			array( 'page_title', 'page_namespace' ),
