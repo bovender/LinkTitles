@@ -35,15 +35,16 @@ class Linker {
 	public $config;
 
 	/**
-	 * The string representation of the title object for the potential target page
-	 * that is currently being processed.
+	 * The link value of the target page that is currently being evaluated.
+	 * This may be either the page name or the page name prefixed with the
+	 * name space if the target's name space is not NS_MAIN.
 	 *
 	 * This is an instance variable (rather than a local method variable) so it
 	 * can be accessed in the preg_replace_callback callbacks.
 	 *
-	 * @var String $targetTitleString
+	 * @var String $linkValue
 	 */
-	private $targetTitleText;
+	private $linkValue;
 
 	/**
 	 * Constructs a new instance of the Linker class.
@@ -101,7 +102,7 @@ class Linker {
 			$count = 0;
 
 			// Cache the target title text for the regex callbacks
-			$this->targetTitleText = $target->getTitleText();
+			$this->linkValue = $target->getPrefixedTitleText();
 
 			// Even indexes will point to sections of the text that may be linked
 			for ( $i = 0; $i < count( $arr ); $i += 2 ) {
@@ -147,7 +148,13 @@ class Linker {
 	 * @return string Target page title with or without link markup
 	 */
 	private function simpleModeCallback( array $matches ) {
-		return '[[' . $matches[0] . ']]';
+		// If the link value is longer than the match, it must be prefixed with
+		// a namespace. In this case, we build a piped link.
+		if ( strlen( $this->linkValue ) > strlen( $matches[0] ) ) {
+			return '[[' . $this->linkValue . '|' . $matches[0] . ']]';
+		} else {
+			return '[[' . $matches[0] . ']]';
+		}
 	}
 
 	/**
@@ -163,28 +170,20 @@ class Linker {
 	 * @return string Target page title with or without link markup
 	 */
 	private function smartModeCallback( array $matches ) {
+		// If cases of the target page title and the actual occurrence in the text
+		// are not identical, we need to build a piped link.
+		// How case-identity is determined depends on the $wgCapitalLinks setting:
+		// with $wgCapitalLinks = true, the case of first letter of the title is
+		// not significant.
 		if ( $this->config->capitalLinks ) {
-			// With $wgCapitalLinks set to true we have a slightly more
-			// complicated version of the callback than if it were false;
-			// we need to ignore the first letter of the page titles, as
-			// it does not matter for linking.
-			if ( strcmp( substr( $this->targetTitleText, 1 ), substr( $matches[ 0 ], 1) ) == 0 ) {
-				// Case-sensitive match: no need to build piped link.
-				return '[[' . $matches[ 0 ]  . ']]';
-			} else  {
-				// Case-insensitive match: build piped link.
-				return '[[' . $this->targetTitleText . '|' . $matches[ 0 ] . ']]';
-			}
+			$needPipe = strcmp( substr( $this->linkValue, 1 ), substr( $matches[ 0 ], 1 ) ) != 0;
 		} else {
-			// If $wgCapitalLinks is false, we can use the simple variant
-			// of the callback function.
-			if ( strcmp( $this->targetTitleText, $matches[ 0 ] ) == 0 ) {
-				// Case-sensitive match: no need to build piped link.
-				return '[[' . $matches[ 0 ] . ']]';
-			} else  {
-				// Case-insensitive match: build piped link.
-				return '[[' . $this->targetTitleText . '|' . $matches[ 0 ] . ']]';
-			}
+			$needPipe = strcmp( $this->linkValue, $matches[ 0 ] ) != 0;
+		}
+		if ( $needPipe ) {
+			return '[[' . $this->linkValue . '|' . $matches[ 0 ] . ']]';
+		} else  {
+			return '[[' . $matches[ 0 ]  . ']]';
 		}
 	}
 }

@@ -62,6 +62,8 @@ class Target {
 
 	private $caseSensitiveLinkValueRegex;
 
+	private $nsText;
+
 	/**
 	 * Constructs a new Target object
 	 *
@@ -71,6 +73,7 @@ class Target {
 	 * @param String &$title Title of the target page
 	 */
 	public function __construct( $nameSpace, $title, Config &$config ) {
+		// print "\n>>>nameSpace=$nameSpace;title=$title<<<\n";
 		$this->title = \Title::makeTitleSafe( $nameSpace, $title );
 		$this->titleValue = $this->title->getTitleValue();
 		$this->config = $config;
@@ -89,6 +92,32 @@ class Target {
 	 */
 	public function getTitleText() {
 		return $this->title->getText();
+	}
+
+	public function getPrefixedTitleText() {
+		return $this->getNsPrefix() . $this->getTitleText();
+	}
+
+	/**
+	 * Gets the string representation of the target's namespace.
+	 *
+	 * May be false if the namespace is NS_MAIN. The value is cached.
+	 * @return String|bool Target's namespace
+	 */
+	public function getNsText() {
+		if ( $this->nsText === null ) {
+			$this->nsText = $this->title->getNsText();
+		}
+		return $this->nsText;
+	}
+
+	/**
+	 * Gets the namespace prefix. This is the namespace text followed by a colon,
+	 * or an empty string if the namespace text evaluates to false (e.g. NS_MAIN).
+	 * @return String namespace prefix
+	 */
+	public function getNsPrefix() {
+		return $this->getNsText() ? $this->getNsText() . ':' : '';
 	}
 
 	/**
