@@ -207,9 +207,9 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 	// a custom namespace during testing. (The assertTrue assertion below fails.)
 
 	// /**
-	//  * @dataProvider provideLinkContentNameSpacesData
+	//  * @dataProvider provideLinkContentNamespacesData
 	//  */
-	// public function testLinkContentNameSpaces( $nameSpaces, $input, $expectedOutput ) {
+	// public function testLinkContentNamespaces( $namespaces, $input, $expectedOutput ) {
 	// 	$ns = 4000;
 	// 	$this->setMwGlobals( [
 	// 		"wgExtraNamespaces[$ns]" => 'custom_namespace'
@@ -222,22 +222,22 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 	// 	$this->assertTrue( MWNamespace::exists( $ns ), "The name space with id $ns should exist!" );
 	// 	LinKTitles\Targets::invalidate();
 	// 	$config = new LinkTitles\Config();
-	// 	$config->nameSpaces = $nameSpaces;
+	// 	$config->namespaces = $namespaces;
 	// 	$linker = new LinkTitles\Linker( $config );
 	// 	$this->assertSame( $expectedOutput, $linker->linkContent( $this->title, $input ));
 	// }
 
-	// public function provideLinkContentNameSpacesData() {
+	// public function provideLinkContentNamespacesData() {
 	// 	return [
 	// 		[
-	// 			[], // nameSpaces
-	// 			'With nameSpaces = [], page in custom namespace should not be linked',
-	// 			'With nameSpaces = [], page in custom namespace should not be linked'
+	// 			[], // namespaces
+	// 			'With namespaces = [], page in custom namespace should not be linked',
+	// 			'With namespaces = [], page in custom namespace should not be linked'
 	// 		],
 	// 		[
-	// 			[ 4000 ], // nameSpaces
-	// 			'With nameSpaces = [ 4000 ], page in custom namespace should be linked',
-	// 			'With nameSpaces = [ 4000 ], page [[custom_namespace:in custom namespace]] should be linked'
+	// 			[ 4000 ], // namespaces
+	// 			'With namespaces = [ 4000 ], page in custom namespace should be linked',
+	// 			'With namespaces = [ 4000 ], page [[custom_namespace:in custom namespace]] should be linked'
 	// 		],
 	// 	];
 	// }
