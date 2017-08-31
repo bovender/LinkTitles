@@ -97,7 +97,7 @@ class Special extends \SpecialPage {
 	 */
 	private function process( \WebRequest &$request, \OutputPage &$output) {
 		// get our Namespaces
-		$namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$this->config->namespaces ) . ')' );
+		$namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$this->config->sourceNamespaces ) . ')' );
 
 		// Start the stopwatch
 		$startTime = microtime( true );
@@ -120,7 +120,7 @@ class Special extends \SpecialPage {
 		else
 		{
 			// No end index was given. Therefore, count pages now.
-			$end = $this->countPages($dbr, $namespacesClause );
+			$end = $this->countPages( $dbr, $namespacesClause );
 		};
 
 		array_key_exists( 'r', $postValues ) ? $reloads = $postValues['r'] : $reloads = 0;
@@ -180,9 +180,7 @@ class Special extends \SpecialPage {
 		// TODO: Put the page contents in messages in the i18n file.
 		$output->addWikiText(
 <<<EOF
-LinkTitles extension: http://www.mediawiki.org/wiki/Extension:LinkTitles
-
-Source code: http://github.com/bovender/LinkTitles
+LinkTitles extension: https://github.com/bovender/LinkTitles
 
 == Batch Linking ==
 You can start a batch linking process by clicking on the button below.
@@ -216,7 +214,7 @@ EOF
 		$output->addWikiText(
 <<<EOF
 == Processing pages... ==
-The [http://www.mediawiki.org/wiki/Extension:LinkTitles LinkTitles]
+The [https://github.com/bovender/LinkTitles LinkTitles]
 extension is currently going through every page of your wiki, adding links to
 existing pages as appropriate.
 
