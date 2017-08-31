@@ -155,12 +155,12 @@ class Cli extends \Maintenance {
 
 		// Retrieve page names from the database.
 		$dbr = $this->getDB( DB_SLAVE );
-		$nameSpacesClause = str_replace( '_', ' ','(' . implode( ', ', $config->nameSpaces ) . ')' );
+		$namespacesClause = str_replace( '_', ' ','(' . implode( ', ', $config->namespaces ) . ')' );
 		$res = $dbr->select(
 			'page',
 			array( 'page_title', 'page_namespace' ),
 			array(
-				'page_namespace IN ' . $nameSpacesClause,
+				'page_namespace IN ' . $namespacesClause,
 			),
 			__METHOD__,
 			array(

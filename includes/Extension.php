@@ -39,7 +39,7 @@ class Extension {
 
 		// Only process if page is in one of our namespaces we want to link
 		// Fixes ugly autolinking of sidebar pages
-		if ( in_array( $title->getNamespace(), $config->nameSpaces )) {
+		if ( in_array( $title->getNamespace(), $config->namespaces )) {
 			$text = $content->getContentHandler()->serializeContent( $content );
 			if ( !\MagicWord::get( 'MAG_LINKTITLES_NOAUTOLINKS' )->match( $text ) ) {
 				$linker = new Linker( $config );
@@ -65,7 +65,7 @@ class Extension {
 		// If the page contains the magic word '__NOAUTOLINKS__', do not parse it.
 		// Only process if page is in one of our namespaces we want to link
 		if ( !\MagicWord::get( 'MAG_LINKTITLES_NOAUTOLINKS' )->match( $text ) &&
-				in_array( $title->getNamespace(), $config->nameSpaces ) ) {
+				in_array( $title->getNamespace(), $config->namespaces ) ) {
 			$linker = new Linker( $config );
 			$text = $linker->linkContent( $title, $text );
 		}

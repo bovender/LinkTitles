@@ -97,7 +97,7 @@ class Special extends \SpecialPage {
 	 */
 	private function process( \WebRequest &$request, \OutputPage &$output) {
 		// get our Namespaces
-		$namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$this->config->nameSpaces ) . ')' );
+		$namespacesClause = str_replace( '_', ' ','(' . implode( ', ',$this->config->namespaces ) . ')' );
 
 		// Start the stopwatch
 		$startTime = microtime( true );

@@ -70,9 +70,9 @@ class Config {
 
 	/**
 	 * Array of those name spaces (integer constants) whose pages may be linked.
-	 * @var Array $nameSpaces
+	 * @var Array $namespaces
 	 */
-	public $nameSpaces;
+	public $namespaces;
 
 	/**
 	 * Indicates whether to add a link to the first occurrence of a page title
@@ -186,7 +186,7 @@ class Config {
 		$this->preferShortTitles = $wgLinkTitlesPreferShortTitles;
 		$this->minimumTitleLength = $wgLinkTitlesMinimumTitleLength;
 		$this->blackList = $wgLinkTitlesBlackList;
-		$this->nameSpaces = $wgLinkTitlesNamespaces;
+		$this->namespaces = $wgLinkTitlesNamespaces;
 		$this->firstOnly = $wgLinkTitlesFirstOnly;
 		$this->smartMode = $wgLinkTitlesSmartMode;
 		$this->capitalLinks = $wgCapitalLinks; // MediaWiki global variable

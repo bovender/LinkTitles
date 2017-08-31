@@ -69,12 +69,12 @@ class Target {
 	 *
 	 * The parameters may be taken from database rows, for example.
 	 *
-	 * @param Int $nameSpace Name space of the target page
+	 * @param Int $namespace Name space of the target page
 	 * @param String &$title Title of the target page
 	 */
-	public function __construct( $nameSpace, $title, Config &$config ) {
-		// print "\n>>>nameSpace=$nameSpace;title=$title<<<\n";
-		$this->title = \Title::makeTitleSafe( $nameSpace, $title );
+	public function __construct( $namespace, $title, Config &$config ) {
+		// print "\n>>>namespace=$namespace;title=$title<<<\n";
+		$this->title = \Title::makeTitleSafe( $namespace, $title );
 		$this->titleValue = $this->title->getTitleValue();
 		$this->config = $config;
 
