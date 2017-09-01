@@ -4,9 +4,43 @@ LinkTitles
 [MediaWiki extension](https://www.mediawiki.org/wiki/Extension:LinkTitles) that
 automatically adds links to words that match titles of existing pages.
 
-Minimum requirements: MediaWiki 1.25, PHP 5.3.
-Source code documentation can be found at the [Github project
-pages](http://bovender.github.io/LinkTitles).
+Minimum requirements: MediaWiki 1.25, PHP 5.3. Source code documentation can be
+found at the [Github project pages](http://bovender.github.io/LinkTitles).
+
+
+Table of contents
+-----------------
+
+1.  [Oveview](#overview)
+    - [Versions](#versions)
+2.  [Installation](#installation)
+3.  [Usage](#usage)
+    - [Editing a page](#editing-a-page)
+    - [Preventing automatic linking after minor edits](#preventing-automatic-linking-after-minor-edits)
+    - [Viewing a page](#viewing-a-page)
+    - [Including and excluding pages with Magic Words](#including-and-excluding-pages-with-magic-words)
+    - [Enable or disable automatic linking for sections](#enable-or-disable-automatic-linking-for-sections)
+    - [Namespace support](#namespace-support)
+    - [Batch processing](#batch-processing)
+    - [Special:LinkTitles](#special-linktitles)
+    - [Maintenance script](#maintenance-script)
+4.  [Configuration](#configuration)
+    - [Linking when a page is edited and saved](#linking-when-a-page-is-edited-and-saved)
+    - [Linking when a page is rendered for display](#linking-when-a-page-is-rendered-for-display)
+    - [Enabling case-insensitive linking (smart mode)](#enabling-case-insensitive-linking-(smart-mode))
+    - [Dealing with custom namespaces](#dealing-with-custom-namespaces)
+    - [Linking or skipping headings](#linking-or-skipping-headings)
+    - [Prioritizing pages with short titles](#prioritizing-pages-with-short-titles)
+    - [Filtering pages by title length](#filtering-pages-by-title-length)
+    - [Excluding pages from being linked to](#excluding-pages-from-being-linked-to)
+    - [Dealing with templates](#dealing-with-templates)
+    - [Multiple links to the same page](#multiple-links-to-the-same-page)
+    - [Partial words](#partial-words)
+    - [Special page configuration](#special-page-configuration)
+5.  [Development](#development)
+    - [Contributors](#contributors)
+    - [Testing](#testing)
+6.  [License](#license)
 
 
 Overview
@@ -31,8 +65,7 @@ once. Batch processing can either be started from a special page, or from the
 server's command line (see [below](#Batch_processing "wikilink")).
 
 
-Versions
---------
+### Versions
 
 This extension is [semantically versioned](http://semver.org). In short, this
 means that the first version number (the 'major') only changes on substantial
@@ -40,23 +73,22 @@ changes. The second number (the 'minor') changes when features are added or
 significantly improved. The third number (the 'patch level') changes when bugs
 are fixed.
 
- Major | Date | Significant changes
--|-|-
- 5 | 09-2017 | Major rewrite
- 4 | 00-2016 | Change format of the extension for MediaWiki version 1.29
+Version | Date | Major changes ||
+-|-|-|-
+5 | 09-2017 | Rewrote the entire extension; vastly improved namespace support; some breaking changes | [Details][v5.0.0]
+4 | 11-2016 | Changed format of the extension for MediaWiki version 1.25; added basic namespace support | [Details][v4.0.0]
+3 | 02-2015 | Added magic words; improved performance | [Details][3.0.0]
+2 | 11-2013 | Introduced smart mode | [Details][2.0.0]
+1 | 05-2012 | First stable release |
 
-For more details, see the `NEWS` file in the repository for a user-friendly
-changelog, or study the commit messages.
 
+[v5.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v5.0.0
+[v4.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v4.0.0
+[3.0.0]: https://github.com/bovender/LinkTitles/compare/2.4.1...3.0.0
+[2.0.0]: https://github.com/bovender/LinkTitles/compare/1.8.1...2.0.0
 
-Table of contents
------------------
-
-1.  [Installation](#installation)
-2.  [Usage](#usage)
-3.  [Configuration](#configuration)
-4.  [Development](#development)
-  - [Testing](#testing)
+For more details, click the 'Details' links, see the `NEWS` file in the
+repository for a user-friendly changelog, or study the commit messages.
 
 
 Installation
@@ -78,12 +110,20 @@ To activate the extension, add the following to your `LocalSettings.php` file:
 
 Do not forget to adjust the [configuration](#configuration) to your needs.
 
+If your MediaWiki version is really old (1.24 and older), you need to use
+a [different mechanism](https://www.mediawiki.org/wiki/Manual:Extensions#Installing_an_extension).
 
 Usage
 -----
 
 ### Editing a page
 
+By default, the LinkTitles extension will add links to existing pages whenever
+you edit and save a page. Unless you changed the configuration variables, it will
+link whole words only, prefer longer target page titles over shorter ones, skip
+headings, and add multiple links if a page title appears more than once on the
+page. All of this is configurable; see the [Configuration](#configuration)
+section.
 
 ### Preventing automatic linking after minor edits
 
@@ -91,6 +131,13 @@ If the 'minor edit' check box is marked when you save a page, the extension will
 not operate.
 
 ### Viewing a page
+
+If you do not want the LinkTitles extension to modify the page sources, you can
+also have links added whenever a page is being viewed (or, technically, when it
+is being rendered). MediaWiki caches rendered pages. Therefore, links do not need
+to be added every time a page is being viewed. See the
+[`$wgLinkTitlesParseOnRender`](#linking-when-a-page-is-rendered-for-display)
+configuration variable.
 
 ### Including and excluding pages with Magic Words
 
@@ -102,13 +149,28 @@ linked to from other pages.
 
 ### Enable or disable automatic linking for sections
 
-To **exclude** a section on your page from automatic linking, wrap it in `<noautolinks>...</noautolinks>` tags.
+To **exclude** a section on your page from automatic linking, wrap it in
+`<noautolinks>...</noautolinks>` tags.
 
 To **include** a section on your page for automatic linking, wrap it in
 `<autolinks>...</autolinks>` tags. Of course this only makes sense if both
 `$wgLinkTitlesParseOnEdit` and `$wgLinkTitlesParseOnRender` are set to `false`
 **or** if the page contains the `__NOAUTOLINKS__` magic word.
 
+### Namespace support
+
+By default, LinkTitles will only process pages in the `NS_MAIN` namespace (i.e.,
+'normal' Wiki pages). You can have modify the configuration to process pages in
+other 'source' namespaces as well. By default, LinkTitles will only link to pages
+that are in the same namespace as the page being edited or viewed. Again, additional
+'target' namespaces may be added in the [configuration](#dealing-with-custom-namespaces).
+
+If a page contains another page's title that is prefixed with the namespace
+(e.g. `my_namspace:other page`), LinkTitles will _not_ add a link. It is assumed
+that if someone deliberately types a namespace-qualified page title, they might
+just as well add the link markup (`[[...]]`) as well. It is the LinkTitles
+extension's intention to facilitate writing non-technical texts and have links
+to existing pages added automatically.
 
 ### Batch processing
 
@@ -151,15 +213,14 @@ page that was processed (e.g., 37), and use the maintenance script with the
 
 See all available options with:
 
-    php LinkTitles.cli.php -s 37
-
-
-### Namespace support
-
+    php LinkTitles.cli.php -h
 
 
 Configuration
 --------------
+
+To change the configuration, set the variables in your `LocalSettings.php` file.
+The code lines below show the default values of the configuration variables.
 
 ### Linking when a page is edited and saved
 
@@ -177,15 +238,19 @@ pages are edited and saved.
 Parse page content when it is rendered for viewing. Unlike the "parse on edit"
 mode of operation, this will *not* hard-code the links in the Wiki text. Thus,
 if you edit a page that had links added to it during rendering, you will not see
-the links in the Wiki markup. Note that MediaWiki caches rendered pages in the
-database, so that pages rarely need to be rendered. Rendering is whenever a page
-is viewed and saved. Therefore, whether you want to enable both parse-on-edit
-and parse-on-render depends on whether you want to have links (`[[...]]`) added
-to the Wiki markup. Please note that the extension will work on a fully built
-page when this mode is enabled; therefore, it *will* add links to text
-transcluded from templates, regardless of the configuration setting of
-`LinkTitlesSkipTemplages`. &emdash; It is also possible to purge the page cache
-and trigger rendering by adding `?action=purge` to the URL.
+the links in the Wiki markup.
+
+Note that MediaWiki caches rendered pages in the database, so that pages rarely
+need to be rendered. Rendering is whenever a page is viewed and saved.
+Therefore, whether you want to enable both parse-on-edit and parse-on-render
+depends on whether you want to have links (`[[...]]`) added to the Wiki markup.
+
+Please note that the extension will work on a fully built page when this mode is
+enabled; therefore, it *will* add links to text transcluded from templates,
+regardless of the configuration setting of `LinkTitlesSkipTemplages`.
+
+You can purge the page cache and trigger rendering by adding `?action=purge` to
+the URL.
 
 ### Enabling case-insensitive linking (smart mode)
 
@@ -196,7 +261,7 @@ search for page titles in the current page; then it will search for occurrences
 of the page titles in a case-insensitive way and add aliased ('piped') links.
 Thus, if you have a page `MediaWiki Extensions`, but write `Mediawiki
 extensions` (with a small 'e') in your text, LinkTitles would generate a link
-`\[\[MediaWiki Extensions|Mediawiki extensions\]\]`, obviating the need to add
+`[[MediaWiki Extensions|Mediawiki extensions]]`, obviating the need to add
 dummy pages for variants of page titles with different cases.
 
 Smart mode is enabled by default. You can disable it to increase performance of
@@ -205,7 +270,59 @@ the extension.
 
 ### Dealing with custom namespaces
 
-<!-- TODO -->
+    $wgLinkTitlesSourceNamespace = [];
+
+Specifies additional namespaces for pages that should be processed by the
+LinkTitles extension. If this is an empty array (or anything else that PHP
+evaluates to `false`), the default namespace `NS_MAIN` will be assumed.
+
+The values in this array must be numbers/namespace constants (`NS_xxx`).
+
+    $wgLinkTitlesTargetNamespaces = [];
+
+By default, only pages in the same namespace as the page being edited or viewed
+will be considered as link targets. If you want to link to pages in other
+namespaces, list them here. Note that the source page's own namespace will also
+be included, unless you change the `$wgLinkTitlesSamenamespace` option.
+
+The values in this array must be numbers/namespace constants (`NS_xxx`).
+
+    $wgLinkTitlesSamenamespace = true;
+
+If you do not want to have a page's own namespace included in the possible
+target namespaces, set this to false. Of course, if `$wgLinkTitlesSameNamespace`
+is `false` and `$wgLinkTitlesTargetNamespaces` is empty, LinkTitle will add
+no links at all because there are no target namespaces at all.
+
+#### Example: Default configuration
+
+    $wgLinkTitlesSourceNamespace = [];
+    $wgLinkTitlesTargetNamespaces = [];
+    $wgLinkTitlesSamenamespace = true;
+
+Process pages in the `NS_MAIN` namespace only, and add links to the `NS_MAIN`
+namespace only (i.e., the same namespace that the source page is in).
+
+#### Example: Custom namespace only
+
+    $wgLinkTitlesSourceNamespace = [ NS_MY_NAMESPACE];
+    $wgLinkTitlesTargetNamespaces = [];
+    $wgLinkTitlesSamenamespace = true;
+
+Process pages in the `NS_MY_NAMESPACE` namespace only, and add links to the
+`NS_MY_NAMESPACE` namespace only (i.e., the same namespace that the source page
+is in).
+
+#### Example: Link to `NS_MAIN` only
+
+    $wgLinkTitlesSourceNamespace = [ NS_MY_NAMESPACE];
+    $wgLinkTitlesTargetNamespaces = [ NS_MAIN ];
+    $wgLinkTitlesSamenamespace = false;
+
+Process pages in the `NS_MY_NAMESPACE` namespace only, and add links to the
+`NS_MAIN` namespace only. Do not link to pages that are in the same namespace
+as the source namespace (i.e., `NS_MY_NAMESPACE`).
+
 
 ### Linking or skipping headings
 
@@ -214,8 +331,8 @@ the extension.
 Determines whether or not to add links to headings. By default, the extension
 will leave your (sub)headings untouched. Only applies to parse-on-edit!
 
-There is a known issue that the extension regards incorrectly formatted headings
-as headings. Consider this line:
+There is a **known issue** that the extension regards incorrectly formatted
+headings as headings. Consider this line:
 
     ## incorrect heading #
 
@@ -303,7 +420,11 @@ Keep in mind that linking in MediaWiki is generally *case-sensitive*.
 
 ### Special page configuration
 
-    wgLinkTitlesSpecialPageReloadAfter
+    $wgLinkTitlesSpecialPageReloadAfter = 1; // seconds
+
+The `LinkTitles:Special` page performs batch processing of pages by repeatedly
+calling itself. This happens to prevent timeouts on your server. The default
+reload interval is 1 second.
 
 
 Development
@@ -320,23 +441,25 @@ master branch if you want to install the extension for your own wiki.
 
 ### Contributors
 
-- Daniel Kraus (@bovender), main developer
-- Ulrich Strauss (@c0nnex), namespaces
-- Brent Laabs (@labster), code review and bug fixes
-- @tetsuya-zama, bug fix
+-  Daniel Kraus (@bovender), main developer
+-  Ulrich Strauss (@c0nnex), namespaces
+-  Brent Laabs (@labster), code review and bug fixes
+-  @tetsuya-zama, bug fix
+-  @yoshida, namespace-related bug fixes
 
 
 ### Testing
 
-Starting from version 5, LinkTitles finally comes with phpunit tests. The code is
-not 100% covered yet. If you find something does not work as expected, let me
+Starting from version 5, LinkTitles finally comes with phpunit tests. The code
+is not 100% covered yet. If you find something does not work as expected, let me
 know and I will try to add unit tests and fix it.
 
 Here's how I set up the testing environment. This may not be the canonical way
-to do it. Basic information on testing MediaWiki can be found [here](https://www.mediawiki.org/wiki/Manual:PHP_unit_testing).
+to do it. Basic information on testing MediaWiki can be found
+[here](https://www.mediawiki.org/wiki/Manual:PHP_unit_testing).
 
-The following assumes that you have an instance of MediaWiki running locally
-on your development machine. This assumes that you are running Linux (I personally
+The following assumes that you have an instance of MediaWiki running locally on
+your development machine. This assumes that you are running Linux (I personally
 use Ubuntu).
 
 1.  Pull the MediaWiki repository:
