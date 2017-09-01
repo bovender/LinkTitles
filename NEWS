@@ -1,11 +1,24 @@
-Version 7.1.0 (2017-08-24)
+Version 5.0.0 (2017-09-01)
 ------------------------------------------------------------------------
 
+- Change: The $wgLinkTitlesBatchTimeLimit configuration variable was renamed to $wgLinkTitlesSpecialPageReloadAfter.
+- Fix: Blacklist did not always work properly
+- Fix: Contents of <noautolink> tags are now properly parsed as Wiki text.
+- Fix: Links to other namespaces were not prefixed properly.
+- Fix: The firstOnly option finally also works if a page contains a link to a given other page that was not currently added by the extension, i.e. that existed prior to an edit or that was manually added.
+- Fix: When $wgCapitalLinks was true, the extension would not work with non-latin languages.
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+
+
+Version 4.1.0 (2017-08-25)
+------------------------------------------------------------------------
+
+- Fix: Properly handle templates that include other templates.
 - New: Mark sections that are not to be automatically linked with the new `<noautolinks>..</noautolinks>` tag.
 - New: Mark sections that are to be automatically linked with the new `<autolinks>..</autolinks>` tag. This tag only makes sense on pages with the `__NOAUTOLINKS__` magic word, or if both `$wgLinkTitlesParseOnEdit` and `$wgLinkTitlesParseOnRender` are set to false. Note that this tag is parsed when a page is rendered, not when it is saved. Therefore, the links will not appear in the page source.
-- Fix: Properly handle templates that include other templates.
 
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
 
 Version 4.0.9 (2017-03-21)
@@ -13,7 +26,7 @@ Version 4.0.9 (2017-03-21)
 
 - Fix: __NOAUTOLINKS__ was not respected during rendering.
 
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
 
 Version 4.0.8 (2017-02-16)
@@ -23,7 +36,7 @@ Version 4.0.8 (2017-02-16)
 - Fix: The special page and the maintenance script did not work in MW 1.28.
 - Fix: The special page did not work.
 
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
 
 Version 4.0.7 (2017-01-02)
@@ -31,7 +44,7 @@ Version 4.0.7 (2017-01-02)
 
 - Improvement: Increase performance of special page and maintenance script.
 
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
 
 Version 4.0.6 (2016-12-28)
@@ -40,7 +53,7 @@ Version 4.0.6 (2016-12-28)
 - Fix: Bug fixes.
 - Fix: Custom namespace weights were not respected.
 
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
 
 Version 4.0.5 (2016-12-14)
@@ -50,7 +63,7 @@ Version 4.0.5 (2016-12-14)
 - Fix: Remove leftover error log call.
 - Improvement: Refactored maintenance script, improving user interaction.
 
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
 
 Version 4.0.4 (2016-11-30)
@@ -58,7 +71,7 @@ Version 4.0.4 (2016-11-30)
 
 - Fix: Do not link titles twice if $wgLinkTitlesFirstOnly and $wgLinkTitlesSmartMode are both true.
 
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
 
 Version 4.0.3 (2016-11-22)
@@ -66,7 +79,7 @@ Version 4.0.3 (2016-11-22)
 
 - Fix: __NOAUTOLINKS__ magic word would not be respected when saving an edited page.
 
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
 
 Version 4.0.2 (2016-11-09)
@@ -75,7 +88,7 @@ Version 4.0.2 (2016-11-09)
 - FIX: Removed a fatal bug in the LinkTitles_Maintenance script.
 - FIX: Repaired severely broken namespaces support.
 
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
 
 Version 4.0.1 (2016-11-08)
@@ -83,7 +96,7 @@ Version 4.0.1 (2016-11-08)
 
 - FIX: Prevent syntax error when accessing special page.
 
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
 
 Version 4.0.0 (2016-11-05)
@@ -95,7 +108,7 @@ Version 4.0.0 (2016-11-05)
 - NEW: Support namespaces.
 - NEW: Use the new extension format introduced by MediaWiki 1.25; the extension will no longer run with older MediaWiki versions.
 
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
 
 Version 3.1.0. (2015-02-05)
@@ -103,7 +116,7 @@ Version 3.1.0. (2015-02-05)
 
 - IMPROVEMENT: Do not link inside <file>...</file> tags.
 
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
 
 

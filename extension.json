@@ -4,11 +4,12 @@
                 "[https://www.mediawiki.org/wiki/User:Bovender Daniel Kraus (bovender)]",
                 "Ulrich Strauss (c0nnex)",
                 "Brent Laabs (labster)",
-                "tetsuya-zama"
+                "tetsuya-zama",
+                "yoshida"
         ],
         "type": "parserhook",
         "url": "https://www.mediawiki.org/wiki/Extension:LinkTitles",
-        "version": "4.1.0",
+        "version": "5.0.0",
         "license-name": "GPL-2.0+",
         "descriptionmsg": "linktitles-desc",
         "requires": {
