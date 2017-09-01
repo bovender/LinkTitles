@@ -40,7 +40,7 @@ class Targets {
 	 * @param  String $sourceNamespace The namespace of the current page.
 	 * @param  Config $config    LinkTitles configuration.
 	 */
-	public static function default( \Title $title, Config $config ) {
+	public static function singleton( \Title $title, Config $config ) {
 		if ( ( self::$instance === null ) || ( self::$instance->sourceNamespace != $title->getNamespace() ) ) {
 			self::$instance = new Targets( $title, $config );
 		}
@@ -48,7 +48,7 @@ class Targets {
 	}
 
 	/**
-	 * Invalidates the cache; the next call of Targets::default() will trigger
+	 * Invalidates the cache; the next call of Targets::singleton() will trigger
 	 * a database query.
 	 *
 	 * Use this in unit tests which are performed in a single request cycle so that

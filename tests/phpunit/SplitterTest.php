@@ -34,7 +34,7 @@ class SplitterTest extends MediaWikiTestCase {
 		$config->skipTemplates = $skipTemplates;
 		$config->parseHeadings = $parseHeadings;
 		LinkTitles\Splitter::invalidate();
-		$splitter = LinkTitles\Splitter::default( $config );
+		$splitter = LinkTitles\Splitter::singleton( $config );
 		$this->assertSame( $skipTemplates, $splitter->config->skipTemplates, 'Splitter has incorrect skipTemplates config');
 		$this->assertSame( $parseHeadings, $splitter->config->parseHeadings, 'Splitter has incorrect parseHeadings config');
 		$this->assertSame( $expectedOutput, $splitter->split( $input ) );
