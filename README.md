@@ -1,4 +1,3 @@
-[![Beerpay](https://beerpay.io/bovender/LinkTitles/badge.svg?style=flat-square)](https://beerpay.io/bovender/LinkTitles)
 LinkTitles
 ==========
 
