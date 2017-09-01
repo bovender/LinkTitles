@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['hasarg',['hasArg',['../classMaintenance.html#a07801d21bf613c106684fdc500268e2d',1,'Maintenance']]],
-  ['hasoption',['hasOption',['../classMaintenance.html#ad8cdb92c05971efc50e25d4887a539e5',1,'Maintenance']]]
+  ['fetch',['fetch',['../classLinkTitles_1_1Targets.html#af141e65a907781db3c574e4a7e10d8f1',1,'LinkTitles::Targets']]]
 ];

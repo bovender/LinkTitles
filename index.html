@@ -90,7 +90,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 
 <div class="header">
   <div class="headertitle">
-<div class="title">LinkTitles </div>  </div>
+<div class="title"><a class="el" href="namespaceLinkTitles.html" title="The LinkTitles class holds configuration for the LinkTitles extension. ">LinkTitles</a> </div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><dl class="section author"><dt>Author</dt><dd><a href="http://www.mediawiki.org/wiki/User:Bovender">Daniel Kraus (bovender)</a> </dd></dl>
@@ -98,8 +98,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 <dl class="section copyright"><dt>Copyright</dt><dd><a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU GPL v2+</a></dd></dl>
 <h1>LinkTitles source code documentation </h1>
 <p>This is the <a href="http://github.com/bovender/LinkTitles">source code</a> documentation for the <a href="http://www.mediawiki.org/wiki/Extension:LinkTitles">LinkTitles</a> extension for <a href="http://www.mediawiki.org">MediaWiki</a>.</p>
-<p>The central class is LinkTitles, which contains only static functions. If you are looking for the linking algorithm, inspect the LinkTitles\Extension::parseContent() function.</p>
-<p>The extension provides two methods for batch-processing of pages. One is a <a class="el" href="">\Special special page </a> that provides web-access (by default restricted to sysops). The other is a <a class="el" href="">\Cli maintenance script </a> that can be called from the command line if you have access to your server and are authorized to run php from the command line.</p>
+<p>With version 5.0, the code is more extensively commented than ever. Version 5 brought a major refactoring, and the extension now consists of several classes with clearly defined concerns. Look at the class comments to find out what they do.</p>
 <dl class="section note"><dt>Note</dt><dd>The source code that is referenced in this documentation may not necessarily reflect the latest code in the repository! Make sure to check out the Git repository for the latest code.</dd></dl>
 <h2>A note on the publication of the source code documentation </h2>
 <p>The documentation is automatically generated from the source code by <a href="http://www.doxygen.org">Doxygen</a>. A special branch of the Git repository, <a href="https://github.com/bovender/LinkTitles/tree/gh-pages"><code>gh-pages</code></a>, was created that holds the <a href="https://pages.github.com/">GitHub project pages</a>. To make use of the project page facility provided by GitHub, the root directory of a repository needs to be <a href="https://help.github.com/articles/creating-project-pages-manually#create-a-gh-pages-branch">erased</a> first before content is added. Since this would remove the source code from which the documentation is generated, deleting all files in the root directory while on the <code>gh-pages</code> branch was not feasible.</p>
@@ -110,7 +109,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Aug 25 2017 19:28:47 for LinkTitles extension for MediaWiki by
+    <li class="footer">Generated on Fri Sep 1 2017 05:30:57 for LinkTitles extension for MediaWiki by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

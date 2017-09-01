@@ -1,24 +1,33 @@
 var indexSectionsWithContent =
 {
-  0: "_cel",
-  1: "c",
-  2: "_e",
-  3: "l"
+  0: "$_abcdefghilmopst",
+  1: "celst",
+  2: "l",
+  3: "_abcdefghilmopst",
+  4: "$",
+  5: "b",
+  6: "l"
 };
 
 var indexSectionNames =
 {
   0: "all",
   1: "classes",
-  2: "functions",
-  3: "pages"
+  2: "namespaces",
+  3: "functions",
+  4: "variables",
+  5: "groups",
+  6: "pages"
 };
 
 var indexSectionLabels =
 {
   0: "All",
   1: "Classes",
-  2: "Functions",
-  3: "Pages"
+  2: "Namespaces",
+  3: "Functions",
+  4: "Variables",
+  5: "Modules",
+  6: "Pages"
 };
 

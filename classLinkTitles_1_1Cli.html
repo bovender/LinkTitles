@@ -91,9 +91,10 @@ $(document).ready(function(){initNavTree('classLinkTitles_1_1Cli.html','');});
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="classLinkTitles_1_1Cli-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">LinkTitles\Cli Class Reference</div>  </div>
+<div class="title">LinkTitles\Cli Class Reference<div class="ingroups"><a class="el" href="group__batch.html">Batch processing</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -112,50 +113,104 @@ Inheritance diagram for LinkTitles\Cli:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a5824c700cd5f5d150c98987e4559cdb4"><td class="memItemLeft" align="right" valign="top"><a id="a5824c700cd5f5d150c98987e4559cdb4"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles_1_1Cli.html#a5824c700cd5f5d150c98987e4559cdb4">__construct</a> ()</td></tr>
-<tr class="memdesc:a5824c700cd5f5d150c98987e4559cdb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">The constructor adds a description and one option. <br /></td></tr>
+<tr class="memdesc:a5824c700cd5f5d150c98987e4559cdb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor. <br /></td></tr>
 <tr class="separator:a5824c700cd5f5d150c98987e4559cdb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:affb2700103dd1386a34509a20b5051c5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles_1_1Cli.html#affb2700103dd1386a34509a20b5051c5">execute</a> ()</td></tr>
-<tr class="memdesc:affb2700103dd1386a34509a20b5051c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main function of the maintenance script.  <a href="#affb2700103dd1386a34509a20b5051c5">More...</a><br /></td></tr>
+<tr class="memitem:affb2700103dd1386a34509a20b5051c5"><td class="memItemLeft" align="right" valign="top"><a id="affb2700103dd1386a34509a20b5051c5"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>execute</b> ()</td></tr>
 <tr class="separator:affb2700103dd1386a34509a20b5051c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a161838356b917763289adde55e1fa5b5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles_1_1Cli.html#a161838356b917763289adde55e1fa5b5">singlePage</a> ()</td></tr>
+<tr class="memdesc:a161838356b917763289adde55e1fa5b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes a single page.  <a href="#a161838356b917763289adde55e1fa5b5">More...</a><br /></td></tr>
+<tr class="separator:a161838356b917763289adde55e1fa5b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36d1ee08dba769bb4269873287ab7101"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles_1_1Cli.html#a36d1ee08dba769bb4269873287ab7101">allPages</a> ( $index=0)</td></tr>
+<tr class="memdesc:a36d1ee08dba769bb4269873287ab7101"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process all pages in the Wiki.  <a href="#a36d1ee08dba769bb4269873287ab7101">More...</a><br /></td></tr>
+<tr class="separator:a36d1ee08dba769bb4269873287ab7101"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Core class of the maintanance script. </p>
 <dl class="section note"><dt>Note</dt><dd>Note that the execution of maintenance scripts is prohibited for an Apache web server due to a <code>.htaccess</code> file that declares <code>deny from all</code>. Other webservers may exhibit different behavior. Be aware that anybody who is able to execute this script may place a high load on the server. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LinkTitles__Maintenance_8php_source.html#l00056">56</a> of file <a class="el" href="LinkTitles__Maintenance_8php_source.html">LinkTitles_Maintenance.php</a>.</p>
+<p class="definition">Definition at line <a class="el" href="linktitles-cli_8php_source.html#l00060">60</a> of file <a class="el" href="linktitles-cli_8php_source.html">linktitles-cli.php</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="affb2700103dd1386a34509a20b5051c5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#affb2700103dd1386a34509a20b5051c5">&#9670;&nbsp;</a></span>execute()</h2>
+<a id="a36d1ee08dba769bb4269873287ab7101"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36d1ee08dba769bb4269873287ab7101">&#9670;&nbsp;</a></span>allPages()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">LinkTitles\Cli::execute </td>
+          <td class="memname">LinkTitles\Cli::allPages </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$index</em> = <code>0</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Process all pages in the Wiki. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">integer</td><td class="paramname">$index</td><td>Index of the start page. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>bool True on success, false on failure. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="linktitles-cli_8php_source.html#l00153">153</a> of file <a class="el" href="linktitles-cli_8php_source.html">linktitles-cli.php</a>.</p>
+
+</div>
+</div>
+<a id="a161838356b917763289adde55e1fa5b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a161838356b917763289adde55e1fa5b5">&#9670;&nbsp;</a></span>singlePage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">LinkTitles\Cli::singlePage </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Main function of the maintenance script. </p>
-<p>Will iterate over all pages in the wiki (starting at a certain index, if the <code>--start</code> option is given) and call LinkTitles::processPage() for each page. </p>
+<p>Processes a single page. </p>
+<dl class="section return"><dt>Returns</dt><dd>bool True on success, false on failure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LinkTitles__Maintenance_8php_source.html#l00094">94</a> of file <a class="el" href="LinkTitles__Maintenance_8php_source.html">LinkTitles_Maintenance.php</a>.</p>
+<p class="definition">Definition at line <a class="el" href="linktitles-cli_8php_source.html#l00134">134</a> of file <a class="el" href="linktitles-cli_8php_source.html">linktitles-cli.php</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li><a class="el" href="LinkTitles__Maintenance_8php_source.html">LinkTitles_Maintenance.php</a></li>
+<li><a class="el" href="linktitles-cli_8php_source.html">linktitles-cli.php</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>LinkTitles</b></li><li class="navelem"><a class="el" href="classLinkTitles_1_1Cli.html">Cli</a></li>
-    <li class="footer">Generated on Fri Aug 25 2017 19:28:47 for LinkTitles extension for MediaWiki by
+    <li class="navelem"><a class="el" href="namespaceLinkTitles.html">LinkTitles</a></li><li class="navelem"><a class="el" href="classLinkTitles_1_1Cli.html">Cli</a></li>
+    <li class="footer">Generated on Fri Sep 1 2017 05:30:57 for LinkTitles extension for MediaWiki by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

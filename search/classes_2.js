@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['loggedupdatemaintenance',['LoggedUpdateMaintenance',['../classLoggedUpdateMaintenance.html',1,'']]]
+  ['linker',['Linker',['../classLinkTitles_1_1Linker.html',1,'LinkTitles']]],
+  ['linktitleslinkertest',['LinkTitlesLinkerTest',['../classLinkTitlesLinkerTest.html',1,'']]]
 ];

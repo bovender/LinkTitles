@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['updatelogfailedmessage',['updatelogFailedMessage',['../classLoggedUpdateMaintenance.html#a7987f62169fa6c07f029a1a90b1491e9',1,'LoggedUpdateMaintenance']]],
-  ['updatesearchindex',['updateSearchIndex',['../classMaintenance.html#a4675235e8d59d18924137e7f45e25933',1,'Maintenance']]],
-  ['updatesearchindexforpage',['updateSearchIndexForPage',['../classMaintenance.html#a622adb4b084348ae584d796835ded7f4',1,'Maintenance']]],
-  ['updateskippedmessage',['updateSkippedMessage',['../classLoggedUpdateMaintenance.html#abdaebbb355b4dced51b10a3240ecb3c5',1,'LoggedUpdateMaintenance']]]
+  ['settext',['setText',['../classLinkTitles_1_1Source.html#ab965a3f614b6612df51c441d95d70546',1,'LinkTitles::Source']]],
+  ['simplemodecallback',['simpleModeCallback',['../classLinkTitles_1_1Linker.html#a8b5df5a14ba67bbc8e39d5570df18fb7',1,'LinkTitles::Linker']]],
+  ['singlepage',['singlePage',['../classLinkTitles_1_1Cli.html#a161838356b917763289adde55e1fa5b5',1,'LinkTitles::Cli']]],
+  ['smartmodecallback',['smartModeCallback',['../classLinkTitles_1_1Linker.html#ac5f8162abd97752d4060480481ad33e5',1,'LinkTitles::Linker']]],
+  ['split',['split',['../classLinkTitles_1_1Splitter.html#a5241cd1c482a905c1d3f8998d438929f',1,'LinkTitles::Splitter']]]
 ];

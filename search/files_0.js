@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['maintenance_2ephp',['Maintenance.php',['../Maintenance_8php.html',1,'']]]
+  ['config_2ephp',['config.php',['../config_8php.html',1,'']]]
 ];
