@@ -106,11 +106,11 @@ $(document).ready(function(){initNavTree('classLinkTitles_1_1Targets.html','');}
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ac289508f5f7991b36c8f74c13e4aa3d1"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles_1_1Targets.html#ac289508f5f7991b36c8f74c13e4aa3d1">default</a> (\Title $title, <a class="el" href="classLinkTitles_1_1Config.html">Config</a> $config)</td></tr>
-<tr class="memdesc:ac289508f5f7991b36c8f74c13e4aa3d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Singleton factory that returns a (cached) database query results with potential target page titles.  <a href="#ac289508f5f7991b36c8f74c13e4aa3d1">More...</a><br /></td></tr>
-<tr class="separator:ac289508f5f7991b36c8f74c13e4aa3d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac354a625d6955da783963cb2909f72df"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles_1_1Targets.html#ac354a625d6955da783963cb2909f72df">singleton</a> (\Title $title, <a class="el" href="classLinkTitles_1_1Config.html">Config</a> $config)</td></tr>
+<tr class="memdesc:ac354a625d6955da783963cb2909f72df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Singleton factory that returns a (cached) database query results with potential target page titles.  <a href="#ac354a625d6955da783963cb2909f72df">More...</a><br /></td></tr>
+<tr class="separator:ac354a625d6955da783963cb2909f72df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68f91b692812c2a7946b699c9eaad377"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles_1_1Targets.html#a68f91b692812c2a7946b699c9eaad377">invalidate</a> ()</td></tr>
-<tr class="memdesc:a68f91b692812c2a7946b699c9eaad377"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invalidates the cache; the next call of <a class="el" href="classLinkTitles_1_1Targets.html#ac289508f5f7991b36c8f74c13e4aa3d1" title="Singleton factory that returns a (cached) database query results with potential target page titles...">Targets::default()</a> will trigger a database query.  <a href="#a68f91b692812c2a7946b699c9eaad377">More...</a><br /></td></tr>
+<tr class="memdesc:a68f91b692812c2a7946b699c9eaad377"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invalidates the cache; the next call of <a class="el" href="classLinkTitles_1_1Targets.html#ac354a625d6955da783963cb2909f72df" title="Singleton factory that returns a (cached) database query results with potential target page titles...">Targets::singleton()</a> will trigger a database query.  <a href="#a68f91b692812c2a7946b699c9eaad377">More...</a><br /></td></tr>
 <tr class="separator:a68f91b692812c2a7946b699c9eaad377"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -198,8 +198,8 @@ static&#160;</td><td class="memItemRight" valign="bottom"><b>$instance</b></td><
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ac289508f5f7991b36c8f74c13e4aa3d1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac289508f5f7991b36c8f74c13e4aa3d1">&#9670;&nbsp;</a></span>default()</h2>
+<a id="a68f91b692812c2a7946b699c9eaad377"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68f91b692812c2a7946b699c9eaad377">&#9670;&nbsp;</a></span>invalidate()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -208,7 +208,37 @@ static&#160;</td><td class="memItemRight" valign="bottom"><b>$instance</b></td><
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static LinkTitles\Targets::default </td>
+          <td class="memname">static LinkTitles\Targets::invalidate </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Invalidates the cache; the next call of <a class="el" href="classLinkTitles_1_1Targets.html#ac354a625d6955da783963cb2909f72df" title="Singleton factory that returns a (cached) database query results with potential target page titles...">Targets::singleton()</a> will trigger a database query. </p>
+<p>Use this in unit tests which are performed in a single request cycle so that changes to the pages list may not be picked up by the cached <a class="el" href="classLinkTitles_1_1Targets.html" title="Fetches potential target page titles from the database. ">Targets</a> instance. </p>
+
+<p class="definition">Definition at line <a class="el" href="Targets_8php_source.html#l00057">57</a> of file <a class="el" href="Targets_8php_source.html">Targets.php</a>.</p>
+
+</div>
+</div>
+<a id="ac354a625d6955da783963cb2909f72df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac354a625d6955da783963cb2909f72df">&#9670;&nbsp;</a></span>singleton()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static LinkTitles\Targets::singleton </td>
           <td>(</td>
           <td class="paramtype">\Title&#160;</td>
           <td class="paramname"><em>$title</em>, </td>
@@ -246,36 +276,6 @@ static&#160;</td><td class="memItemRight" valign="bottom"><b>$instance</b></td><
 
 </div>
 </div>
-<a id="a68f91b692812c2a7946b699c9eaad377"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68f91b692812c2a7946b699c9eaad377">&#9670;&nbsp;</a></span>invalidate()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static LinkTitles\Targets::invalidate </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Invalidates the cache; the next call of <a class="el" href="classLinkTitles_1_1Targets.html#ac289508f5f7991b36c8f74c13e4aa3d1" title="Singleton factory that returns a (cached) database query results with potential target page titles...">Targets::default()</a> will trigger a database query. </p>
-<p>Use this in unit tests which are performed in a single request cycle so that changes to the pages list may not be picked up by the cached <a class="el" href="classLinkTitles_1_1Targets.html" title="Fetches potential target page titles from the database. ">Targets</a> instance. </p>
-
-<p class="definition">Definition at line <a class="el" href="Targets_8php_source.html#l00057">57</a> of file <a class="el" href="Targets_8php_source.html">Targets.php</a>.</p>
-
-</div>
-</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>includes/<a class="el" href="Targets_8php_source.html">Targets.php</a></li>
 </ul>
@@ -285,7 +285,7 @@ static&#160;</td><td class="memItemRight" valign="bottom"><b>$instance</b></td><
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespaceLinkTitles.html">LinkTitles</a></li><li class="navelem"><a class="el" href="classLinkTitles_1_1Targets.html">Targets</a></li>
-    <li class="footer">Generated on Fri Sep 1 2017 05:30:57 for LinkTitles extension for MediaWiki by
+    <li class="footer">Generated on Fri Sep 1 2017 05:38:35 for LinkTitles extension for MediaWiki by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['linkcontent',['linkContent',['../classLinkTitles_1_1Linker.html#a9bc25787dff16fe26cc93d2cceaec6f8',1,'LinkTitles::Linker']]]
+  ['maylinkto',['mayLinkTo',['../classLinkTitles_1_1Target.html#a05a49e9b652fe4e8c7ed808af4b3eb58',1,'LinkTitles::Target']]]
 ];

@@ -113,9 +113,9 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a3924cf7aba36fe1a73e56635cf80c447"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles_1_1Splitter.html#a3924cf7aba36fe1a73e56635cf80c447">default</a> (<a class="el" href="classLinkTitles_1_1Config.html">Config</a> &amp;$config=null)</td></tr>
-<tr class="memdesc:a3924cf7aba36fe1a73e56635cf80c447"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the <a class="el" href="classLinkTitles_1_1Splitter.html" title="Caches a regular expression that delimits text to be parsed. ">Splitter</a> singleton; may build one with the given config or the default config if none is given.  <a href="#a3924cf7aba36fe1a73e56635cf80c447">More...</a><br /></td></tr>
-<tr class="separator:a3924cf7aba36fe1a73e56635cf80c447"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac99a748d93275e812a4db08fc6ec611d"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles_1_1Splitter.html#ac99a748d93275e812a4db08fc6ec611d">singleton</a> (<a class="el" href="classLinkTitles_1_1Config.html">Config</a> &amp;$config=null)</td></tr>
+<tr class="memdesc:ac99a748d93275e812a4db08fc6ec611d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the <a class="el" href="classLinkTitles_1_1Splitter.html" title="Caches a regular expression that delimits text to be parsed. ">Splitter</a> singleton; may build one with the given config or the default config if none is given.  <a href="#ac99a748d93275e812a4db08fc6ec611d">More...</a><br /></td></tr>
+<tr class="separator:ac99a748d93275e812a4db08fc6ec611d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8e559981256f164a08e8bf3685a485e"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles_1_1Splitter.html#ae8e559981256f164a08e8bf3685a485e">invalidate</a> ()</td></tr>
 <tr class="memdesc:ae8e559981256f164a08e8bf3685a485e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invalidates the singleton instance.  <a href="#ae8e559981256f164a08e8bf3685a485e">More...</a><br /></td></tr>
 <tr class="separator:ae8e559981256f164a08e8bf3685a485e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -154,43 +154,6 @@ static&#160;</td><td class="memItemRight" valign="bottom"><b>$instance</b></td><
 
 <p class="definition">Definition at line <a class="el" href="Splitter_8php_source.html#l00029">29</a> of file <a class="el" href="Splitter_8php_source.html">Splitter.php</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a3924cf7aba36fe1a73e56635cf80c447"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3924cf7aba36fe1a73e56635cf80c447">&#9670;&nbsp;</a></span>default()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static LinkTitles\Splitter::default </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classLinkTitles_1_1Config.html">Config</a> &amp;&#160;</td>
-          <td class="paramname"><em>$config</em> = <code>null</code></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Gets the <a class="el" href="classLinkTitles_1_1Splitter.html" title="Caches a regular expression that delimits text to be parsed. ">Splitter</a> singleton; may build one with the given config or the default config if none is given. </p>
-<p>If the instance was already created, it does not matter what <a class="el" href="classLinkTitles_1_1Config.html" title="Holds LinkTitles configuration. ">Config</a> this method is called with. To re-create an instance with a different <a class="el" href="classLinkTitles_1_1Config.html" title="Holds LinkTitles configuration. ">Config</a>, call <a class="el" href="classLinkTitles_1_1Splitter.html#ae8e559981256f164a08e8bf3685a485e" title="Invalidates the singleton instance. ">Splitter::invalidate()</a> first.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramtype"><a class="el" href="classLinkTitles_1_1Config.html" title="Holds LinkTitles configuration. ">Config</a>&#160;|&#160;null</td><td class="paramname">$config</td><td><a class="el" href="namespaceLinkTitles.html" title="The LinkTitles class holds configuration for the LinkTitles extension. ">LinkTitles</a> configuration. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="Splitter_8php_source.html#l00055">55</a> of file <a class="el" href="Splitter_8php_source.html">Splitter.php</a>.</p>
-
-</div>
-</div>
 <a id="ae8e559981256f164a08e8bf3685a485e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae8e559981256f164a08e8bf3685a485e">&#9670;&nbsp;</a></span>invalidate()</h2>
 
@@ -218,6 +181,43 @@ static&#160;</td><td class="memItemRight" valign="bottom"><b>$instance</b></td><
 <p>Used for unit testing. </p>
 
 <p class="definition">Definition at line <a class="el" href="Splitter_8php_source.html#l00070">70</a> of file <a class="el" href="Splitter_8php_source.html">Splitter.php</a>.</p>
+
+</div>
+</div>
+<a id="ac99a748d93275e812a4db08fc6ec611d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac99a748d93275e812a4db08fc6ec611d">&#9670;&nbsp;</a></span>singleton()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static LinkTitles\Splitter::singleton </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classLinkTitles_1_1Config.html">Config</a> &amp;&#160;</td>
+          <td class="paramname"><em>$config</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the <a class="el" href="classLinkTitles_1_1Splitter.html" title="Caches a regular expression that delimits text to be parsed. ">Splitter</a> singleton; may build one with the given config or the default config if none is given. </p>
+<p>If the instance was already created, it does not matter what <a class="el" href="classLinkTitles_1_1Config.html" title="Holds LinkTitles configuration. ">Config</a> this method is called with. To re-create an instance with a different <a class="el" href="classLinkTitles_1_1Config.html" title="Holds LinkTitles configuration. ">Config</a>, call <a class="el" href="classLinkTitles_1_1Splitter.html#ae8e559981256f164a08e8bf3685a485e" title="Invalidates the singleton instance. ">Splitter::invalidate()</a> first.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype"><a class="el" href="classLinkTitles_1_1Config.html" title="Holds LinkTitles configuration. ">Config</a>&#160;|&#160;null</td><td class="paramname">$config</td><td><a class="el" href="namespaceLinkTitles.html" title="The LinkTitles class holds configuration for the LinkTitles extension. ">LinkTitles</a> configuration. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="Splitter_8php_source.html#l00055">55</a> of file <a class="el" href="Splitter_8php_source.html">Splitter.php</a>.</p>
 
 </div>
 </div>
@@ -259,7 +259,7 @@ static&#160;</td><td class="memItemRight" valign="bottom"><b>$instance</b></td><
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespaceLinkTitles.html">LinkTitles</a></li><li class="navelem"><a class="el" href="classLinkTitles_1_1Splitter.html">Splitter</a></li>
-    <li class="footer">Generated on Fri Sep 1 2017 05:30:57 for LinkTitles extension for MediaWiki by
+    <li class="footer">Generated on Fri Sep 1 2017 05:38:35 for LinkTitles extension for MediaWiki by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

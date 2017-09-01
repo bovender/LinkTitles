@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['onpagecontentsave',['onPageContentSave',['../classLinkTitles_1_1Extension.html#ac9f572e851d3ce2ffcec91fe20727f76',1,'LinkTitles::Extension']]],
-  ['onparserfirstcallinit',['onParserFirstCallInit',['../classLinkTitles_1_1Extension.html#ad14b83e71bee9e5ad3029e41f8a73f04',1,'LinkTitles::Extension']]]
+  ['process',['process',['../classLinkTitles_1_1Special.html#a0e099d97592b9ce6063842f7c6cdb7db',1,'LinkTitles::Special']]],
+  ['processpage',['processPage',['../classLinkTitles_1_1Extension.html#a78b363f22dd4aace7ea53e3ffb9fae1d',1,'LinkTitles::Extension']]]
 ];
