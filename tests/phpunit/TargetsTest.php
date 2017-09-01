@@ -34,7 +34,7 @@ class TargetsTest extends LinkTitles\TestCase {
 	 */
 	public function testTargets() {
 		$title = \Title::newFromText( 'link target' );
-		$targets = LinkTitles\Targets::default( $title, new LinkTitles\Config() );
+		$targets = LinkTitles\Targets::singleton( $title, new LinkTitles\Config() );
 
 		// Count number of articles: Inspired by updateArticleCount.php maintenance
 		// script: https://doc.wikimedia.org/mediawiki-core/master/php/updateArticleCount_8php_source.html

@@ -374,7 +374,7 @@ To add page titles to the black list, you can use statements such as
 in your `LocalSettings.php` file. Use one of these for every page title that you want to
 put on the black list. Alternatively, you can specify the entire array:
 
-    $wgLinkTitlesBlackList[] = [ 'Some special page title', 'Another one' ];
+    $wgLinkTitlesBlackList = [ 'Some special page title', 'Another one' ];
 
 Keep in mind that a MediaWiki page title always starts with a capital letter
 unless you have `$wgCapitalLinks = false;` in your `LocalSettings.php`.

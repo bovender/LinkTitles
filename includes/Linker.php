@@ -76,8 +76,8 @@ class Linker {
 		$limitReached = false;
 		$newLinks = false; // whether or not new links were added
 		$newText = $source->getText();
-		$splitter = Splitter::default( $this->config );
-		$targets = Targets::default( $source->getTitle(), $this->config );
+		$splitter = Splitter::singleton( $this->config );
+		$targets = Targets::singleton( $source->getTitle(), $this->config );
 
 		// Iterate through the target page titles
 		foreach( $targets->queryResult as $row ) {

@@ -52,7 +52,7 @@ class Splitter {
 	 *
 	 * @param  Config|null $config LinkTitles configuration.
 	 */
-	public static function default( Config &$config = null ) {
+	public static function singleton( Config &$config = null ) {
 		if ( self::$instance === null ) {
 			if ( $config === null ) {
 				$config = new Config();
