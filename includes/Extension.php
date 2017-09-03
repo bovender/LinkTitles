@@ -84,7 +84,7 @@ class Extension {
 				$content = $source->getContent()->getContentHandler()->unserializeContent( $result );
 				$source->getPage()->doEditContent(
 					$content,
-					"Links to existing pages added by LinkTitles bot.", // TODO: i18n
+					\wfMessage( 'linktitles-bot-comment', self::URL ),
 					EDIT_MINOR | EDIT_FORCE_BOT,
 					false, // baseRevId
 					$context->getUser()

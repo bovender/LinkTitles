@@ -7,6 +7,7 @@
 	"linktitles-special-page-count": "Seite $1 von $2.\n",
 	"linktitles-special-cancel-notice": "=== Um abzubrechen, schließen Sie diese Seite, oder klicken Sie den 'Stopp'-Knopf in Ihrem Browser ===\n[[Special:LinkTitles|Zu Special:LinkTitles zurückkehren.]]",
 	"linktitles-special-completed-info": "== Stapelverarbeitung abgeschlossen! ==\n{| class=\"wikitable\"\n|-\n| Anzahl der verarbeiteten Seiten: || $1\n|-\n| Verarbeitungsintervall [s]: || $2\n|-\n| Reloads: || $3\n|-\n| Seiten pro Reload: || $4\n|}",
+	"linktitles-bot-comment": "Die LinkTitles-Erweiterung hat automatisch Links zu anderen Seiten hinzugefügt ($1).",
 	"right-linktitles-batch": "LinkTitles-Stapelverarbeitung ausführen",
 	"action-linktitles-batch": "LinkTitles-Stapelverarbeitung auszuführen"
 }

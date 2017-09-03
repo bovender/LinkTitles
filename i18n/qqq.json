@@ -7,6 +7,7 @@
 	"linktitles-special-page-count": "Number of pages.",
 	"linktitles-special-cancel-notice": "Informs the user how to cancel the LinkTitles batch processing.",
 	"linktitles-special-completed-info": "Text and statistics table that appear when batch processing has completed.",
+	"linktitles-bot-comment": "Comment to add when pages are processed by LinkTitles\\Extension::processPage. The parameter may take the URL the the extension's homepage.",
 	"right-linktitles-batch": "Describes the right to perform a LinkTitles batch operation.",
 	"action-linktitles-batch": "Describes the action of performing a LinkTitles batch operation."
 }

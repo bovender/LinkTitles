@@ -7,6 +7,7 @@
 	"linktitles-special-page-count": "Page $1 of $2.\n",
 	"linktitles-special-cancel-notice": "=== To abort, close this page, or hit the 'Stop' button in your browser ===\n[[Special:LinkTitles|Return to Special:LinkTitles.]]",
 	"linktitles-special-completed-info": "== Batch processing completed! ==\n{| class=\"wikitable\"\n|-\n| total number of pages: || $1\n|-\n| timeout setting [s]: || $2\n|-\n| webpage reloads: || $3\n|-\n| pages scanned per reload interval: || $4\n|}",
+	"linktitles-bot-comment": "The LinkTitles extension automatically added links to existing pages ($1).",
 	"right-linktitles-batch": "Perform a LinkTitles batch operation",
 	"action-linktitles-batch": "perform a LinkTitles batch operation"
 }
