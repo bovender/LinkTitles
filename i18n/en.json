@@ -2,6 +2,7 @@
 	"linktitles": "LinkTitles",
 	"linktitles-desc": "Automatically adds links to existing pages whenever a page is saved.",
 	"linktitles-special-info": "LinkTitles extension: $1\n== Batch Linking ==\nYou can start a batch linking process by clicking on the button below. This will go through every page in the normal namespace of your Wiki and insert links automatically. This page will repeatedly reload itself, in order to prevent blocking the server. To interrupt the process, simply close this page.",
+	"linktitles-special-submit": "Start linking now",
 	"linktitles-special-progress": "== Processing pages... ==\nThe [$1 LinkTitles] extension is currently going through every page of your wiki, adding links to existing pages as appropriate.\n=== Current page: $2 ===",
 	"linktitles-special-page-count": "Page $1 of $2.\n",
 	"linktitles-special-cancel-notice": "=== To abort, close this page, or hit the 'Stop' button in your browser ===\n[[Special:LinkTitles|Return to Special:LinkTitles.]]",

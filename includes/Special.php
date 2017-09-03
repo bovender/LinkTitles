@@ -175,12 +175,13 @@ class Special extends \SpecialPage {
 	 * and a form and button to start linking.
 	 */
 	private function buildInfoPage( &$request, &$output ) {
-		$output->addWikiText( $this->msg( 'linktitles-special-info', Extension::URL ) );
+		$output->addWikiMsg( 'linktitles-special-info', Extension::URL );
 		$url = $request->getRequestURL();
+		$submitButtonLabel = $this->msg( 'linktitles-special-submit' );
 		$output->addHTML(
 <<<EOF
 <form method="post" action="${url}">
-	<input type="submit" value="Start linking" />
+	<input type="submit" value="$submitButtonLabel" />
 	<input type="hidden" name="s" value="0" />
 </form>
 EOF
@@ -198,9 +199,9 @@ EOF
 		$progress = $index / $end * 100;
 		$percent = sprintf("%01.1f", $progress);
 
-		$output->addWikiText( $this->msg( 'linktitles-special-progress', Extension::URL, $curTitle ) );
+		$output->addWikiMsg( 'linktitles-special-progress', Extension::URL, $curTitle );
 		$pageInfo = $this->msg( 'linktitles-page-count', $index, $end );
-		$output->addWikiText( 'linktitles-special-page-count', $index, $end );
+		$output->addWikiMsg( 'linktitles-special-page-count', $index, $end );
 		$output->addHTML( // TODO: do not use the style attribute (to make it work with CSP-enabled sites)
 <<<EOF
 <div style="width:100%; padding:2px; border:1px solid #000; position: relative; margin-bottom:16px;">
@@ -209,7 +210,7 @@ EOF
 </div>
 EOF
 		);
-		$output->addWikiText( $this->msg( 'linktitles-special-cancel-notice' ) );
+		$output->addWikiMsg( 'linktitles-special-cancel-notice' );
 	}
 
 	/**
@@ -246,10 +247,8 @@ EOF
 	 */
 	private function addCompletedInfo( &$output, $start, $end, $reloads ) {
 		$pagesPerReload = sprintf('%0.1f', $end / $reloads);
-		$output->addWikiText(
-			$this->msg( 'linktitltes-special-completed-info', $end,
-				$config->specialPageReloadAfter, $reloads, $pagesPerReload
-			)
+		$output->addWikiMsg( 'linktitltes-special-completed-info', $end,
+			$config->specialPageReloadAfter, $reloads, $pagesPerReload
 		);
 	}
 

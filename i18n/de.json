@@ -1,7 +1,8 @@
 {
 	"linktitles": "LinkTitles",
 	"linktitles-desc": "Fügt beim Speichern von Seiten automatisch Querverweise zu vorhandenen Seiten ein.",
-	"linktitles-special-info": "LinkTitles-Erweiterung: $1\n== Stapelverarbeitung ==\nKlicken Sie auf den Button, um die Stapelverarbeitung zu beginnen. Die Erweiterung wird nacheinander alle Seiten Ihres Wikis mit automatischen Links versehen. Um zu verhindern, daß der Server bei der Ausführung blockiert wird, wird diese Seite sich wiederholt selbst aufrufen. Um die Stapelverarbeitung abzubrechen, schließen Sie einfach diese Seite.",
+	"linktitles-special-info": "LinkTitles-Erweiterung: <$1>\n== Stapelverarbeitung ==\nKlicken Sie auf den Button, um die Stapelverarbeitung zu beginnen. Die Erweiterung wird nacheinander alle Seiten Ihres Wikis mit automatischen Links versehen. Um zu verhindern, daß der Server bei der Ausführung blockiert wird, wird diese Seite sich wiederholt selbst aufrufen. Um die Stapelverarbeitung abzubrechen, schließen Sie einfach diese Seite.",
+	"linktitles-special-submit": "Stapelverarbeitung beginnen",
 	"linktitles-special-progress": "== Verarbeite die Seiten... ==\nDie [$1 LinkTitles-Erweiterung] verarbeitet gerade alle Seiten Ihres Wikis.\n=== Aktuelle Seite: $2 ===",
 	"linktitles-special-page-count": "Seite $1 von $2.\n",
 	"linktitles-special-cancel-notice": "=== Um abzubrechen, schließen Sie diese Seite, oder klicken Sie den 'Stopp'-Knopf in Ihrem Browser ===\n[[Special:LinkTitles|Zu Special:LinkTitles zurückkehren.]]",

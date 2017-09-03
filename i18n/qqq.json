@@ -2,6 +2,7 @@
 	"linktitles": "Name of the LinkTitles extension; also used for the special page.",
 	"linktitles-desc": "Description of the LinkTitles extension.",
 	"linktitles-special-info": "Descriptive text that appears on the Special:LinkTitles page.",
+	"linktitles-special-submit": "Label for submit button to start linking.",
 	"linktitles-special-progress": "Text that is shown on the Special:LinkTitles page while batch processing is executing.",
 	"linktitles-special-page-count": "Number of pages.",
 	"linktitles-special-cancel-notice": "Informs the user how to cancel the LinkTitles batch processing.",
