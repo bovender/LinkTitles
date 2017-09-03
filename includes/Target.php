@@ -73,7 +73,6 @@ class Target {
 	 * @param String &$title Title of the target page
 	 */
 	public function __construct( $namespace, $title, Config &$config ) {
-		// print "\n>>>namespace=$namespace;title=$title<<<\n";
 		$this->title = \Title::makeTitleSafe( $namespace, $title );
 		$this->titleValue = $this->title->getTitleValue();
 		$this->config = $config;
@@ -95,7 +94,7 @@ class Target {
 	}
 
 	public function getPrefixedTitleText() {
-		return $this->getNsPrefix() . $this->getTitleText();
+		return $this->title->getPrefixedText();
 	}
 
 	/**
@@ -204,11 +203,8 @@ class Target {
 		// If checking for redirects is enabled and the target page does
 		// indeed redirect to the current page, return the page title as-is
 		// (unlinked).
-		if ( $this->config->checkRedirect ) {
-			$redirectTitle = $this->getContent()->getUltimateRedirectTarget();
-			if ( $redirectTitle && $redirectTitle->equals( $source->getTitle() ) ) {
-				return false;
-			}
+		if ( $this->config->checkRedirect && $this->redirectsTo( $source ) ) {
+			return false;
 		};
 		// If the magic word __NOAUTOLINKTARGET__ is enabled and the target
 		// page does indeed contain this magic word, return the page title
@@ -228,5 +224,17 @@ class Target {
 	 */
 	public function isSameTitle( Source $source) {
 		return $this->title->equals( $source->getTitle() );
+	}
+
+	/**
+	 * Checks whether this target redirects to the source.
+	 * @param  Source $source Source page.
+	 * @return bool           True if the target redirects to the source.
+	 */
+	public function redirectsTo( $source ) {
+		if ( $this->getContent() ) {
+			$redirectTitle = $this->getContent()->getUltimateRedirectTarget();
+			return $redirectTitle && $redirectTitle->equals( $source->getTitle() );
+		}
 	}
 }

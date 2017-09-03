@@ -350,7 +350,7 @@ page titles first, as these generally tend to be more specific.
 
 ### Filtering pages by title length
 
-    $wgLinkTitlesMinimumTitleLength = 3;
+    $wgLinkTitlesMinimumTitleLength = 4;
 
 Only link to page titles that have a certain minimum length. In my experience,
 very short titles can be ambiguous. For example, "mg" may be "milligrams" on a

@@ -94,7 +94,7 @@ class Linker {
 			// A link to the current page should only be recognized if it appears in
 			// clear text, i.e. we do not count piped links as existing links.
 			// (Similarly, by design, redirections should not be counted as existing links.)
-			if ( $limit == 1 && preg_match( '/[[' . $target->getCaseSensitiveLinkValueRegex() . ']]/' , $source->getText() ) ) {
+			if ( $limit == 1 && preg_match( '/\[\[' . $target->getCaseSensitiveLinkValueRegex() . ']]/' , $source->getText() ) ) {
 				continue;
 			}
 

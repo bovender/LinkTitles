@@ -41,7 +41,6 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 		parent::setUp(); // call last to have the Targets object invalidated after inserting the page
 	}
 
-
   public function addDBData() {
 		$this->title = $this->insertPage( 'source page', 'This page is the test page' )['title'];
     $this->insertPage( 'link target', 'This page serves as a link target' );
@@ -82,7 +81,6 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 			]
 		];
 	}
-
 
 	/**
 	 * @dataProvider provideLinkContentSmartModeData
@@ -217,40 +215,45 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 	// Tests for namespace handling are commented out until I find a way to add
 	// a custom namespace during testing. (The assertTrue assertion below fails.)
 
-	// /**
-	//  * @dataProvider provideLinkContentNamespacesData
-	//  */
-	// public function testLinkContentNamespaces( $namespaces, $input, $expectedOutput ) {
-	// 	$ns = 4000;
-	// 	$this->setMwGlobals( [
-	// 		"wgExtraNamespaces[$ns]" => 'custom_namespace'
-	// 	] );
-	// 	// global $wgExtraNamespaces;
-	// 	// global $wgContentNamespaces;
-	// 	// $wgContentNamespaces[] = $ns;
-	// 	// $wgExtraNamespaces[$ns] = 'custom_adsf';
-	// 	$this->insertPage( 'in custom namespace', 'This is a page in a custom namespace', $ns );
-	// 	$this->assertTrue( MWNamespace::exists( $ns ), "The name space with id $ns should exist!" );
-	// 	LinKTitles\Targets::invalidate();
-	// 	$config = new LinkTitles\Config();
-	// 	$config->namespaces = $namespaces;
-	// 	$linker = new LinkTitles\Linker( $config );
-	// 	$this->assertSame( $expectedOutput, $linker->linkContent( $this->title, $input ));
-	// }
+	/**
+	 * @dataProvider provideLinkContentNamespacesData
+	 */
+	public function testLinkContentTargetNamespaces( $namespaces, $input, $expectedOutput ) {
+		$config = new LinkTitles\Config();
+		$config->targetNamespaces = $namespaces;
 
-	// public function provideLinkContentNamespacesData() {
-	// 	return [
-	// 		[
-	// 			[], // namespaces
-	// 			'With namespaces = [], page in custom namespace should not be linked',
-	// 			'With namespaces = [], page in custom namespace should not be linked'
-	// 		],
-	// 		[
-	// 			[ 4000 ], // namespaces
-	// 			'With namespaces = [ 4000 ], page in custom namespace should be linked',
-	// 			'With namespaces = [ 4000 ], page [[custom_namespace:in custom namespace]] should be linked'
-	// 		],
-	// 	];
-	// }
+	 	$ns = 4000;
+		$nsText = 'customnamespace';
+		$this->mergeMwGlobalArrayValue( 'wgExtraNamespaces', [ $ns => $nsText ] );
 
+		// Reset namespace caches.
+		// See https://stackoverflow.com/q/45974979/270712
+		MWNamespace::getCanonicalNamespaces( true );
+		global $wgContLang;
+		$wgContLang->resetNamespaces();
+		$this->assertTrue( MWNamespace::exists( $ns ), "The namespace with id $ns should exist!" );
+
+		$this->insertPage( "in custom namespace", 'This is a page in a custom namespace', $ns );
+		LinKTitles\Targets::invalidate();
+		$linker = new LinkTitles\Linker( $config );
+		$source = LinkTitles\Source::createFromTitleAndText( $this->title, $input, $config );
+		$result = $linker->linkContent( $source );
+		if ( !$result ) { $result = $input; }
+		$this->assertSame( $expectedOutput, $result );
+	}
+
+	public function provideLinkContentNamespacesData() {
+		return [
+	 		[
+	 			[], // namespaces
+	 			'With targetNamespaces = [], page in custom namespace should not be linked',
+	 			'With targetNamespaces = [], page in custom namespace should not be linked'
+	 		],
+	 		[
+	 			[ 4000 ], // namespaces
+	 			'With targetNamespaces = [ 4000 ], page in custom namespace should be linked',
+	 			'With targetNamespaces = [ 4000 ], page [[customnamespace:In custom namespace|in custom namespace]] should be linked'
+	 		],
+		];
+	}
 }
