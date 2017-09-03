@@ -28,13 +28,15 @@
  */
 class TargetsTest extends LinkTitles\TestCase {
 
-	/**
-	 * This test asserts that the list of potential link targets is 0
-	 * @return [type] [description]
-	 */
 	public function testTargets() {
+		$config = new LinkTitles\Config();
+		// Include the custom namespace with index 4000 in the count. This is a
+		// very ugly hack. If the custom namespace index in
+		// LinkTitlesLinkerTest::testLinkContentTargetNamespaces() is every changed,
+		// this test will fail.
+		$config->targetNamespaces = [ 4000 ];
 		$title = \Title::newFromText( 'link target' );
-		$targets = LinkTitles\Targets::singleton( $title, new LinkTitles\Config() );
+		$targets = LinkTitles\Targets::singleton( $title, $config );
 
 		// Count number of articles: Inspired by updateArticleCount.php maintenance
 		// script: https://doc.wikimedia.org/mediawiki-core/master/php/updateArticleCount_8php_source.html
