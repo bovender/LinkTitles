@@ -2,7 +2,7 @@ var namespaceLinkTitles =
 [
     [ "Cli", "classLinkTitles_1_1Cli.html", "classLinkTitles_1_1Cli" ],
     [ "Config", "classLinkTitles_1_1Config.html", "classLinkTitles_1_1Config" ],
-    [ "Extension", "classLinkTitles_1_1Extension.html", null ],
+    [ "Extension", "classLinkTitles_1_1Extension.html", "classLinkTitles_1_1Extension" ],
     [ "Linker", "classLinkTitles_1_1Linker.html", "classLinkTitles_1_1Linker" ],
     [ "Source", "classLinkTitles_1_1Source.html", "classLinkTitles_1_1Source" ],
     [ "Special", "classLinkTitles_1_1Special.html", "classLinkTitles_1_1Special" ],

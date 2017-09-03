@@ -13,6 +13,7 @@ var classLinkTitles_1_1Target =
     [ "getTitleText", "classLinkTitles_1_1Target.html#aff1f09d800bd43a5b69cf029a3955c4c", null ],
     [ "isSameTitle", "classLinkTitles_1_1Target.html#aea6eda842c2069c786eef1b88d1566af", null ],
     [ "mayLinkTo", "classLinkTitles_1_1Target.html#a05a49e9b652fe4e8c7ed808af4b3eb58", null ],
+    [ "redirectsTo", "classLinkTitles_1_1Target.html#a29b72bd601b48736dd2c21f2c470f805", null ],
     [ "$caseSensitiveLinkValueRegex", "classLinkTitles_1_1Target.html#afb79a7bed4dafe391acf412a00fed923", null ],
     [ "$config", "classLinkTitles_1_1Target.html#ad449fd60c56f194f1dd8099ef1f32466", null ],
     [ "$content", "classLinkTitles_1_1Target.html#a48007592742fe989886446bac5e6c8ac", null ],
