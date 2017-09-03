@@ -1,6 +1,11 @@
 {
-        "linktitles": "Title of the LinkTitles extension; also used for the special page.",
+	"linktitles": "Name of the LinkTitles extension; also used for the special page.",
 	"linktitles-desc": "Description of the LinkTitles extension.",
-        "right-linktitles-batch": "Describes the right to perform a LinkTitles batch operation.",
-        "action-linktitles-batch": "Describes the action of performing a LinkTitles batch operation."
+	"linktitles-special-info": "Descriptive text that appears on the Special:LinkTitles page.",
+	"linktitles-special-progress": "Text that is shown on the Special:LinkTitles page while batch processing is executing.",
+	"linktitles-special-page-count": "Number of pages.",
+	"linktitles-special-cancel-notice": "Informs the user how to cancel the LinkTitles batch processing.",
+	"linktitles-special-completed-info": "Text and statistics table that appear when batch processing has completed.",
+	"right-linktitles-batch": "Describes the right to perform a LinkTitles batch operation.",
+	"action-linktitles-batch": "Describes the action of performing a LinkTitles batch operation."
 }

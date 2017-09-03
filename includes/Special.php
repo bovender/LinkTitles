@@ -175,21 +175,8 @@ class Special extends \SpecialPage {
 	 * and a form and button to start linking.
 	 */
 	private function buildInfoPage( &$request, &$output ) {
+		$output->addWikiText( $this->msg( 'linktitles-special-info', Extension::URL ) );
 		$url = $request->getRequestURL();
-
-		// TODO: Put the page contents in messages in the i18n file.
-		$output->addWikiText(
-<<<EOF
-LinkTitles extension: https://github.com/bovender/LinkTitles
-
-== Batch Linking ==
-You can start a batch linking process by clicking on the button below.
-This will go through every page in the normal namespace of your Wiki and
-insert links automatically. This page will repeatedly reload itself, in
-order to prevent blocking the server. To interrupt the process, simply
-close this page.
-EOF
-		);
 		$output->addHTML(
 <<<EOF
 <form method="post" action="${url}">
@@ -211,34 +198,18 @@ EOF
 		$progress = $index / $end * 100;
 		$percent = sprintf("%01.1f", $progress);
 
-		$output->addWikiText(
+		$output->addWikiText( $this->msg( 'linktitles-special-progress', Extension::URL, $curTitle ) );
+		$pageInfo = $this->msg( 'linktitles-page-count', $index, $end );
+		$output->addWikiText( 'linktitles-special-page-count', $index, $end );
+		$output->addHTML( // TODO: do not use the style attribute (to make it work with CSP-enabled sites)
 <<<EOF
-== Processing pages... ==
-The [https://github.com/bovender/LinkTitles LinkTitles]
-extension is currently going through every page of your wiki, adding links to
-existing pages as appropriate.
-
-=== Current page: $curTitle ===
-EOF
-		);
-		$output->addHTML(
-<<<EOF
-<p>Page ${index} of ${end}.</p>
-<div style="width:100%; padding:2px; border:1px solid #000; position: relative;
-		margin-bottom:16px;">
-	<span style="position: absolute; left: 50%; font-weight:bold; color:#555;">
-		${percent}%
-	</span>
+<div style="width:100%; padding:2px; border:1px solid #000; position: relative; margin-bottom:16px;">
+	<span style="position: absolute; left: 50%; font-weight:bold; color:#555;">${percent}%</span>
 	<div style="width:${progress}%; background-color:#bbb; height:20px; margin:0;"></div>
 </div>
 EOF
 		);
-		$output->addWikiText(
-<<<EOF
-=== To abort, close this page, or hit the 'Stop' button in your browser ===
-[[Special:LinkTitles|Return to Special:LinkTitles.]]
-EOF
-		);
+		$output->addWikiText( $this->msg( 'linktitles-special-cancel-notice' ) );
 	}
 
 	/**
@@ -276,20 +247,10 @@ EOF
 	private function addCompletedInfo( &$output, $start, $end, $reloads ) {
 		$pagesPerReload = sprintf('%0.1f', $end / $reloads);
 		$output->addWikiText(
-<<<EOF
-== Batch processing completed! ==
-{| class="wikitable"
-|-
-| total number of pages: || ${end}
-|-
-| timeout setting [s]: || {$config->specialPageReloadAfter}
-|-
-| webpage reloads: || ${reloads}
-|-
-| pages scanned per reload interval: || ${pagesPerReload}
-|}
-EOF
-			);
+			$this->msg( 'linktitltes-special-completed-info', $end,
+				$config->specialPageReloadAfter, $reloads, $pagesPerReload
+			)
+		);
 	}
 
 	/**

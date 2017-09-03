@@ -27,6 +27,7 @@ namespace LinkTitles;
  * Provides event handlers and entry points for the extension.
  */
 class Extension {
+	const URL = 'https://github.com/bovender/LinkTitles';
 
 	/**
 	 * Event handler for the PageContentSave hook.
