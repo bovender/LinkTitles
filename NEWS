@@ -1,6 +1,39 @@
+Version 5.0.1 (2017-09-03)
+------------------------------------------------------------------------
+
+- Fix: Detection of existing links had a bug.
+- Fix: Do not crash when testing redirect target on empty page.
+- Improved: Special Page can now be translated using messages.
+- Improved: The comment that is added when pages are edited by the maintenance script can now be translated using a message.
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+
+
 Version 5.0.0 (2017-09-01)
 ------------------------------------------------------------------------
 
+Version 5 is a major rewrite of the LinKTitles extension. The code is
+now much better organized, and it included automatic (unit) testing,
+which will greatly facilitate future maintenance and development.
+
+Namespace support was overhauled, and a couple of **breaking changes**
+were introduced in this version. Most notably, the
+`$wgLinkTitlesNamespaces` configuration variable was removed and
+replaced with `$wgLinKTitlesSourceNamespaces`,
+`$wgLinkTitlesTargetNamespaces`, and `$wgLinkTitlesSameNamespace`.
+`$wgLinKTitlesTimeLimit` was renamed to
+`$wgLinkTitlesSpecialPageReloadAfter`.
+
+Version 5 offers more fine-grained control over where to link and what
+to link. In addition to the `__NOAUTOLINKS__` and
+`__NOAUTOLINKSTARGET__` magic words, you can have
+`<autolink>..</autolink>` and `<noautolink>..</noautolink>` tags in your
+page source to explicitly include or exclude sections from linking.
+
+Several long-standing bugs were fixed.
+
+Please see the detailed documentation in the README.md file, and the
+NEWS file.
 - Change: The $wgLinkTitlesBatchTimeLimit configuration variable was renamed to $wgLinkTitlesSpecialPageReloadAfter.
 - Fix: Blacklist did not always work properly
 - Fix: Contents of <noautolink> tags are now properly parsed as Wiki text.
