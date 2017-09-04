@@ -5,41 +5,41 @@ LinkTitles
 automatically adds links to words that match titles of existing pages.
 
 Minimum requirements: MediaWiki 1.25, PHP 5.3. Source code documentation can be
-found at the [Github project pages](http://bovender.github.io/LinkTitles).
+found at the [Github project pages](https://bovender.github.io/LinkTitles).
 
 
 Table of contents
 -----------------
 
 1.  [Oveview](#overview)
-    - [Versions](#versions)
+    -   [Versions](#versions)
 2.  [Installation](#installation)
 3.  [Usage](#usage)
-    - [Editing a page](#editing-a-page)
-    - [Preventing automatic linking after minor edits](#preventing-automatic-linking-after-minor-edits)
-    - [Viewing a page](#viewing-a-page)
-    - [Including and excluding pages with Magic Words](#including-and-excluding-pages-with-magic-words)
-    - [Enable or disable automatic linking for sections](#enable-or-disable-automatic-linking-for-sections)
-    - [Namespace support](#namespace-support)
-    - [Batch processing](#batch-processing)
-    - [Special:LinkTitles](#special-linktitles)
-    - [Maintenance script](#maintenance-script)
+    -   [Editing a page](#editing-a-page)
+    -   [Preventing automatic linking after minor edits](#preventing-automatic-linking-after-minor-edits)
+    -   [Viewing a page](#viewing-a-page)
+    -   [Including and excluding pages with Magic Words](#including-and-excluding-pages-with-magic-words)
+    -   [Enable or disable automatic linking for sections](#enable-or-disable-automatic-linking-for-sections)
+    -   [Namespace support](#namespace-support)
+    -   [Batch processing](#batch-processing)
+    -   [Special:LinkTitles](#special-linktitles)
+    -   [Maintenance script](#maintenance-script)
 4.  [Configuration](#configuration)
-    - [Linking when a page is edited and saved](#linking-when-a-page-is-edited-and-saved)
-    - [Linking when a page is rendered for display](#linking-when-a-page-is-rendered-for-display)
-    - [Enabling case-insensitive linking (smart mode)](#enabling-case-insensitive-linking-(smart-mode))
-    - [Dealing with custom namespaces](#dealing-with-custom-namespaces)
-    - [Linking or skipping headings](#linking-or-skipping-headings)
-    - [Prioritizing pages with short titles](#prioritizing-pages-with-short-titles)
-    - [Filtering pages by title length](#filtering-pages-by-title-length)
-    - [Excluding pages from being linked to](#excluding-pages-from-being-linked-to)
-    - [Dealing with templates](#dealing-with-templates)
-    - [Multiple links to the same page](#multiple-links-to-the-same-page)
-    - [Partial words](#partial-words)
-    - [Special page configuration](#special-page-configuration)
+    -   [Linking when a page is edited and saved](#linking-when-a-page-is-edited-and-saved)
+    -   [Linking when a page is rendered for display](#linking-when-a-page-is-rendered-for-display)
+    -   [Enabling case-insensitive linking (smart mode)](#enabling-case-insensitive-linking-(smart-mode))
+    -   [Dealing with custom namespaces](#dealing-with-custom-namespaces)
+    -   [Linking or skipping headings](#linking-or-skipping-headings)
+    -   [Prioritizing pages with short titles](#prioritizing-pages-with-short-titles)
+    -   [Filtering pages by title length](#filtering-pages-by-title-length)
+    -   [Excluding pages from being linked to](#excluding-pages-from-being-linked-to)
+    -   [Dealing with templates](#dealing-with-templates)
+    -   [Multiple links to the same page](#multiple-links-to-the-same-page)
+    -   [Partial words](#partial-words)
+    -   [Special page configuration](#special-page-configuration)
 5.  [Development](#development)
-    - [Contributors](#contributors)
-    - [Testing](#testing)
+    -   [Contributors](#contributors)
+    -   [Testing](#testing)
 6.  [License](#license)
 
 
@@ -62,7 +62,7 @@ original content will not be modified.
 
 3.  Batch mode enables Wiki administrators to process all pages in a Wiki at
 once. Batch processing can either be started from a special page, or from the
-server's command line (see [below](#Batch_processing "wikilink")).
+server's command line (see [below](#batch-processing)).
 
 
 ### Versions
@@ -102,7 +102,7 @@ release version, e.g. `LinkTitles-5.0.0`. You may want to rename the folder to
 `LinkTitles`.
 
 Alternatively (and preferred by the author), if you have [Git](https://git-scm.com),
-you can pull the repository in the `extensions` folder.
+you can pull the repository in the usual way into the `extensions` folder.
 
 To activate the extension, add the following to your `LocalSettings.php` file:
 
@@ -128,7 +128,7 @@ section.
 ### Preventing automatic linking after minor edits
 
 If the 'minor edit' check box is marked when you save a page, the extension will
-not operate.
+not add links to the page.
 
 ### Viewing a page
 
@@ -141,29 +141,30 @@ configuration variable.
 
 ### Including and excluding pages with Magic Words
 
-Add the magic word `__NOAUTOLINKS__` to a page to prevent automatic linking of
-page titles.
+Add the magic word **`__NOAUTOLINKS__`** to a page to prevent automatic linking
+of page titles.
 
-The presence of `__NOAUTOLINKTARGET__` prevents a page from being automatically
-linked to from other pages.
+The presence of **`__NOAUTOLINKTARGET__`** prevents a page from being
+automatically linked to from other pages.
 
 ### Enable or disable automatic linking for sections
 
 To **exclude** a section on your page from automatic linking, wrap it in
-`<noautolinks>...</noautolinks>` tags.
+**`<noautolinks>...</noautolinks>`** tags.
 
 To **include** a section on your page for automatic linking, wrap it in
-`<autolinks>...</autolinks>` tags. Of course this only makes sense if both
+**`<autolinks>...</autolinks>`** tags. Of course this only makes sense if both
 `$wgLinkTitlesParseOnEdit` and `$wgLinkTitlesParseOnRender` are set to `false`
-**or** if the page contains the `__NOAUTOLINKS__` magic word.
+*or* if the page contains the `__NOAUTOLINKS__` magic word.
 
 ### Namespace support
 
 By default, LinkTitles will only process pages in the `NS_MAIN` namespace (i.e.,
-'normal' Wiki pages). You can have modify the configuration to process pages in
-other 'source' namespaces as well. By default, LinkTitles will only link to pages
-that are in the same namespace as the page being edited or viewed. Again, additional
-'target' namespaces may be added in the [configuration](#dealing-with-custom-namespaces).
+'normal' Wiki pages). You can  modify the configuration to process pages in
+other 'source' namespaces as well. By default, LinkTitles will only link to
+pages that are in the same namespace as the page being edited or viewed. Again,
+additional 'target' namespaces may be added in the
+[configuration](#dealing-with-custom-namespaces).
 
 If a page contains another page's title that is prefixed with the namespace
 (e.g. `my_namspace:other page`), LinkTitles will _not_ add a link. It is assumed
@@ -183,13 +184,17 @@ script.
 The special page provides a simple web interface to trigger batch processing. To
 avoid blocking the web server for too long, the page will frequently reload
 itself (this can be controlled by the `$wgLinkTitlesSpecialPageReloadAfter`
-configuration variable that sysops can set in the `LocalSettings.php` file).
+configuration variable that the administrator can set in the `LocalSettings.php`
+file).
 
 For security reasons, by default only users in the 'sysop' group are allowed to
 view the special page (otherwise unauthorized people could trigger a parsing of
 your entire wiki). To allow other user groups to view the page as well, add a
-line `$wgGroupPermissions ['`<groupname>`']['linktitles-batch']` `=` `true` to
-`LocalSettings.php`.
+line
+
+    $wgGroupPermissions ['<groupname>']['linktitles-batch'] = true;
+
+to `LocalSettings.php`.
 
 #### Maintenance script
 
@@ -209,15 +214,15 @@ To continue parsing at a later time, make a note of the index number of the last
 page that was processed (e.g., 37), and use the maintenance script with the
 `--start` option (or short `-s`) to indicate the start index:
 
-    php LinkTitles.cli.php -s 37
+    php linktitles-cli.php -s 37
 
 See all available options with:
 
-    php LinkTitles.cli.php -h
+    php linktitles-cli.php -h
 
 
 Configuration
---------------
+-------------
 
 To change the configuration, set the variables in your `LocalSettings.php` file.
 The code lines below show the default values of the configuration variables.
@@ -247,7 +252,7 @@ depends on whether you want to have links (`[[...]]`) added to the Wiki markup.
 
 Please note that the extension will work on a fully built page when this mode is
 enabled; therefore, it *will* add links to text transcluded from templates,
-regardless of the configuration setting of `LinkTitlesSkipTemplages`.
+regardless of the configuration setting of `$wgLinkTitlesSkipTemplates`.
 
 You can purge the page cache and trigger rendering by adding `?action=purge` to
 the URL.
@@ -323,7 +328,6 @@ Process pages in the `NS_MY_NAMESPACE` namespace only, and add links to the
 `NS_MAIN` namespace only. Do not link to pages that are in the same namespace
 as the source namespace (i.e., `NS_MY_NAMESPACE`).
 
-
 ### Linking or skipping headings
 
     $wgLinkTitlesParseHeadings = false;
@@ -385,13 +389,14 @@ will have no effect.**
 
     $wgLinkTitlesSkipTemplates = false;
 
-If set to true, do not parse the variable text of templates, i.e. in `{{my`
-`template|some` `variable=some` `content}}`, leave the entire text between the
-curly brackets untouched. If set to false (default setting), the text after the
-pipe symbole ("|") will be parsed.
+If set to true, do not parse the variable text of templates, i.e. in `{{my
+template|some variable=some content}}`, leave the entire text between the curly
+brackets untouched. If set to false (default setting), the text after the pipe
+symbol (`|`) will be parsed.
 
 Note: This setting works only with parse-on-edit; it does not affect
-parse-on-render!
+parse-on-render! This is because the templates have already been transcluded
+(expanded) when the links are added during rendering.
 
 ### Multiple links to the same page
 
@@ -436,16 +441,16 @@ model](http://nvie.com/git-model) (knowing that there are [alternative
 workflows](http://scottchacon.com/2011/08/31/github-flow.html)).
 
 The `master` branch contains stable releases only, so it is safe to pull the
-master branch if you want to install the extension for your own wiki.
+master branch if you want to install the extension for your own Wiki.
 
 
 ### Contributors
 
--  Daniel Kraus (@bovender), main developer
--  Ulrich Strauss (@c0nnex), namespaces
--  Brent Laabs (@labster), code review and bug fixes
--  @tetsuya-zama, bug fix
--  @yoshida, namespace-related bug fixes
+-   Daniel Kraus (@bovender), main developer
+-   Ulrich Strauss (@c0nnex), initial support for namespaces
+-   Brent Laabs (@labster), code review and bug fixes
+-   @tetsuya-zama, bug fix
+-   @yoshida3669, namespace-related bug fixes
 
 
 ### Testing
@@ -484,18 +489,18 @@ and remove (or comment out) any lines that reference extensions or skins that
 you are not going to install to your test environment. For the purposes of
 testing the LinkTitles extension, leave the following line in place:
 
-        wfLoadExtensions( array( 'LinkTitles' ));
+        wfLoadExtensions( 'LinkTitles' );
 
   And ensure the settings file contains the following:
 
         $wgShowDBErrorBacktrace = true;
 
-5. Create a symbolic link to your copy of the LinkTitles repository:
+5.  Create a symbolic link to your copy of the LinkTitles repository:
 
         cd ~/Code/mediawiki/extensions
         ln -s ~/Code/LinkTitles
 
-6. Make sure your local MediaWiki instance is up to date. Otherwise phpunit may
+6.  Make sure your local MediaWiki instance is up to date. Otherwise phpunit may
 fail and tell you about database problems.
 
   This is because the local database is used as a template for the unit tests.
@@ -503,7 +508,7 @@ fail and tell you about database problems.
   repository was MW 1.29.1. It's probably also possible to clone the repository
   with a specific version tag which matches your local installation.
 
-7. Run the tests:
+7.  Run the tests:
 
         cd ~/Code/mediawiki/tests/phpunit
         php phpunit.php --group bovender
