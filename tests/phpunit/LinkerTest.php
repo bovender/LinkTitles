@@ -222,6 +222,11 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 				"With parseHeadings = true,\n== a heading with [[link target]] in it ==\n should be linked",
 			],
 			[
+				true, // parseHeadings
+				"With parseHeadings = true,\n== <span>a heading with link target in ity/span> ==\n should be linked",
+				"With parseHeadings = true,\n== <span>a heading with [[link target]] in ity/span> ==\n should be linked",
+			],
+			[
 				false, // parseHeadings
 				"With parseHeadings = false,\n== a heading with link target in it ==\n should not be linked",
 				"With parseHeadings = false,\n== a heading with link target in it ==\n should not be linked",

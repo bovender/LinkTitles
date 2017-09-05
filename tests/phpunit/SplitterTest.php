@@ -86,6 +86,18 @@ class SplitterTest extends MediaWikiTestCase {
 				"With parseHeadings = false,\n==a heading may not be linked==",
 				[ "With parseHeadings = false,\n", "==a heading may not be linked==", '' ]
 			],
+			[
+				true, // skipTemplates
+				true, // parseHeadings
+				"With parseHeadings = true,\n==<span>a heading with spans may be linked</span>==\n",
+				[ "With parseHeadings = true,\n==", "<span>", "a heading with spans may be linked", "</span>", "==\n" ]
+			],
+			[
+				true, // skipTemplates
+				true, // parseHeadings
+				"With parseHeadings = true,\n==<div>a heading with divs may be linked</div>==\n",
+				[ "With parseHeadings = true,\n==", "<div>", "a heading with divs may be linked", "</div>", "==\n" ]
+			],
 			// Improperly formatted headings cannot be dealt with appropriately for now
 			// [
 			// 	true, // skipTemplates

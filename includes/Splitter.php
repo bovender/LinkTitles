@@ -135,8 +135,8 @@ class Splitter {
 			'<pre>.*?<\/pre>|<html>.*?<\/html>|' .      // pre/html
 			'<script>.*?<\/script>|' .                  // script
 			'<gallery>.*?<\/gallery>|' .                // gallery
-			'<div.+?>|<\/div>|' .                       // attributes of div elements
-			'<span.+?>|<\/span>|' .                     // attributes of span elements
+			'<div.*?>|<\/div>|' .                       // attributes of div elements
+			'<span.*?>|<\/span>|' .                     // attributes of span elements
 			'<file>[^<]*<\/file>|' .                    // stuff inside file elements
 			'style=".+?"|class=".+?"|' .                // styles and classes (e.g. of wikitables)
 			'<noautolinks>.*?<\/noautolinks>|' .        // custom tag 'noautolinks'
