@@ -1,6 +1,7 @@
 var searchData=
 [
   ['testlinkcontentfirstonly',['testLinkContentFirstOnly',['../classLinkTitlesLinkerTest.html#a15e6c54c4c39b661a937d99c6485ce08',1,'LinkTitlesLinkerTest']]],
+  ['testlinkcontentheadings',['testLinkContentHeadings',['../classLinkTitlesLinkerTest.html#a377b4a3180644f9ad7957d9452ea6a7b',1,'LinkTitlesLinkerTest']]],
   ['testlinkcontentsmartmode',['testLinkContentSmartMode',['../classLinkTitlesLinkerTest.html#a0d53f5c9c7226d76ee7e5a21e8929e9e',1,'LinkTitlesLinkerTest']]],
   ['testlinkcontenttargetnamespaces',['testLinkContentTargetNamespaces',['../classLinkTitlesLinkerTest.html#a028d6927d097c0c657c099dca0cfb791',1,'LinkTitlesLinkerTest']]],
   ['testlinkcontenttemplates',['testLinkContentTemplates',['../classLinkTitlesLinkerTest.html#af502bcfc6e706a5fbca34e1cf465c6ca',1,'LinkTitlesLinkerTest']]],
