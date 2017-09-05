@@ -200,6 +200,40 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 		];
 	}
 
+	/**
+	 * @dataProvider provideLinkContentHeadingsData
+	 */
+	public function testLinkContentHeadings( $parseHeadings, $input, $expectedOutput ) {
+		$config = new LinkTitles\Config();
+		$config->parseHeadings = $parseHeadings;
+		LinkTitles\Splitter::invalidate();
+		$source = LinkTitles\Source::createFromTitleAndText( $this->title, $input, $config );
+		$linker = new LinkTitles\Linker( $config );
+		$result = $linker->linkContent( $source );
+		if ( !$result ) { $result = $input; }
+		$this->assertSame( $expectedOutput, $result );
+	}
+
+	public function provideLinkContentHeadingsData() {
+		return [
+			[
+				true, // parseHeadings
+				"With parseHeadings = true,\n== a heading with link target in it ==\n should be linked",
+				"With parseHeadings = true,\n== a heading with [[link target]] in it ==\n should be linked",
+			],
+			[
+				true, // parseHeadings
+				"With parseHeadings = true,\n== <span>a heading with link target in ity/span> ==\n should be linked",
+				"With parseHeadings = true,\n== <span>a heading with [[link target]] in ity/span> ==\n should be linked",
+			],
+			[
+				false, // parseHeadings
+				"With parseHeadings = false,\n== a heading with link target in it ==\n should not be linked",
+				"With parseHeadings = false,\n== a heading with link target in it ==\n should not be linked",
+			],
+		];
+	}
+
 	public function testLinkContentBlackList() {
 		$config = new LinkTitles\Config();
 		$config->blackList = [ 'Foo', 'Link target', 'Bar' ];
