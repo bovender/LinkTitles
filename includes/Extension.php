@@ -126,7 +126,10 @@ class Extension {
 	 *	See https://www.mediawiki.org/wiki/Manual:Tag_extensions#Example
 	 */
 	public static function doNoautolinksTag( $input, array $args, \Parser $parser, \PPFrame $frame ) {
-		return $parser->recursiveTagParse( $input, $frame );
+		Linker::lock();
+		$result =  $parser->recursiveTagParse( $input, $frame );
+		Linker::unlock();
+		return $result;
 	}
 
 	/*
@@ -138,7 +141,9 @@ class Extension {
 		$config = new Config();
 		$linker = new Linker( $config );
 		$source = Source::createFromParserAndText( $parser, $input, $config );
+		Linker::unlock();
 		$result = $linker->linkContent( $source );
+		Linker::lock();
 		if ( $result ) {
 			return $parser->recursiveTagParse( $result, $frame );
 		} else {

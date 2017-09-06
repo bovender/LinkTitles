@@ -105,6 +105,12 @@ class SplitterTest extends MediaWikiTestCase {
 			// 	"With parseHeadings = false,\n==an improperly formatted heading may be linked=\n",
 			// 	[ "With parseHeadings = false,\n==an improperly formatted heading may be linked=\n" ]
 			// ],
+			[
+				true, // skipTemplates
+				true, // parseHeadings
+				"Text <noautolinks>in noautolinks tag</noautolinks>should be excluded",
+				[ "Text ", "<noautolinks>in noautolinks tag</noautolinks>", "should be excluded" ]
+			],
 		];
 	}
 }
