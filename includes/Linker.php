@@ -46,6 +46,8 @@ class Linker {
 	 */
 	private $linkValue;
 
+	private static $locked = 0;
+
 	/**
 	 * Constructs a new instance of the Linker class.
 	 *
@@ -68,7 +70,7 @@ class Linker {
 	 * @return String|null Source page text with links to target pages, or null if no links were added
 	 */
 	public function linkContent( Source $source ) {
-		if ( !$source->canBeLinked() ) {
+		if ( self::$locked > 0 || !$source->canBeLinked() ) {
 			return;
 		}
 
@@ -196,6 +198,28 @@ class Linker {
 		} else  {
 			return '[[' . $matches[ 0 ]  . ']]';
 		}
+	}
+
+	/**
+	 * Increases an internal static lock counter by 1.
+	 *
+	 * If the Linker class is locked (counter > 0), linkContent() will be a no-op.
+	 * Locking is necessary to enable nested <noautolinks> and <autolinks> tags in
+	 * parseOnRender mode.
+	 */
+	public static function lock() {
+		self::$locked += 1;
+	}
+
+	/**
+	 * Decreases an internal static lock counter by 1.
+	 *
+	 * If the Linker class is locked (counter > 0), linkContent() will be a no-op.
+	 * Locking is necessary to enable nested <noautolinks> and <autolinks> tags in
+	 * parseOnRender mode.
+	 */
+	public static function unlock() {
+		self::$locked -= 1;
 	}
 }
 

@@ -9,7 +9,7 @@
         ],
         "type": "parserhook",
         "url": "https://www.mediawiki.org/wiki/Extension:LinkTitles",
-        "version": "5.0.2",
+        "version": "5.0.3",
         "license-name": "GPL-2.0+",
         "descriptionmsg": "linktitles-desc",
         "requires": {
