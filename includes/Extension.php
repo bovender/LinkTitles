@@ -137,7 +137,7 @@ class Extension {
 	public static function doAutolinksTag( $input, array $args, \Parser $parser, \PPFrame $frame ) {
 		$config = new Config();
 		$linker = new Linker( $config );
-		$source = Source::createFromParser( $parser, $config );
+		$source = Source::createFromParserAndText( $parser, $input, $config );
 		$result = $linker->linkContent( $source );
 		if ( $result ) {
 			return $parser->recursiveTagParse( $result, $frame );
