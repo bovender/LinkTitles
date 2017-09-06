@@ -91,9 +91,11 @@ $(document).ready(function(){initNavTree('classLinkTitles_1_1Linker.html','');})
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classLinkTitles_1_1Linker-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">LinkTitles\Linker Class Reference</div>  </div>
@@ -111,6 +113,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a9bc25787dff16fe26cc93d2cceaec6f8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles_1_1Linker.html#a9bc25787dff16fe26cc93d2cceaec6f8">linkContent</a> (<a class="el" href="classLinkTitles_1_1Source.html">Source</a> $source)</td></tr>
 <tr class="memdesc:a9bc25787dff16fe26cc93d2cceaec6f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Core function of the extension, performs the actual parsing of the content.  <a href="#a9bc25787dff16fe26cc93d2cceaec6f8">More...</a><br /></td></tr>
 <tr class="separator:a9bc25787dff16fe26cc93d2cceaec6f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:aae910633c94193d905900a67cb280cc0"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles_1_1Linker.html#aae910633c94193d905900a67cb280cc0">lock</a> ()</td></tr>
+<tr class="memdesc:aae910633c94193d905900a67cb280cc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Increases an internal static lock counter by 1.  <a href="#aae910633c94193d905900a67cb280cc0">More...</a><br /></td></tr>
+<tr class="separator:aae910633c94193d905900a67cb280cc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9de8e0b583fc84c10f7b5412f38a1ef"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles_1_1Linker.html#ac9de8e0b583fc84c10f7b5412f38a1ef">unlock</a> ()</td></tr>
+<tr class="memdesc:ac9de8e0b583fc84c10f7b5412f38a1ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decreases an internal static lock counter by 1.  <a href="#ac9de8e0b583fc84c10f7b5412f38a1ef">More...</a><br /></td></tr>
+<tr class="separator:ac9de8e0b583fc84c10f7b5412f38a1ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -133,6 +144,12 @@ Private Attributes</h2></td></tr>
 <tr class="memitem:a7aa549f0f1381d4353f06c8b0cf57957"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles_1_1Linker.html#a7aa549f0f1381d4353f06c8b0cf57957">$linkValue</a></td></tr>
 <tr class="memdesc:a7aa549f0f1381d4353f06c8b0cf57957"><td class="mdescLeft">&#160;</td><td class="mdescRight">The link value of the target page that is currently being evaluated.  <a href="#a7aa549f0f1381d4353f06c8b0cf57957">More...</a><br /></td></tr>
 <tr class="separator:a7aa549f0f1381d4353f06c8b0cf57957"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a0263ff4bd918139117ebb632d186cc1a"><td class="memItemLeft" align="right" valign="top"><a id="a0263ff4bd918139117ebb632d186cc1a"></a>
+static&#160;</td><td class="memItemRight" valign="bottom"><b>$locked</b> = 0</td></tr>
+<tr class="separator:a0263ff4bd918139117ebb632d186cc1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Performs the actual linking of content to existing pages. </p>
@@ -163,7 +180,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Linker_8php_source.html#l00054">54</a> of file <a class="el" href="Linker_8php_source.html">Linker.php</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Linker_8php_source.html#l00056">56</a> of file <a class="el" href="Linker_8php_source.html">Linker.php</a>.</p>
 
 </div>
 </div>
@@ -195,7 +212,37 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>String|null <a class="el" href="classLinkTitles_1_1Source.html" title="Represents a page that is a potential link target. ">Source</a> page text with links to target pages, or null if no links were added </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Linker_8php_source.html#l00070">70</a> of file <a class="el" href="Linker_8php_source.html">Linker.php</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Linker_8php_source.html#l00072">72</a> of file <a class="el" href="Linker_8php_source.html">Linker.php</a>.</p>
+
+</div>
+</div>
+<a id="aae910633c94193d905900a67cb280cc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae910633c94193d905900a67cb280cc0">&#9670;&nbsp;</a></span>lock()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static LinkTitles\Linker::lock </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Increases an internal static lock counter by 1. </p>
+<p>If the <a class="el" href="classLinkTitles_1_1Linker.html" title="Performs the actual linking of content to existing pages. ">Linker</a> class is locked (counter &gt; 0), <a class="el" href="classLinkTitles_1_1Linker.html#a9bc25787dff16fe26cc93d2cceaec6f8" title="Core function of the extension, performs the actual parsing of the content. ">linkContent()</a> will be a no-op. Locking is necessary to enable nested &lt;noautolinks&gt; and &lt;autolinks&gt; tags in parseOnRender mode. </p>
+
+<p class="definition">Definition at line <a class="el" href="Linker_8php_source.html#l00210">210</a> of file <a class="el" href="Linker_8php_source.html">Linker.php</a>.</p>
 
 </div>
 </div>
@@ -232,7 +279,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>string <a class="el" href="classLinkTitles_1_1Target.html" title="Represents a page that is a potential link target. ">Target</a> page title with or without link markup </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Linker_8php_source.html#l00161">161</a> of file <a class="el" href="Linker_8php_source.html">Linker.php</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Linker_8php_source.html#l00163">163</a> of file <a class="el" href="Linker_8php_source.html">Linker.php</a>.</p>
 
 </div>
 </div>
@@ -270,7 +317,37 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>string <a class="el" href="classLinkTitles_1_1Target.html" title="Represents a page that is a potential link target. ">Target</a> page title with or without link markup </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Linker_8php_source.html#l00183">183</a> of file <a class="el" href="Linker_8php_source.html">Linker.php</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Linker_8php_source.html#l00185">185</a> of file <a class="el" href="Linker_8php_source.html">Linker.php</a>.</p>
+
+</div>
+</div>
+<a id="ac9de8e0b583fc84c10f7b5412f38a1ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9de8e0b583fc84c10f7b5412f38a1ef">&#9670;&nbsp;</a></span>unlock()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static LinkTitles\Linker::unlock </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Decreases an internal static lock counter by 1. </p>
+<p>If the <a class="el" href="classLinkTitles_1_1Linker.html" title="Performs the actual linking of content to existing pages. ">Linker</a> class is locked (counter &gt; 0), <a class="el" href="classLinkTitles_1_1Linker.html#a9bc25787dff16fe26cc93d2cceaec6f8" title="Core function of the extension, performs the actual parsing of the content. ">linkContent()</a> will be a no-op. Locking is necessary to enable nested &lt;noautolinks&gt; and &lt;autolinks&gt; tags in parseOnRender mode. </p>
+
+<p class="definition">Definition at line <a class="el" href="Linker_8php_source.html#l00221">221</a> of file <a class="el" href="Linker_8php_source.html">Linker.php</a>.</p>
 
 </div>
 </div>
@@ -312,7 +389,7 @@ Private Attributes</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespaceLinkTitles.html">LinkTitles</a></li><li class="navelem"><a class="el" href="classLinkTitles_1_1Linker.html">Linker</a></li>
-    <li class="footer">Generated on Tue Sep 5 2017 13:28:22 for LinkTitles extension for MediaWiki by
+    <li class="footer">Generated on Wed Sep 6 2017 22:33:17 for LinkTitles extension for MediaWiki by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

@@ -5,6 +5,8 @@ var searchData=
   ['testlinkcontentsmartmode',['testLinkContentSmartMode',['../classLinkTitlesLinkerTest.html#a0d53f5c9c7226d76ee7e5a21e8929e9e',1,'LinkTitlesLinkerTest']]],
   ['testlinkcontenttargetnamespaces',['testLinkContentTargetNamespaces',['../classLinkTitlesLinkerTest.html#a028d6927d097c0c657c099dca0cfb791',1,'LinkTitlesLinkerTest']]],
   ['testlinkcontenttemplates',['testLinkContentTemplates',['../classLinkTitlesLinkerTest.html#af502bcfc6e706a5fbca34e1cf465c6ca',1,'LinkTitlesLinkerTest']]],
+  ['testparseonedit',['testParseOnEdit',['../classExtensionTest.html#afe3f5218a5ba77291d48f17e20c3198a',1,'ExtensionTest']]],
+  ['testparseonrender',['testParseOnRender',['../classExtensionTest.html#afd1a85308d41f9ae71c1af3a80a9e6a3',1,'ExtensionTest']]],
   ['testsplit',['testSplit',['../classSplitterTest.html#a9f8aaf210b86c7a684187738a76dc6ac',1,'SplitterTest']]],
   ['testtargetwordendonly',['testTargetWordEndOnly',['../classTargetTest.html#a2ab63c8ef94fc5bc6518237d90610e2c',1,'TargetTest']]],
   ['testtargetwordstartonly',['testTargetWordStartOnly',['../classTargetTest.html#a61b5d547c67ead12b1baf0368300ab52',1,'TargetTest']]]
