@@ -26,23 +26,63 @@
  */
 class ExtensionTest extends LinkTitles\TestCase {
 
-  public function testParseOnEdit() {
+  /**
+	 * @dataProvider provideParseOnEditData
+   */
+  public function testParseOnEdit( $parseOnEdit, $input, $expectedOutput) {
     $this->setMwGlobals( [
-      'wgLinkTitlesParseOnEdit' => true,
-      'wgLinkTitlesParseOnRender' => false
+      'wgLinkTitlesParseOnEdit' => $parseOnEdit,
+      'wgLinkTitlesParseOnRender' => !$parseOnEdit
     ] );
-    $pageId = $this->insertPage( 'test page', 'This page should link to the link target but not to test page' )['id'];
+    $pageId = $this->insertPage( 'test page', $input )['id'];
     $page = WikiPage::newFromId( $pageId );
-    $this->assertSame( 'This page should link to the [[link target]] but not to test page', self::getPageText( $page ) );
+    $this->assertSame( $expectedOutput, self::getPageText( $page ) );
   }
 
-  public function testDoNotParseOnEdit() {
+  public function provideParseOnEditData() {
+    return [
+      [
+        true, // parseOnEdit
+        'This page should link to the link target but not to test page',
+        'This page should link to the [[link target]] but not to test page'
+      ],
+      [
+        false,
+        'This page should *not* link to the link target',
+        'This page should *not* link to the link target'
+      ]
+    ];
+  }
+
+
+  /**
+	 * @dataProvider provideParseOnRenderData
+   */
+  public function testParseOnRender( $parseOnRender, $input, $expectedOutput) {
     $this->setMwGlobals( [
-      'wgLinkTitlesParseOnEdit' => false,
-      'wgLinkTitlesParseOnRender' => false
+      'wgLinkTitlesParseOnEdit' => false, // do not modify the page as we create it
+      'wgLinkTitlesParseOnRender' => $parseOnRender
     ] );
-    $pageId = $this->insertPage( 'test page', 'This page should not link to the link target' )['id'];
-    $page = WikiPage::newFromId( $pageId );
-    $this->assertSame( 'This page should not link to the link target', self::getPageText( $page ) );
+    $title = $this->insertPage( 'test page', $input )['title'];
+    $page = new WikiPage( $title );
+    $content = $page->getContent();
+    $output = $content->getParserOutput( $title, null, null, false );
+    $lines = explode( "\n", $output->getText() );
+    $this->assertRegexp( $expectedOutput, $lines[0] );
+  }
+
+  public function provideParseOnRenderData() {
+    return [
+      [
+        true, // parseOnRender
+        'This page should link to the link target but not to test page',
+        '_This page should link to the <a href=[^>]+>link target</a> but not to test page_'
+      ],
+      [
+        false,
+        'This page should not link to the link target',
+        '_This page should not link to the link target_'
+      ]
+    ];
   }
 }
