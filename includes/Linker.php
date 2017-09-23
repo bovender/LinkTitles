@@ -113,7 +113,8 @@ class Linker {
 			for ( $i = 0; $i < count( $arr ); $i += 2 ) {
 				$arr[$i] = preg_replace_callback( $target->getCaseSensitiveRegex(),
 					array( $this, 'simpleModeCallback'),
-					$arr[$i], $limit, $count );
+					$arr[$i], $limit, $replacements );
+				$count += $replacements;
 				if ( $this->config->firstOnly && ( $count > 0 ) ) {
 					$limitReached = true;
 					break;
@@ -137,7 +138,8 @@ class Linker {
 					// even indexes will point to text that is not enclosed by brackets
 					$arr[$i] = preg_replace_callback( $target->getCaseInsensitiveRegex(),
 						array( $this, 'smartModeCallback'),
-						$arr[$i], $limit, $count );
+						$arr[$i], $limit, $replacements );
+					$count += $replacements;
 					if ( $this->config->firstOnly && ( $count > 0  )) {
 						break;
 					};
