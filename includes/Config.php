@@ -169,8 +169,23 @@ class Config {
 	 */
 	public $sameNamespace;
 
+	/**
+	 * Caches the global $wgDBtype variable.
+	 * @var string $dbType;
+	 */
+	private $dbType;
+
 	public $enableConsoleOutput;
 	public $enableDebugConsoleOutput;
+
+	/**
+	 * Determines whether the MediaWiki database is SQLITE by inspecting the
+	 * $wgDBtype variable (which is cached in $this->dbType).
+	 * @return bool True if the database is SQLITE.
+	 */
+	public function sqliteDatabase() {
+		return $this->dbType === 'sqlite';
+	}
 
 	/**
 	 * Constructs a new Config object.
@@ -197,6 +212,7 @@ class Config {
 		global $wgLinkTitlesEnableNoTargetMagicWord;
 		global $wgLinkTitlesCheckRedirect;
 		global $wgLinkTitlesSpecialPageReloadAfter;
+		global $wgDBtype;
 		$this->parseOnEdit = $wgLinkTitlesParseOnEdit;
 		$this->parseOnRender = $wgLinkTitlesParseOnRender;
 		$this->preferShortTitles = $wgLinkTitlesPreferShortTitles;
@@ -217,5 +233,6 @@ class Config {
 		$this->specialPageReloadAfter = $wgLinkTitlesSpecialPageReloadAfter;
 		$this->enableConsoleOutput = false;
 		$this->enableDebugConsoleOutput = false;
+		$this->dbType = $wgDBtype;
 	}
 }
