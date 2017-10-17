@@ -92,6 +92,7 @@ $(document).ready(function(){initNavTree('classLinkTitles_1_1Config.html','');})
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classLinkTitles_1_1Config-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">LinkTitles\Config Class Reference</div>  </div>
@@ -103,6 +104,9 @@ $(document).ready(function(){initNavTree('classLinkTitles_1_1Config.html','');})
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:af7731ea45f1ac12c29879b05c95f9871"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles_1_1Config.html#af7731ea45f1ac12c29879b05c95f9871">sqliteDatabase</a> ()</td></tr>
+<tr class="memdesc:af7731ea45f1ac12c29879b05c95f9871"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the MediaWiki database is SQLITE by inspecting the $wgDBtype variable (which is cached in $this-&gt;dbType).  <a href="#af7731ea45f1ac12c29879b05c95f9871">More...</a><br /></td></tr>
+<tr class="separator:af7731ea45f1ac12c29879b05c95f9871"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a593a4c5f63296e15bc4160fbb02315f2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles_1_1Config.html#a593a4c5f63296e15bc4160fbb02315f2">__construct</a> ()</td></tr>
 <tr class="memdesc:a593a4c5f63296e15bc4160fbb02315f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a new <a class="el" href="classLinkTitles_1_1Config.html" title="Holds LinkTitles configuration. ">Config</a> object.  <a href="#a593a4c5f63296e15bc4160fbb02315f2">More...</a><br /></td></tr>
 <tr class="separator:a593a4c5f63296e15bc4160fbb02315f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -180,6 +184,13 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a1cf5aaf3e91e4d71d4854bd8014f5f9f"><td class="memItemLeft" align="right" valign="top"><a id="a1cf5aaf3e91e4d71d4854bd8014f5f9f"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>$enableDebugConsoleOutput</b></td></tr>
 <tr class="separator:a1cf5aaf3e91e4d71d4854bd8014f5f9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a64c0a15850866ee7b1bcbfd43ddd5652"><td class="memItemLeft" align="right" valign="top"><a id="a64c0a15850866ee7b1bcbfd43ddd5652"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLinkTitles_1_1Config.html#a64c0a15850866ee7b1bcbfd43ddd5652">$dbType</a></td></tr>
+<tr class="memdesc:a64c0a15850866ee7b1bcbfd43ddd5652"><td class="mdescLeft">&#160;</td><td class="mdescRight">Caches the global $wgDBtype variable. <br /></td></tr>
+<tr class="separator:a64c0a15850866ee7b1bcbfd43ddd5652"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Holds <a class="el" href="namespaceLinkTitles.html" title="The LinkTitles class holds configuration for the LinkTitles extension. ">LinkTitles</a> configuration. </p>
@@ -207,7 +218,30 @@ Public Attributes</h2></td></tr>
 <p>Constructs a new <a class="el" href="classLinkTitles_1_1Config.html" title="Holds LinkTitles configuration. ">Config</a> object. </p>
 <p>The object's member variables will automatically be set with the values from the corresponding global variables. </p>
 
-<p class="definition">Definition at line <a class="el" href="Config_8php_source.html#l00181">181</a> of file <a class="el" href="Config_8php_source.html">Config.php</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Config_8php_source.html#l00196">196</a> of file <a class="el" href="Config_8php_source.html">Config.php</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="af7731ea45f1ac12c29879b05c95f9871"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7731ea45f1ac12c29879b05c95f9871">&#9670;&nbsp;</a></span>sqliteDatabase()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">LinkTitles\Config::sqliteDatabase </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determines whether the MediaWiki database is SQLITE by inspecting the $wgDBtype variable (which is cached in $this-&gt;dbType). </p>
+<dl class="section return"><dt>Returns</dt><dd>bool True if the database is SQLITE. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Config_8php_source.html#l00186">186</a> of file <a class="el" href="Config_8php_source.html">Config.php</a>.</p>
 
 </div>
 </div>
@@ -335,7 +369,7 @@ Public Attributes</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespaceLinkTitles.html">LinkTitles</a></li><li class="navelem"><a class="el" href="classLinkTitles_1_1Config.html">Config</a></li>
-    <li class="footer">Generated on Sat Sep 23 2017 07:19:03 for LinkTitles extension for MediaWiki by
+    <li class="footer">Generated on Tue Oct 17 2017 21:03:12 for LinkTitles extension for MediaWiki by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

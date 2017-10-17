@@ -9,5 +9,6 @@ var searchData=
   ['special',['Special',['../classLinkTitles_1_1Special.html',1,'LinkTitles']]],
   ['split',['split',['../classLinkTitles_1_1Splitter.html#a5241cd1c482a905c1d3f8998d438929f',1,'LinkTitles::Splitter']]],
   ['splitter',['Splitter',['../classLinkTitles_1_1Splitter.html',1,'LinkTitles']]],
-  ['splittertest',['SplitterTest',['../classSplitterTest.html',1,'']]]
+  ['splittertest',['SplitterTest',['../classSplitterTest.html',1,'']]],
+  ['sqlitedatabase',['sqliteDatabase',['../classLinkTitles_1_1Config.html#af7731ea45f1ac12c29879b05c95f9871',1,'LinkTitles::Config']]]
 ];

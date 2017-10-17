@@ -1,9 +1,11 @@
 var classLinkTitles_1_1Config =
 [
     [ "__construct", "classLinkTitles_1_1Config.html#a593a4c5f63296e15bc4160fbb02315f2", null ],
+    [ "sqliteDatabase", "classLinkTitles_1_1Config.html#af7731ea45f1ac12c29879b05c95f9871", null ],
     [ "$blackList", "classLinkTitles_1_1Config.html#a5b8ed44ce156acd373bb91bb35d90cad", null ],
     [ "$capitalLinks", "classLinkTitles_1_1Config.html#a52b3ef3bff31e6057ce24d787b9b12b8", null ],
     [ "$checkRedirect", "classLinkTitles_1_1Config.html#a97fa80dcaea7f6f5356a32e09ad1b1d8", null ],
+    [ "$dbType", "classLinkTitles_1_1Config.html#a64c0a15850866ee7b1bcbfd43ddd5652", null ],
     [ "$enableConsoleOutput", "classLinkTitles_1_1Config.html#a9235ed0ccd86ac69077b763821742805", null ],
     [ "$enableDebugConsoleOutput", "classLinkTitles_1_1Config.html#a1cf5aaf3e91e4d71d4854bd8014f5f9f", null ],
     [ "$enableNoTargetMagicWord", "classLinkTitles_1_1Config.html#aaf2f12904905fef286d64ea48ed3266d", null ],
