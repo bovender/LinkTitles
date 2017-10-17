@@ -75,6 +75,12 @@ class Targets {
 	private $config;
 
 	/**
+	 * Stores the CHAR_LENGTH function to be used with the database connection.
+	 * @var string $charLengthFunction
+	 */
+	private $charLengthFunction;
+
+	/**
 	 * The constructor is private to enforce using the singleton pattern.
 	 * @param  \Title $title
 	 */
@@ -129,34 +135,25 @@ class Targets {
 		// = 0) are returned. Since the db may be sqlite, we need a try..catch
 		// structure because sqlite does not support the CHAR_LENGTH function.
 		$dbr = wfGetDB( DB_SLAVE );
-		try {
-			$this->queryResult = $dbr->select(
-				'page',
-				array( 'page_title', 'page_namespace' , "weight" => $weightSelect),
-				array_filter(
-					array(
-						'page_namespace IN ' . $namespacesClause,
-						'CHAR_LENGTH(page_title) >= ' . $this->config->minimumTitleLength,
-						$blackList,
-					)
-				),
-				__METHOD__,
-				array( 'ORDER BY' => 'weight ASC, CHAR_LENGTH(page_title) ' . $sortOrder )
-			);
-		} catch (Exception $e) {
-			$this->queryResult = $dbr->select(
-				'page',
-				array( 'page_title', 'page_namespace' , "weight" => $weightSelect ),
-				array_filter(
-					array(
-						'page_namespace IN ' . $namespacesClause,
-						'LENGTH(page_title) >= ' . $this->config->minimumTitleLength,
-						$blackList,
-					)
-				),
-				__METHOD__,
-				array( 'ORDER BY' => 'weight ASC, LENGTH(page_title) ' . $sortOrder )
-			);
+		$this->queryResult = $dbr->select(
+			'page',
+			array( 'page_title', 'page_namespace' , "weight" => $weightSelect),
+			array_filter(
+				array(
+					'page_namespace IN ' . $namespacesClause,
+					$this->charLength() . '(page_title) >= ' . $this->config->minimumTitleLength,
+					$blackList,
+				)
+			),
+			__METHOD__,
+			array( 'ORDER BY' => 'weight ASC, ' . $this->charLength() . '(page_title) ' . $sortOrder )
+		);
+	}
+
+	private function charLength() {
+		if ($this->charLengthFunction === null) {
+			$this->charLengthFunction = $this->config->sqliteDatabase() ? 'LENGTH' : 'CHAR_LENGTH';
 		}
+		return $this->charLengthFunction;
 	}
 }
