@@ -141,7 +141,7 @@ class Targets {
 			array_filter(
 				array(
 					'page_namespace IN ' . $namespacesClause,
-					'CHAR_LENGTH(page_title) >= ' . $this->config->minimumTitleLength,
+					$this->charLength() . '(page_title) >= ' . $this->config->minimumTitleLength,
 					$blackList,
 				)
 			),
