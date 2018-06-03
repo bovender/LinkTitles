@@ -134,7 +134,7 @@ class Splitter {
 			'<nowiki>.*?<.nowiki>|<code>.*?<\/code>|' . // nowiki/code
 			'<pre>.*?<\/pre>|<html>.*?<\/html>|' .      // pre/html
 			'<script>.*?<\/script>|' .                  // script
-			'<syntaxhighlight>.*?<\/syntaxhighlight>|' .                  // syntaxhighlight
+			'<syntaxhighlight.*?>.*?<\/syntaxhighlight>|' .                  // syntaxhighlight
 			'<gallery>.*?<\/gallery>|' .                // gallery
 			'<div.*?>|<\/div>|' .                       // attributes of div elements
 			'<span.*?>|<\/span>|' .                     // attributes of span elements
