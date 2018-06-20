@@ -451,6 +451,7 @@ master branch if you want to install the extension for your own Wiki.
 -   Brent Laabs (@labster), code review and bug fixes
 -   @tetsuya-zama, bug fix
 -   @yoshida3669, namespace-related bug fixes
+-   Caleb Mingle (@dentafrice), bug fix
 
 
 ### Testing
@@ -521,7 +522,7 @@ fail and tell you about database problems.
 License
 -------
 
-Copyright 2012-2017 Daniel Kraus <mailto:bovender@bovender.de> (@bovender)
+Copyright 2012-2018 Daniel Kraus <mailto:bovender@bovender.de> (@bovender)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

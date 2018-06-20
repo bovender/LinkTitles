@@ -5,11 +5,12 @@
                 "Ulrich Strauss (c0nnex)",
                 "Brent Laabs (labster)",
                 "tetsuya-zama",
-                "yoshida"
+                "yoshida",
+                "Caleb Mingle (dentafrice)"
         ],
         "type": "parserhook",
         "url": "https://www.mediawiki.org/wiki/Extension:LinkTitles",
-        "version": "5.0.5",
+        "version": "5.0.6",
         "license-name": "GPL-2.0+",
         "descriptionmsg": "linktitles-desc",
         "requires": {
