@@ -451,6 +451,7 @@ master branch if you want to install the extension for your own Wiki.
 -   Brent Laabs (@labster), code review and bug fixes
 -   @tetsuya-zama, bug fix
 -   @yoshida3669, namespace-related bug fixes
+-   Caleb Mingle (@dentafrice), bug fix
 
 
 ### Testing
