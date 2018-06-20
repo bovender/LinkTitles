@@ -2,7 +2,7 @@
 /**
  * The LinkTitles\Source represents a Wiki page to which links may be added.
  *
- * Copyright 2012-2017 Daniel Kraus <bovender@bovender.de> ('bovender')
+ * Copyright 2012-2018 Daniel Kraus <bovender@bovender.de> ('bovender')
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
