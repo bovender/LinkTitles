@@ -2,7 +2,7 @@
 /**
  * The Splitter class caches a regular expression that delimits text to be parsed.
  *
- * Copyright 2012-2017 Daniel Kraus <bovender@bovender.de> ('bovender')
+ * Copyright 2012-2018 Daniel Kraus <bovender@bovender.de> ('bovender')
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
