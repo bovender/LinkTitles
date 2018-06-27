@@ -48,6 +48,44 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
   }
 
 	/**
+	 * @dataProvider provideTestTitleWithNumberData
+	 */
+	public function testTitleWithNumber( $input, $expectedOutput ) {
+		$config = new LinkTitles\Config();
+		$config->wordStartOnly = true;
+		$config->wordEndOnly = true;
+    $this->insertPage( 'numbered-1', 'This page serves as a link target with a numbered title' );
+    $this->insertPage( 'numbered-101', 'This page serves as a link target with a numbered title' );
+		parent::addDBDataOnce(); // call parent after adding page to have targets invalidated
+		$source = LinkTitles\Source::createFromTitleAndText( $this->title, $input, $config );
+		$linker = new LinkTitles\Linker( $config );
+		$result = $linker->linkContent( $source );
+		if ( !$result ) { $result = $input; }
+		$this->assertSame( $expectedOutput, $result );
+	}
+
+	public function provideTestTitleWithNumberData() {
+		return [
+			[
+				"Page text with numbered-1 in it.",
+				"Page text with [[numbered-1]] in it.",
+			],
+			[
+				"Page text with numbered-101 in it.",
+				"Page text with [[numbered-101]] in it.",
+			],
+			[
+				"Page text with numbered-1010 in it.",
+				"Page text with numbered-1010 in it.",
+			],
+			[
+				"Page text with link target1 in it.",
+				"Page text with link target1 in it.",
+			],
+		];
+	}
+
+	/**
 	 * @dataProvider provideLinkContentTemplatesData
 	 */
 	public function testLinkContentTemplates( $skipTemplates, $input, $expectedOutput ) {

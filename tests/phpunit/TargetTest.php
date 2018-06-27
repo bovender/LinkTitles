@@ -37,7 +37,7 @@ class TargetTest extends MediaWikiTestCase {
 
 	public static function provideStartOnly() {
 		return [
-			[ true, '(?<!\pL)' ],
+			[ true, '(?<!\pL|\pN)' ],
 			[ false, '' ]
 		];
 	}
@@ -54,7 +54,7 @@ class TargetTest extends MediaWikiTestCase {
 
 	public static function provideEndOnly() {
 		return [
-			[ true, '(?!\pL)' ],
+			[ true, '(?!\pL|\pN)' ],
 			[ false, '' ]
 		];
 	}
