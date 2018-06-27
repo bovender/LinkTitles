@@ -81,8 +81,8 @@ class Target {
 		// to detect whole words containing non-ASCII characters as well.
 		// Note that this requires a PCRE library that was compiled with
 		// --enable-unicode-properties
-		( $config->wordStartOnly ) ? $this->wordStart = '(?<!\pL)' : $this->wordStart = '';
-		( $config->wordEndOnly ) ? $this->wordEnd = '(?!\pL)' : $this->wordEnd = '';
+		( $config->wordStartOnly ) ? $this->wordStart = '(?<!\pL|\pN)' : $this->wordStart = '';
+		( $config->wordEndOnly ) ? $this->wordEnd = '(?!\pL|\pN)' : $this->wordEnd = '';
 	}
 
 	/**
