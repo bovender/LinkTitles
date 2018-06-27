@@ -2,6 +2,7 @@ var NAVTREE =
 [
   [ "LinkTitles extension for MediaWiki", "index.html", [
     [ "LinkTitles", "index.html", null ],
+    [ "README_DOC", "md_README_DOC.html", null ],
     [ "Modules", "modules.html", "modules" ],
     [ "Namespaces", null, [
       [ "Namespace List", "namespaces.html", "namespaces" ]

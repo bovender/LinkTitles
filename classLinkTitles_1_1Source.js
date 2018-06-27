@@ -10,7 +10,7 @@ var classLinkTitles_1_1Source =
     [ "hasContent", "classLinkTitles_1_1Source.html#ab6c5dd5374aeee656d84e2efa2b3d3bf", null ],
     [ "hasDesiredNamespace", "classLinkTitles_1_1Source.html#aa1ad44852e45507299f946aaaffc8e8e", null ],
     [ "hasNoAutolinksMagicWord", "classLinkTitles_1_1Source.html#a3ecc095e74f22a397a5e001a78dfc802", null ],
-    [ "setText", "classLinkTitles_1_1Source.html#ab965a3f614b6612df51c441d95d70546", null ],
+    [ "setText", "classLinkTitles_1_1Source.html#ae17d2398e0a9572e43a5bae869941585", null ],
     [ "$config", "classLinkTitles_1_1Source.html#af36f58385f56869d6f7cd82871562a75", null ],
     [ "$content", "classLinkTitles_1_1Source.html#acf8f46fce48b50465848c628ecd1b9fa", null ],
     [ "$page", "classLinkTitles_1_1Source.html#a7ebdc83780c70cb0581354dc1b6a3868", null ],

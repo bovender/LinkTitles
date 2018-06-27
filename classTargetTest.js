@@ -1,5 +1,5 @@
 var classTargetTest =
 [
-    [ "testTargetWordEndOnly", "classTargetTest.html#a2ab63c8ef94fc5bc6518237d90610e2c", null ],
-    [ "testTargetWordStartOnly", "classTargetTest.html#a61b5d547c67ead12b1baf0368300ab52", null ]
+    [ "testTargetWordEndOnly", "classTargetTest.html#a8c510b50820637470a4ef388dedb0933", null ],
+    [ "testTargetWordStartOnly", "classTargetTest.html#ad3cac8844ca068955d1f4c831282ce45", null ]
 ];
