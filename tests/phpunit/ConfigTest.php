@@ -29,13 +29,13 @@
  */
 class ConfigTest extends LinkTitles\TestCase {
 
-  public function testParseOnEdit() {
-    $this->setMwGlobals( [
-      'wgLinkTitlesParseOnEdit' => true,
-      'wgLinkTitlesParseOnRender' => false
-    ] );
-    $config = new LinkTitles\Config();
-    global $wgLinkTitlesParseOnEdit;
-    $this->assertSame( $config->parseOnEdit, $wgLinkTitlesParseOnEdit );
-  }
+	public function testParseOnEdit() {
+		$this->setMwGlobals( [
+			'wgLinkTitlesParseOnEdit' => true,
+			'wgLinkTitlesParseOnRender' => false
+		] );
+		$config = new LinkTitles\Config();
+		global $wgLinkTitlesParseOnEdit;
+		$this->assertSame( $config->parseOnEdit, $wgLinkTitlesParseOnEdit );
+	}
 }
