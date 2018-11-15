@@ -86,6 +86,21 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 	}
 
 	/**
+	 * Test issue #39, https://github.com/bovender/LinkTitles/issues/39
+	 */
+	public function testNoautolinks() {
+		$config = new LinkTitles\Config();
+		$config->firstOnly = false;
+		LinkTitles\Splitter::invalidate();
+		$input = 'This is a text with <noautolinks><nowiki>link target</nowiki></noautolinks>';
+		$source = LinkTitles\Source::createFromTitleAndText( $this->title, $input, $config );
+		$linker = new LinkTitles\Linker( $config );
+		$result = $linker->linkContent( $source );
+		if ( !$result ) { $result = $input; }
+		$this->assertSame( $input, $result );
+	}
+
+	/**
 	 * @dataProvider provideLinkContentTemplatesData
 	 */
 	public function testLinkContentTemplates( $skipTemplates, $input, $expectedOutput ) {
