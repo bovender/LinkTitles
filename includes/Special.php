@@ -146,7 +146,7 @@ class Special extends \SpecialPage {
 			$start += 1;
 
 			// Check if the time limit is exceeded
-			if ( microtime( true ) - $startTime > $config->specialPageReloadAfter )
+			if ( microtime( true ) - $startTime > $this->config->specialPageReloadAfter )
 			{
 				break;
 			}

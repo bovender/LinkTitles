@@ -1,4 +1,0 @@
-[submodule "gh-pages"]
-	path = gh-pages
-	url = git@github.com:bovender/LinkTitles.git
-	branch = gh-pages

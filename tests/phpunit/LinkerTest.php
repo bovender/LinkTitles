@@ -41,11 +41,11 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 		parent::setUp(); // call last to have the Targets object invalidated after inserting the page
 	}
 
-  public function addDBData() {
+	public function addDBData() {
 		$this->title = $this->insertPage( 'source page', 'This page is the test page' )['title'];
-    $this->insertPage( 'link target', 'This page serves as a link target' );
+		$this->insertPage( 'link target', 'This page serves as a link target' );
 		parent::addDBDataOnce(); // call parent after adding page to have targets invalidated
-  }
+	}
 
 	/**
 	 * @dataProvider provideTestTitleWithNumberData
@@ -54,8 +54,8 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 		$config = new LinkTitles\Config();
 		$config->wordStartOnly = true;
 		$config->wordEndOnly = true;
-    $this->insertPage( 'numbered-1', 'This page serves as a link target with a numbered title' );
-    $this->insertPage( 'numbered-101', 'This page serves as a link target with a numbered title' );
+		$this->insertPage( 'numbered-1', 'This page serves as a link target with a numbered title' );
+		$this->insertPage( 'numbered-101', 'This page serves as a link target with a numbered title' );
 		parent::addDBDataOnce(); // call parent after adding page to have targets invalidated
 		$source = LinkTitles\Source::createFromTitleAndText( $this->title, $input, $config );
 		$linker = new LinkTitles\Linker( $config );
@@ -83,6 +83,21 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 				"Page text with link target1 in it.",
 			],
 		];
+	}
+
+	/**
+	 * Test issue #39, https://github.com/bovender/LinkTitles/issues/39
+	 */
+	public function testNoautolinks() {
+		$config = new LinkTitles\Config();
+		$config->firstOnly = false;
+		LinkTitles\Splitter::invalidate();
+		$input = 'This is a text with <noautolinks><nowiki>link target</nowiki></noautolinks>';
+		$source = LinkTitles\Source::createFromTitleAndText( $this->title, $input, $config );
+		$linker = new LinkTitles\Linker( $config );
+		$result = $linker->linkContent( $source );
+		if ( !$result ) { $result = $input; }
+		$this->assertSame( $input, $result );
 	}
 
 	/**
@@ -294,7 +309,7 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 		$config = new LinkTitles\Config();
 		$config->targetNamespaces = $namespaces;
 
-	 	$ns = 4000;
+		$ns = 4000;
 		$nsText = 'customnamespace';
 		$this->mergeMwGlobalArrayValue( 'wgExtraNamespaces', [ $ns => $nsText ] );
 
@@ -316,16 +331,16 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 
 	public function provideLinkContentNamespacesData() {
 		return [
-	 		[
-	 			[], // namespaces
-	 			'With targetNamespaces = [], page in custom namespace should not be linked',
-	 			'With targetNamespaces = [], page in custom namespace should not be linked'
-	 		],
-	 		[
-	 			[ 4000 ], // namespaces
-	 			'With targetNamespaces = [ 4000 ], page in custom namespace should be linked',
-	 			'With targetNamespaces = [ 4000 ], page [[customnamespace:In custom namespace|in custom namespace]] should be linked'
-	 		],
+			[
+				[], // namespaces
+				'With targetNamespaces = [], page in custom namespace should not be linked',
+				'With targetNamespaces = [], page in custom namespace should not be linked'
+			],
+			[
+				[ 4000 ], // namespaces
+				'With targetNamespaces = [ 4000 ], page in custom namespace should be linked',
+				'With targetNamespaces = [ 4000 ], page [[customnamespace:In custom namespace|in custom namespace]] should be linked'
+			],
 		];
 	}
 }
