@@ -452,6 +452,7 @@ master branch if you want to install the extension for your own Wiki.
 -   @tetsuya-zama, bug fix
 -   @yoshida3669, namespace-related bug fixes
 -   Caleb Mingle (@dentafrice), bug fix
+-   @paladox, bug fixes
 
 
 ### Testing
