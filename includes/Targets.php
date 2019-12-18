@@ -134,7 +134,7 @@ class Targets {
 		// shortest to longest. Only titles from 'normal' pages (namespace uid
 		// = 0) are returned. Since the db may be sqlite, we need a try..catch
 		// structure because sqlite does not support the CHAR_LENGTH function.
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$this->queryResult = $dbr->select(
 			'page',
 			array( 'page_title', 'page_namespace' , "weight" => $weightSelect),
