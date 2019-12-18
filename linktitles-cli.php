@@ -154,7 +154,7 @@ class Cli extends \Maintenance {
 		$config = new Config();
 
 		// Retrieve page names from the database.
-		$dbr = $this->getDB( DB_SLAVE );
+		$dbr = $this->getDB( DB_REPLICA );
 		$namespacesClause = str_replace( '_', ' ','(' . implode( ', ', $config->sourceNamespaces ) . ')' );
 		$res = $dbr->select(
 			'page',
