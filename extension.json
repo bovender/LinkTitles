@@ -6,19 +6,20 @@
                 "Brent Laabs (labster)",
                 "tetsuya-zama",
                 "yoshida",
-                "Caleb Mingle (dentafrice)"
+                "Caleb Mingle (dentafrice)",
+                "paladox"
         ],
         "type": "parserhook",
         "url": "https://www.mediawiki.org/wiki/Extension:LinkTitles",
-        "version": "5.0.7",
+        "version": "6.0.0",
         "license-name": "GPL-2.0+",
         "descriptionmsg": "linktitles-desc",
         "requires": {
-                "MediaWiki": ">= 1.25.0"
+                "MediaWiki": ">= 1.28.0"
         },
         "config": {
                 "LinkTitlesParseOnEdit": true,
-                "LinkTitlesParseOnRender": false,
+                "LinkTitlesParseOnRender": true,
                 "LinkTitlesParseHeadings": false,
                 "LinkTitlesSkipTemplates": true,
                 "LinkTitlesPreferShortTitles": true,

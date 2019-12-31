@@ -4,43 +4,44 @@ LinkTitles
 [MediaWiki extension](https://www.mediawiki.org/wiki/Extension:LinkTitles) that
 automatically adds links to words that match titles of existing pages.
 
-Minimum requirements: MediaWiki 1.25, PHP 5.3. Source code documentation can be
+Minimum requirement: MediaWiki 1.28. Source code documentation can be
 found at the [Github project pages](https://bovender.github.io/LinkTitles).
 
 
 Table of contents
 -----------------
 
-1.  [Oveview](#overview)
-    -   [Versions](#versions)
-2.  [Installation](#installation)
-3.  [Usage](#usage)
-    -   [Editing a page](#editing-a-page)
-    -   [Preventing automatic linking after minor edits](#preventing-automatic-linking-after-minor-edits)
-    -   [Viewing a page](#viewing-a-page)
-    -   [Including and excluding pages with Magic Words](#including-and-excluding-pages-with-magic-words)
-    -   [Enable or disable automatic linking for sections](#enable-or-disable-automatic-linking-for-sections)
-    -   [Namespace support](#namespace-support)
-    -   [Batch processing](#batch-processing)
-    -   [Special:LinkTitles](#special-linktitles)
-    -   [Maintenance script](#maintenance-script)
-4.  [Configuration](#configuration)
-    -   [Linking when a page is edited and saved](#linking-when-a-page-is-edited-and-saved)
-    -   [Linking when a page is rendered for display](#linking-when-a-page-is-rendered-for-display)
-    -   [Enabling case-insensitive linking (smart mode)](#enabling-case-insensitive-linking-(smart-mode))
-    -   [Dealing with custom namespaces](#dealing-with-custom-namespaces)
-    -   [Linking or skipping headings](#linking-or-skipping-headings)
-    -   [Prioritizing pages with short titles](#prioritizing-pages-with-short-titles)
-    -   [Filtering pages by title length](#filtering-pages-by-title-length)
-    -   [Excluding pages from being linked to](#excluding-pages-from-being-linked-to)
-    -   [Dealing with templates](#dealing-with-templates)
-    -   [Multiple links to the same page](#multiple-links-to-the-same-page)
-    -   [Partial words](#partial-words)
-    -   [Special page configuration](#special-page-configuration)
-5.  [Development](#development)
-    -   [Contributors](#contributors)
-    -   [Testing](#testing)
-6.  [License](#license)
+1. [Oveview](#overview)
+   - [Versions](#versions)
+2. [Installation](#installation)
+3. [Important note for MediaWiki versions 1.32 and newer](#important-note-for-mediawiki-versions-1.32-and-newer)
+4. [Usage](#usage)
+   - [Editing a page](#editing-a-page)
+   - [Preventing automatic linking after minor edits](#preventing-automatic-linking-after-minor-edits)
+   - [Viewing a page](#viewing-a-page)
+   - [Including and excluding pages with Magic Words](#including-and-excluding-pages-with-magic-words)
+   - [Enable or disable automatic linking for sections](#enable-or-disable-automatic-linking-for-sections)
+   - [Namespace support](#namespace-support)
+   - [Batch processing](#batch-processing)
+   - [Special:LinkTitles](#special-linktitles)
+   - [Maintenance script](#maintenance-script)
+5. [Configuration](#configuration)
+   - [Linking when a page is edited and saved](#linking-when-a-page-is-edited-and-saved)
+   - [Linking when a page is rendered for display](#linking-when-a-page-is-rendered-for-display)
+   - [Enabling case-insensitive linking (smart mode)](#enabling-case-insensitive-linking-(smart-mode))
+   - [Dealing with custom namespaces](#dealing-with-custom-namespaces)
+   - [Linking or skipping headings](#linking-or-skipping-headings)
+   - [Prioritizing pages with short titles](#prioritizing-pages-with-short-titles)
+   - [Filtering pages by title length](#filtering-pages-by-title-length)
+   - [Excluding pages from being linked to](#excluding-pages-from-being-linked-to)
+   - [Dealing with templates](#dealing-with-templates)
+   - [Multiple links to the same page](#multiple-links-to-the-same-page)
+   - [Partial words](#partial-words)
+   - [Special page configuration](#special-page-configuration)
+6. [Development](#development)
+   - [Contributors](#contributors)
+   - [Testing](#testing)
+7. [License](#license)
 
 
 Overview
@@ -50,17 +51,17 @@ The **LinkTitles** extension automatically adds links to existing page titles
 that occur on a given page. This will automatically cross-reference your wiki
 for you. The extension can operate in three ways that can be used independently:
 
-1.  Whenever a page is edited and saved, the extension will look if any existing
+1. Whenever a page is edited and saved, the extension will look if any existing
 page titles occur in the text, and automatically add links (`[[...]]]`) to the
 corresponding pages.
 
-2.  Links may also be added on the fly whenever a page is rendered for display.
+2. Links may also be added on the fly whenever a page is rendered for display.
 Most of the time, MediaWiki will fetch previously rendered pages from cache upon
 a page request, but whenever a page is refreshed, the LinkTitles extension can
 add its page links. These links are not hard-coded in the Wiki text. The
 original content will not be modified.
 
-3.  Batch mode enables Wiki administrators to process all pages in a Wiki at
+3. Batch mode enables Wiki administrators to process all pages in a Wiki at
 once. Batch processing can either be started from a special page, or from the
 server's command line (see [below](#batch-processing)).
 
@@ -75,19 +76,20 @@ are fixed.
 
 Version | Date | Major changes ||
 -|-|-|-
+6 | 12-2019 | Renamed deprecated MW constant for compatibility with MW version 1.34, minimum required version is 1.28. | [Details][v6.0.0]
 5 | 09-2017 | Rewrote the entire extension; vastly improved namespace support; some breaking changes | [Details][v5.0.0]
 4 | 11-2016 | Changed format of the extension for MediaWiki version 1.25; added basic namespace support | [Details][v4.0.0]
 3 | 02-2015 | Added magic words; improved performance | [Details][3.0.0]
 2 | 11-2013 | Introduced smart mode | [Details][2.0.0]
 1 | 05-2012 | First stable release |
 
-
+[v6.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v6.0.0
 [v5.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v5.0.0
 [v4.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v4.0.0
 [3.0.0]: https://github.com/bovender/LinkTitles/compare/2.4.1...3.0.0
 [2.0.0]: https://github.com/bovender/LinkTitles/compare/1.8.1...2.0.0
 
-For more details, click the 'Details' links, see the `NEWS` file in the
+For more details, click the 'Details' links, see the `NEWS.md` file in the
 repository for a user-friendly changelog, or study the commit messages.
 
 
@@ -113,17 +115,43 @@ Do not forget to adjust the [configuration](#configuration) to your needs.
 If your MediaWiki version is really old (1.24 and older), you need to use
 a [different mechanism](https://www.mediawiki.org/wiki/Manual:Extensions#Installing_an_extension).
 
+
+Important note for MediaWiki versions 1.32 and newer
+----------------------------------------------------
+
+**Links can no longer be automatically added when a page is saved with
+MediaWiki versions 1.32 and newer.** This is because MediaWiki changed the
+signature of an important callback function. See [GitHub issue #43][issue-43]
+and [T222413][] for more information. There's a slight chance that link-on-edit
+will work again in a future version of MediaWiki (that is, if/when pull request
+[467308][] is merged). Until that happens, admins are advised to use the
+link-on-render feature (which is now enabled by default).
+
+A workaround is to set up a cron job for the command-line tool, e.g.
+
+    # /etc/crontab
+    # Runs at 1 a.m. every morning.
+    # m h dom mon dow user      command
+    0   1 *   *   *   www-data  php -f /var/www/html/extensions/LinkTitles/linktitles-cli.php
+
+[issue-43]: https://github.com/bovender/LinkTitles/issues/43
+[T222413]: https://phabricator.wikimedia.org/T222413
+[467308]: https://gerrit.wikimedia.org/r/467308
+
 Usage
 -----
 
 ### Editing a page
 
-By default, the LinkTitles extension will add links to existing pages whenever
-you edit and save a page. Unless you changed the configuration variables, it will
-link whole words only, prefer longer target page titles over shorter ones, skip
-headings, and add multiple links if a page title appears more than once on the
-page. All of this is configurable; see the [Configuration](#configuration)
-section.
+*By default, the LinkTitles extension will **no longer** add links to existing
+pages whenever you edit and save a page. This is because MediaWiki 1.32 changed
+an important callback function that the LinkTitles extension relied on (see above).*
+
+When linking-on-edit is enabled (with MW versions prior to 1.33), the extension
+will by default link whole words only, prefer longer target page titles over
+shorter ones, skip headings, and add multiple links if a page title appears
+more than once on the page. All of this is configurable; see the
+[Configuration](#configuration) section.
 
 ### Preventing automatic linking after minor edits
 
@@ -436,9 +464,9 @@ Development
 -----------
 
 If you wish to contribute, please issue pull requests against the `develop`
-branch, as I follow Vincent Driessen's advice on [A successful Git branching
-model](http://nvie.com/git-model) (knowing that there are [alternative
-workflows](http://scottchacon.com/2011/08/31/github-flow.html)).
+branch, as I roughly follow Vincent Driessen's advice on [A successful Git
+branching model](http://nvie.com/git-model) (knowing that there are
+[alternative workflows](http://scottchacon.com/2011/08/31/github-flow.html)).
 
 The `master` branch contains stable releases only, so it is safe to pull the
 master branch if you want to install the extension for your own Wiki.
@@ -446,13 +474,13 @@ master branch if you want to install the extension for your own Wiki.
 
 ### Contributors
 
--   Daniel Kraus (@bovender), main developer
--   Ulrich Strauss (@c0nnex), initial support for namespaces
--   Brent Laabs (@labster), code review and bug fixes
--   @tetsuya-zama, bug fix
--   @yoshida3669, namespace-related bug fixes
--   Caleb Mingle (@dentafrice), bug fix
--   @paladox, bug fixes
+- Daniel Kraus (@bovender), main developer
+- Ulrich Strauss (@c0nnex), initial support for namespaces
+- Brent Laabs (@labster), code review and bug fixes
+- @tetsuya-zama, bug fix
+- @yoshida3669, namespace-related bug fixes
+- Caleb Mingle (@dentafrice), bug fix
+- @paladox, bug fixes
 
 
 ### Testing
@@ -469,61 +497,61 @@ The following assumes that you have an instance of MediaWiki running locally on
 your development machine. This assumes that you are running Linux (I personally
 use Ubuntu).
 
-1.  Pull the MediaWiki repository:
+1. Pull the MediaWiki repository:
 
-        cd ~/Code
-        git clone --depth 1 https://phabricator.wikimedia.org/source/mediawiki.git
+       cd ~/Code
+       git clone --depth 1 https://phabricator.wikimedia.org/source/mediawiki.git
 
-2.  Install [composer](https://getcomposer.org) locally and fetch the
-dependencies (including development dependencies):
+2. Install [composer](https://getcomposer.org) locally and fetch the
+   dependencies (including development dependencies):
 
-  Follow the instructions on the [composer download page](https://getcomposer.org/download),
-  but instead of running `php composer-setup.php`, run:
+   Follow the instructions on the [composer download page](https://getcomposer.org/download),
+   but instead of running `php composer-setup.php`, run:
 
-        php composer-setup.php --install-dir=bin --filename=composer
-        bin/composer install
+       php composer-setup.php --install-dir=bin --filename=composer
+       bin/composer install
 
-3.  Install phpunit (it was already installed on my Ubuntu system when I began
-testing LinkTitles, so I leave it up to you to figure out how to do it).
+3. Install phpunit (it was already installed on my Ubuntu system when I began
+   testing LinkTitles, so I leave it up to you to figure out how to do it).
 
-4.  Copy your `LocalSettings.php` over from your local MediaWiki installation
-and remove (or comment out) any lines that reference extensions or skins that
-you are not going to install to your test environment. For the purposes of
-testing the LinkTitles extension, leave the following line in place:
+4. Copy your `LocalSettings.php` over from your local MediaWiki installation
+   and remove (or comment out) any lines that reference extensions or skins that
+   you are not going to install to your test environment. For the purposes of
+   testing the LinkTitles extension, leave the following line in place:
 
-        wfLoadExtensions( 'LinkTitles' );
+       wfLoadExtensions( 'LinkTitles' );
 
-  And ensure the settings file contains the following:
+   And ensure the settings file contains the following:
 
-        $wgShowDBErrorBacktrace = true;
+       $wgShowDBErrorBacktrace = true;
 
-5.  Create a symbolic link to your copy of the LinkTitles repository:
+5. Create a symbolic link to your copy of the LinkTitles repository:
 
-        cd ~/Code/mediawiki/extensions
-        ln -s ~/Code/LinkTitles
+       cd ~/Code/mediawiki/extensions
+       ln -s ~/Code/LinkTitles
 
-6.  Make sure your local MediaWiki instance is up to date. Otherwise phpunit may
-fail and tell you about database problems.
+6. Make sure your local MediaWiki instance is up to date. Otherwise phpunit may
+   fail and tell you about database problems.
 
-  This is because the local database is used as a template for the unit tests.
-  For example, I initially had MW 1.26 installed on my laptop, but the cloned
-  repository was MW 1.29.1. It's probably also possible to clone the repository
-  with a specific version tag which matches your local installation.
+   This is because the local database is used as a template for the unit tests.
+   For example, I initially had MW 1.26 installed on my laptop, but the cloned
+   repository was MW 1.29.1. It's probably also possible to clone the repository
+   with a specific version tag which matches your local installation.
 
-7.  Run the tests:
+7. Run the tests:
 
-        cd ~/Code/mediawiki/tests/phpunit
-        php phpunit.php --group bovender
+       cd ~/Code/mediawiki/tests/phpunit
+       php phpunit.php --group bovender
 
-  This will run all tests from the 'bovender' group, i.e. tests for my extensions.
-  If you linked just the LinkTitles extension in step 5, only this extension
-  will be tested.
+   This will run all tests from the 'bovender' group, i.e. tests for my extensions.
+   If you linked just the LinkTitles extension in step 5, only this extension
+   will be tested.
 
 
 License
 -------
 
-Copyright 2012-2018 Daniel Kraus <mailto:bovender@bovender.de> (@bovender)
+Copyright 2012-2020 Daniel Kraus <mailto:bovender@bovender.de> (GitHub: @bovender)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
