@@ -1,6 +1,6 @@
 # This Dockerfile can be used to create a Docker image/container
 # that runs the unit tests on the LinkTitles extension.
-FROM mediawiki:1.32
+FROM mediawiki:1.34
 MAINTAINER Daniel Kraus (https://www.bovender.de)
 RUN apt update -yqq && \
     apt install -yqq \
