@@ -103,7 +103,7 @@ class Special extends \SpecialPage {
 		$startTime = microtime( true );
 
 		// Connect to the database
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 
 		// Fetch the start index and max number of records from the POST
 		// request.

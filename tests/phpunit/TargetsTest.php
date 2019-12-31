@@ -40,7 +40,7 @@ class TargetsTest extends LinkTitles\TestCase {
 
 		// Count number of articles: Inspired by updateArticleCount.php maintenance
 		// script: https://doc.wikimedia.org/mediawiki-core/master/php/updateArticleCount_8php_source.html
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$counter = new SiteStatsInit( $dbr );
 		$count = $counter->pages();
 
