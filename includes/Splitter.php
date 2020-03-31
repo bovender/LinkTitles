@@ -139,7 +139,7 @@ class Splitter {
 			'<div.*?>|<\/div>|' .                       // attributes of div elements
 			'<span.*?>|<\/span>|' .                     // attributes of span elements
 			'<file>[^<]*<\/file>|' .                    // stuff inside file elements
-			'style=".+?"|class=".+?"|' .                // styles and classes (e.g. of wikitables)
+			'style=".+?"|class=".+?"|data-sort-value=".+?"|' . 	// styles and classes (e.g. of wikitables)
 			'<noautolinks>.*?<\/noautolinks>|' .        // custom tag 'noautolinks'
 			'\[' . $urlPattern . '\s.+?\]|'. $urlPattern .  '(?=\s|$)|' . // urls
 			'(?<=\b)\S+\@(?:\S+\.)+\S+(?=\b)' .        // email addresses
