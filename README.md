@@ -287,10 +287,9 @@ dummy pages for variants of page titles with different cases.
 Smart mode is enabled by default. You can disable it to increase performance of
 the extension.
 
-
 ### Dealing with custom namespaces
 
-    $wgLinkTitlesSourceNamespace = [];
+    $wgLinkTitlesSourceNamespaces = [];
 
 Specifies additional namespaces for pages that should be processed by the
 LinkTitles extension. If this is an empty array (or anything else that PHP
@@ -316,7 +315,7 @@ no links at all because there are no target namespaces at all.
 
 #### Example: Default configuration
 
-    $wgLinkTitlesSourceNamespace = [];
+    $wgLinkTitlesSourceNamespaces = [];
     $wgLinkTitlesTargetNamespaces = [];
     $wgLinkTitlesSamenamespace = true;
 
@@ -325,7 +324,7 @@ namespace only (i.e., the same namespace that the source page is in).
 
 #### Example: Custom namespace only
 
-    $wgLinkTitlesSourceNamespace = [ NS_MY_NAMESPACE];
+    $wgLinkTitlesSourceNamespaces = [ NS_MY_NAMESPACE];
     $wgLinkTitlesTargetNamespaces = [];
     $wgLinkTitlesSamenamespace = true;
 
@@ -335,7 +334,7 @@ is in).
 
 #### Example: Link to `NS_MAIN` only
 
-    $wgLinkTitlesSourceNamespace = [ NS_MY_NAMESPACE];
+    $wgLinkTitlesSourceNamespaces = [ NS_MY_NAMESPACE];
     $wgLinkTitlesTargetNamespaces = [ NS_MAIN ];
     $wgLinkTitlesSamenamespace = false;
 
