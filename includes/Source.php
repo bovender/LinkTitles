@@ -149,7 +149,7 @@ class Source {
 	 * @return boolean True if the page contains the __NOAUTOLINKS__ magic word.
 	 */
 	public function hasNoAutolinksMagicWord() {
-		return \MagicWord::get( 'MAG_LINKTITLES_NOAUTOLINKS' )->match( $this->getText() );
+		return \MediaWiki\MediaWikiServices::getInstance()->getMagicWordFactory()->get( 'MAG_LINKTITLES_NOAUTOLINKS' )->match( $this->getText() );
 	}
 
 	/**

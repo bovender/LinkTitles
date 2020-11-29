@@ -210,7 +210,7 @@ class Target {
 		// page does indeed contain this magic word, return the page title
 		// as-is (unlinked).
 		if ( $this->config->enableNoTargetMagicWord ) {
-			if ( $this->getContent()->matchMagicWord( \MagicWord::get('MAG_LINKTITLES_NOTARGET') ) ) {
+			if ( $this->getContent()->matchMagicWord( \MediaWiki\MediaWikiServices::getInstance()->getMagicWordFactory()->get('MAG_LINKTITLES_NOTARGET') ) ) {
 				return false;
 			}
 		};
