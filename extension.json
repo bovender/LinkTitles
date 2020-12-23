@@ -15,7 +15,7 @@
         "license-name": "GPL-2.0+",
         "descriptionmsg": "linktitles-desc",
         "requires": {
-                "MediaWiki": ">= 1.28.0"
+                "MediaWiki": ">= 1.32.0"
         },
         "config": {
                 "LinkTitlesParseOnEdit": true,

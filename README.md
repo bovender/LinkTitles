@@ -1,5 +1,4 @@
-LinkTitles
-==========
+# LinkTitles
 
 [MediaWiki extension](https://www.mediawiki.org/wiki/Extension:LinkTitles) that
 automatically adds links to words that match titles of existing pages.
@@ -7,9 +6,7 @@ automatically adds links to words that match titles of existing pages.
 Minimum requirement: MediaWiki 1.28. Source code documentation can be
 found at the [Github project pages](https://bovender.github.io/LinkTitles).
 
-
-Table of contents
------------------
+## Table of contents
 
 1. [Oveview](#overview)
    - [Versions](#versions)
@@ -43,9 +40,7 @@ Table of contents
    - [Testing](#testing)
 7. [License](#license)
 
-
-Overview
---------
+## Overview
 
 The **LinkTitles** extension automatically adds links to existing page titles
 that occur on a given page. This will automatically cross-reference your wiki
@@ -64,7 +59,6 @@ original content will not be modified.
 3. Batch mode enables Wiki administrators to process all pages in a Wiki at
 once. Batch processing can either be started from a special page, or from the
 server's command line (see [below](#batch-processing)).
-
 
 ### Versions
 
@@ -92,9 +86,7 @@ Version | Date | Major changes ||
 For more details, click the 'Details' links, see the `NEWS.md` file in the
 repository for a user-friendly changelog, or study the commit messages.
 
-
-Installation
-------------
+## Installation
 
 To obtain the extension, you can either download a compressed archive from the
 [Github releases page](https://github.com/bovender/LinkTitles/releases): Choose
@@ -115,9 +107,7 @@ Do not forget to adjust the [configuration](#configuration) to your needs.
 If your MediaWiki version is really old (1.24 and older), you need to use
 a [different mechanism](https://www.mediawiki.org/wiki/Manual:Extensions#Installing_an_extension).
 
-
-Important note for MediaWiki versions 1.32 and newer
-----------------------------------------------------
+## Important note for MediaWiki versions 1.32 and newer
 
 **Links can no longer be automatically added when a page is saved with
 MediaWiki versions 1.32 and newer.** This is because MediaWiki changed the
@@ -138,8 +128,7 @@ A workaround is to set up a cron job for the command-line tool, e.g.
 [T222413]: https://phabricator.wikimedia.org/T222413
 [467308]: https://gerrit.wikimedia.org/r/467308
 
-Usage
------
+## Usage
 
 ### Editing a page
 
@@ -248,9 +237,7 @@ See all available options with:
 
     php linktitles-cli.php -h
 
-
-Configuration
--------------
+## Configuration
 
 To change the configuration, set the variables in your `LocalSettings.php` file.
 The code lines below show the default values of the configuration variables.
@@ -300,10 +287,9 @@ dummy pages for variants of page titles with different cases.
 Smart mode is enabled by default. You can disable it to increase performance of
 the extension.
 
-
 ### Dealing with custom namespaces
 
-    $wgLinkTitlesSourceNamespace = [];
+    $wgLinkTitlesSourceNamespaces = [];
 
 Specifies additional namespaces for pages that should be processed by the
 LinkTitles extension. If this is an empty array (or anything else that PHP
@@ -329,7 +315,7 @@ no links at all because there are no target namespaces at all.
 
 #### Example: Default configuration
 
-    $wgLinkTitlesSourceNamespace = [];
+    $wgLinkTitlesSourceNamespaces = [];
     $wgLinkTitlesTargetNamespaces = [];
     $wgLinkTitlesSamenamespace = true;
 
@@ -338,7 +324,7 @@ namespace only (i.e., the same namespace that the source page is in).
 
 #### Example: Custom namespace only
 
-    $wgLinkTitlesSourceNamespace = [ NS_MY_NAMESPACE];
+    $wgLinkTitlesSourceNamespaces = [ NS_MY_NAMESPACE];
     $wgLinkTitlesTargetNamespaces = [];
     $wgLinkTitlesSamenamespace = true;
 
@@ -348,7 +334,7 @@ is in).
 
 #### Example: Link to `NS_MAIN` only
 
-    $wgLinkTitlesSourceNamespace = [ NS_MY_NAMESPACE];
+    $wgLinkTitlesSourceNamespaces = [ NS_MY_NAMESPACE];
     $wgLinkTitlesTargetNamespaces = [ NS_MAIN ];
     $wgLinkTitlesSamenamespace = false;
 
@@ -459,9 +445,7 @@ The `LinkTitles:Special` page performs batch processing of pages by repeatedly
 calling itself. This happens to prevent timeouts on your server. The default
 reload interval is 1 second.
 
-
-Development
------------
+## Development
 
 If you wish to contribute, please issue pull requests against the `develop`
 branch, as I roughly follow Vincent Driessen's advice on [A successful Git
@@ -470,7 +454,6 @@ branching model](http://nvie.com/git-model) (knowing that there are
 
 The `master` branch contains stable releases only, so it is safe to pull the
 master branch if you want to install the extension for your own Wiki.
-
 
 ### Contributors
 
@@ -482,12 +465,25 @@ master branch if you want to install the extension for your own Wiki.
 - Caleb Mingle (@dentafrice), bug fix
 - @paladox, bug fixes
 
-
 ### Testing
 
 Starting from version 5, LinkTitles finally comes with phpunit tests. The code
 is not 100% covered yet. If you find something does not work as expected, let me
 know and I will try to add unit tests and fix it.
+
+#### Testing with Docker
+
+If you have [Docker](https://www.docker.com) available, simply to this:
+
+    docker build -t bovender/linktitles .
+    docker run -it --rm bovender/linktitles # repeat as necessary
+
+Or:
+
+    make build-test-container
+    make test # repeat as necessary
+
+#### The Olde Way
 
 Here's how I set up the testing environment. This may not be the canonical way
 to do it. Basic information on testing MediaWiki can be found
@@ -547,9 +543,7 @@ use Ubuntu).
    If you linked just the LinkTitles extension in step 5, only this extension
    will be tested.
 
-
-License
--------
+## License
 
 Copyright 2012-2020 Daniel Kraus <mailto:bovender@bovender.de> (GitHub: @bovender)
 
