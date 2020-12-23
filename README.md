@@ -447,13 +447,12 @@ reload interval is 1 second.
 
 ## Development
 
-If you wish to contribute, please issue pull requests against the `develop`
-branch, as I roughly follow Vincent Driessen's advice on [A successful Git
-branching model](http://nvie.com/git-model) (knowing that there are
-[alternative workflows](http://scottchacon.com/2011/08/31/github-flow.html)).
-
-The `master` branch contains stable releases only, so it is safe to pull the
-master branch if you want to install the extension for your own Wiki.
+As of December 2020, there is only one major branch where all development takes
+place. I used to follow Vincent Driessen's advice on [A successful Git
+branching model](http://nvie.com/git-model), but this did not work out for me
+after all. Pull requests from other developers were usually issued against the
+`master` branch, and the constant switching between the `develop` and the `master`
+branches was prone to cause a mess.
 
 ### Contributors
 
@@ -463,7 +462,7 @@ master branch if you want to install the extension for your own Wiki.
 - @tetsuya-zama, bug fix
 - @yoshida3669, namespace-related bug fixes
 - Caleb Mingle (@dentafrice), bug fix
-- @paladox, bug fixes
+- @paladox, bug fixes and compatilibity fixes
 
 ### Testing
 

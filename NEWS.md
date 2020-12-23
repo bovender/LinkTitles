@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
 
+## [7.0.0][] - 2020-12-23
+
+### Changed
+
+- The minimum required version of MediaWiki is now 1.32.
+
+### Fixed
+
+- Fixed compatibility with MediaWiki version 1.35.
+
 ## [6.0.0][] - 2019-12-31
 
 ### Changed
@@ -21,4 +31,5 @@ For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
   constant (DB_SLAVE was renamed to DB_REPLICA). NOTE that the minimum
   required version of MediaWiki is now 1.28 (which is an obsolete version).
 
+[7.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v7.0.0
 [6.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v6.0.0
