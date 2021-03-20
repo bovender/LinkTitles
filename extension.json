@@ -19,7 +19,7 @@
         },
         "config": {
                 "LinkTitlesParseOnEdit": true,
-                "LinkTitlesParseOnRender": true,
+                "LinkTitlesParseOnRender": false,
                 "LinkTitlesParseHeadings": false,
                 "LinkTitlesSkipTemplates": true,
                 "LinkTitlesPreferShortTitles": true,
