@@ -76,6 +76,14 @@ class Extension {
 	 */
 	public static function onPageContentSave( &$wikiPage, &$user, &$content, &$summary,
 			$isMinor, $isWatch, $section, &$flags, &$status ) {
+		global $wgVersion;
+
+		if ( version_compare( $wgVersion, '1.35', '>=' ) ) {
+			// This hook is deprecated and does not work as intended on MW 1.32+.
+			// Instead we use onMultiContentSave which works from 1.35+.
+			return true;
+		}
+
 		$config = new Config();
 		if ( !$config->parseOnEdit || $isMinor ) return true;
 		$source = Source::createFromPageandContent( $wikiPage, $content, $config );
