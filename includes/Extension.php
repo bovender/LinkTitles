@@ -80,7 +80,7 @@ class Extension {
 
 		if ( version_compare( $wgVersion, '1.35', '>=' ) ) {
 			// This hook is deprecated and does not work as intended on MW 1.32+.
-			// Instead we use onMultiContentSave which works from 1.35+.
+			// Instead we use MultiContentSave which works from 1.35+.
 			return true;
 		}
 
