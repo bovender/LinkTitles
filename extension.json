@@ -59,6 +59,9 @@
                 }
         },
         "Hooks": {
+                "MultiContentSave": [
+                        "LinkTitles\\Extension::onMultiContentSave"
+                ],
                 "PageContentSave": [
                         "LinkTitles\\Extension::onPageContentSave"
                 ],
