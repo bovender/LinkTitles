@@ -25,6 +25,7 @@
 namespace LinkTitles;
 
 use CommentStoreComment;
+use ContentHandler;
 use MediaWiki\Revision\RenderedRevision;
 use MediaWiki\Revision\SlotRecord;
 use Status;
@@ -50,6 +51,9 @@ class Extension {
                 $content = $renderedRevision->getRevision()->getSlots()->getContent( SlotRecord::MAIN );
                 $articleID = $renderedRevision->getRevision()->getPageId();
                 $wikiPage = WikiPage::newFromID( $articleID );
+		if ( $wikiPage == null ) {
+			return true;
+		}
                 $source = Source::createFromPageandContent( $wikiPage, $content, $config );
                 $linker = new Linker( $config );
                 $result = $linker->linkContent( $source );
@@ -58,7 +62,7 @@ class Extension {
 
                         $text = $source->getText($result);
 			$slots = $renderedRevision->getRevision()->getSlots();
-                        $slots->setContent( 'main', \ContentHandler::makeContent( $text, $title ) );
+                        $slots->setContent( 'main', ContentHandler::makeContent( $text, $title ) );
                 }
 
 		return true;
