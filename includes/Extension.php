@@ -21,13 +21,48 @@
  *
  * @author Daniel Kraus <bovender@bovender.de>
  */
+
 namespace LinkTitles;
+
+use CommentStoreComment;
+use MediaWiki\Revision\RenderedRevision;
+use MediaWiki\Revision\SlotRecord;
+use Status;
+use WikiPage;
+use User;
 
 /**
  * Provides event handlers and entry points for the extension.
  */
 class Extension {
 	const URL = 'https://github.com/bovender/LinkTitles';
+
+	/**
+	 * Event handler for the MultiContentSave hook.
+	 *
+	 * This handler is used if the parseOnEdit configuration option is set.
+	 */
+	public static function onMultiContentSave( RenderedRevision $renderedRevision, User $user, CommentStoreComment $summary, $flags, Status $hookStatus ) {
+                $config = new Config();
+                if ( !$config->parseOnEdit ) return true;
+		$title = $renderedRevision->getRevision()->getPageAsLinkTarget();
+		$slots = $renderedRevision->getRevision()->getSlots();
+                $content = $renderedRevision->getRevision()->getSlots()->getContent( SlotRecord::MAIN );
+                $articleID = $renderedRevision->getRevision()->getPageId();
+                $wikiPage = WikiPage::newFromID( $articleID );
+                $source = Source::createFromPageandContent( $wikiPage, $content, $config );
+                $linker = new Linker( $config );
+                $result = $linker->linkContent( $source );
+                if ( $result ) {
+                        $source->setText( $result );
+
+                        $text = $source->getText($result);
+			$slots = $renderedRevision->getRevision()->getSlots();
+                        $slots->setContent( 'main', \ContentHandler::makeContent( $text, $title ) );
+                }
+
+		return true;
+	}
 
 	/**
 	 * Event handler for the PageContentSave hook.
