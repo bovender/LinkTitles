@@ -25,7 +25,6 @@
 namespace LinkTitles;
 
 use CommentStoreComment;
-use ContentHandler;
 use MediaWiki\Revision\RenderedRevision;
 use MediaWiki\Revision\SlotRecord;
 use Status;
@@ -43,11 +42,18 @@ class Extension {
 	 *
 	 * This handler is used if the parseOnEdit configuration option is set.
 	 */
-	public static function onMultiContentSave( RenderedRevision $renderedRevision, User $user, CommentStoreComment $summary, $flags, Status $hookStatus ) {
+	public static function onMultiContentSave(
+		RenderedRevision $renderedRevision,
+		User $user,
+		CommentStoreComment $summary,
+		$flags,
+		Status $hookStatus
+	) {
 		$config = new Config();
 		if ( !$config->parseOnEdit ) return true;
-		
+
 		$revision = $renderedRevision->getRevision();
+		$title = $revision->getPageAsLinkTarget();
 		$slots = $revision->getSlots();
 		$content = $slots->getContent( SlotRecord::MAIN );
 
