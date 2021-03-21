@@ -15,7 +15,7 @@ For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
 
 ### Fixed
 
-- Fixed compatibility with MediaWiki version 1.35+.
+- Replace PageContentSave with MultiContentSave to fix compatibility with MediaWiki 1.35.
 
 ## [7.0.0][] - 2020-12-23
 
