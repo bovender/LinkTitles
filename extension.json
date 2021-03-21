@@ -15,7 +15,7 @@
         "license-name": "GPL-2.0+",
         "descriptionmsg": "linktitles-desc",
         "requires": {
-                "MediaWiki": ">= 1.32.0"
+                "MediaWiki": ">= 1.35.0"
         },
         "config": {
                 "LinkTitlesParseOnEdit": true,
@@ -61,9 +61,6 @@
         "Hooks": {
                 "MultiContentSave": [
                         "LinkTitles\\Extension::onMultiContentSave"
-                ],
-                "PageContentSave": [
-                        "LinkTitles\\Extension::onPageContentSave"
                 ],
                 "InternalParseBeforeLinks": [
                         "LinkTitles\\Extension::onInternalParseBeforeLinks"
