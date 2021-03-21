@@ -16,6 +16,8 @@ For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
 ### Fixed
 
 - Replace PageContentSave with MultiContentSave to fix compatibility with MediaWiki 1.35.
+- The default value for wgLinkTitlesParseOnRender is change back to `false` as support
+  for MediaWiki 1.35+ is fixed.
 
 ## [7.0.0][] - 2020-12-23
 
