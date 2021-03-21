@@ -69,32 +69,6 @@ class Extension {
 		return true;
 	}
 
-	/**
-	 * Event handler for the PageContentSave hook.
-	 *
-	 * This handler is used if the parseOnEdit configuration option is set.
-	 */
-	public static function onPageContentSave( &$wikiPage, &$user, &$content, &$summary,
-			$isMinor, $isWatch, $section, &$flags, &$status ) {
-		global $wgVersion;
-
-		if ( version_compare( $wgVersion, '1.35', '>=' ) ) {
-			// This hook is deprecated and does not work as intended on MW 1.32+.
-			// Instead we use MultiContentSave which works from 1.35+.
-			return true;
-		}
-
-		$config = new Config();
-		if ( !$config->parseOnEdit || $isMinor ) return true;
-		$source = Source::createFromPageandContent( $wikiPage, $content, $config );
-		$linker = new Linker( $config );
-		$result = $linker->linkContent( $source );
-		if ( $result ) {
-			$content = $source->setText( $result );
-		}
-		return true;
-	}
-
 	/*
 	 * Event handler for the InternalParseBeforeLinks hook.
 	 *
