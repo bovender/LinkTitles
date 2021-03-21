@@ -52,7 +52,7 @@ class Extension {
 		$isMinor = $flags & EDIT_MINOR;
 
 		$config = new Config();
-		if ( !$config->parseOnEdit && $isMinor ) return true;
+		if ( !$config->parseOnEdit || $isMinor ) return true;
 
 		$revision = $renderedRevision->getRevision();
 		$title = $revision->getPageAsLinkTarget();
