@@ -37,7 +37,8 @@
 class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 	protected $title;
 
-	protected function setUp() {
+	protected function setUp(): void
+	{
 		parent::setUp(); // call last to have the Targets object invalidated after inserting the page
 	}
 
@@ -315,13 +316,13 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 
 		// Reset namespace caches.
 		// See https://stackoverflow.com/q/45974979/270712
-		MWNamespace::getCanonicalNamespaces( true );
+		\MWNamespace::getCanonicalNamespaces(true);
 		global $wgContLang;
 		$wgContLang->resetNamespaces();
 		$this->assertTrue( MWNamespace::exists( $ns ), "The namespace with id $ns should exist!" );
 
 		$this->insertPage( "in custom namespace", 'This is a page in a custom namespace', $ns );
-		LinKTitles\Targets::invalidate();
+		LinkTitles\Targets::invalidate();
 		$linker = new LinkTitles\Linker( $config );
 		$source = LinkTitles\Source::createFromTitleAndText( $this->title, $input, $config );
 		$result = $linker->linkContent( $source );

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2012-2018 Daniel Kraus <bovender@bovender.de> ('bovender')
  *
@@ -25,78 +26,81 @@
  *
  * @group bovender
  */
-class SplitterTest extends MediaWikiTestCase {
+class SplitterTest extends \MediaWikiTestCase
+{
 	/**
 	 * @dataProvider provideSplitData
 	 */
-	public function testSplit( $skipTemplates, $parseHeadings, $input, $expectedOutput ) {
+	public function testSplit($skipTemplates, $parseHeadings, $input, $expectedOutput)
+	{
 		$config = new LinkTitles\Config();
 		$config->skipTemplates = $skipTemplates;
 		$config->parseHeadings = $parseHeadings;
 		LinkTitles\Splitter::invalidate();
-		$splitter = LinkTitles\Splitter::singleton( $config );
-		$this->assertSame( $skipTemplates, $splitter->config->skipTemplates, 'Splitter has incorrect skipTemplates config');
-		$this->assertSame( $parseHeadings, $splitter->config->parseHeadings, 'Splitter has incorrect parseHeadings config');
-		$this->assertSame( $expectedOutput, $splitter->split( $input ) );
+		$splitter = LinkTitles\Splitter::singleton($config);
+		$this->assertSame($skipTemplates, $splitter->config->skipTemplates, 'Splitter has incorrect skipTemplates config');
+		$this->assertSame($parseHeadings, $splitter->config->parseHeadings, 'Splitter has incorrect parseHeadings config');
+		$this->assertSame($expectedOutput, $splitter->split($input));
 	}
 
 	// TODO: Add more examples.
-	public static function provideSplitData() {
+	public static function provideSplitData()
+	{
 		return [
 			[
 				true, // skipTemplates
 				false, // parseHeadings
 				'this may be linked [[this may not be linked]]',
-				[ 'this may be linked ', '[[this may not be linked]]', '' ]
+				['this may be linked ', '[[this may not be linked]]', '']
 			],
 			[
 				true, // skipTemplates
 				false, // parseHeadings
 				'this may be linked <gallery>this may not be linked</gallery>',
-				[ 'this may be linked ', '<gallery>this may not be linked</gallery>', '' ]
+				['this may be linked ', '<gallery>this may not be linked</gallery>', '']
 			],
 			[
 				true, // skipTemplates
 				false, // parseHeadings
 				'With skipTemplates = true, this may be linked {{mytemplate|param=link target}}',
-				[ 'With skipTemplates = true, this may be linked ', '{{mytemplate|param=link target}}', '' ]
+				['With skipTemplates = true, this may be linked ', '{{mytemplate|param=link target}}', '']
 			],
 			[
 				false, // skipTemplates
 				false, // parseHeadings
 				'With skipTemplates = false, this may be linked {{mytemplate|param=link target}}',
-				[ 'With skipTemplates = false, this may be linked ', '{{mytemplate|param=', 'link target}}' ]
+				['With skipTemplates = false, this may be linked ', '{{mytemplate|param=', 'link target}}']
 			],
 			[
 				true, // skipTemplates
 				false, // parseHeadings
 				'With skipTemplates = true, this may be linked {{mytemplate|param={{transcluded}}}}',
-				[ 'With skipTemplates = true, this may be linked ', '{{mytemplate|param={{transcluded}}}}', '' ]
+				['With skipTemplates = true, this may be linked ', '{{mytemplate|param={{transcluded}}}}', '']
 			],
 			[
 				true, // skipTemplates
 				true, // parseHeadings
 				"With parseHeadings = true,\n==a heading may be linked==\n",
-				[ "With parseHeadings = true,\n==a heading may be linked==\n" ]
+				["With parseHeadings = true,\n==a heading may be linked==\n"]
 			],
 			[
 				true, // skipTemplates
 				false, // parseHeadings
 				// no trailing newline in the following string because it would be swallowed
 				"With parseHeadings = false,\n==a heading may not be linked==",
-				[ "With parseHeadings = false,\n", "==a heading may not be linked==", '' ]
+				["With parseHeadings = false,\n", "==a heading may not be linked==", '']
 			],
 			[
 				true, // skipTemplates
 				true, // parseHeadings
 				"With parseHeadings = true,\n==<span>a heading with spans may be linked</span>==\n",
-				[ "With parseHeadings = true,\n==", "<span>", "a heading with spans may be linked", "</span>", "==\n" ]
+				["With parseHeadings = true,\n==", "<span>", "a heading with spans may be linked", "</span>", "==\n"]
 			],
 			[
 				true, // skipTemplates
 				true, // parseHeadings
 				"With parseHeadings = true,\n==<div>a heading with divs may be linked</div>==\n",
-				[ "With parseHeadings = true,\n==", "<div>", "a heading with divs may be linked", "</div>", "==\n" ]
+				["With parseHeadings = true,\n==", "<div>", "a heading with divs may be linked", "</div>", "==\n"]
 			],
 			// Improperly formatted headings cannot be dealt with appropriately for now
 			// [
@@ -109,7 +113,7 @@ class SplitterTest extends MediaWikiTestCase {
 				true, // skipTemplates
 				true, // parseHeadings
 				"Text <noautolinks>in noautolinks tag</noautolinks>should be excluded",
-				[ "Text ", "<noautolinks>in noautolinks tag</noautolinks>", "should be excluded" ]
+				["Text ", "<noautolinks>in noautolinks tag</noautolinks>", "should be excluded"]
 			],
 		];
 	}
