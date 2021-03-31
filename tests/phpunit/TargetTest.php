@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2012-2018 Daniel Kraus <bovender@bovender.de> ('bovender')
  *
@@ -23,39 +24,44 @@
 /**
  * @group bovender
  */
-class TargetTest extends MediaWikiTestCase {
+class TargetTest extends \MediaWikiTestCase
+{
 
 	/**
 	 * @dataProvider provideStartOnly
 	 */
-	public function testTargetWordStartOnly( $enabled, $delimiter ) {
+	public function testTargetWordStartOnly($enabled, $delimiter)
+	{
 		$config = new LinkTitles\Config();
 		$config->wordStartOnly = $enabled;
-		$target = new LinKTitles\Target( NS_MAIN, 'test page', $config );
-		$this->assertSame( $delimiter, $target->wordStart );
+		$target = new LinKTitles\Target(NS_MAIN, 'test page', $config);
+		$this->assertSame($delimiter, $target->wordStart);
 	}
 
-	public static function provideStartOnly() {
+	public static function provideStartOnly()
+	{
 		return [
-			[ true, '(?<!\pL|\pN)' ],
-			[ false, '' ]
+			[true, '(?<!\pL|\pN)'],
+			[false, '']
 		];
 	}
 
 	/**
 	 * @dataProvider provideEndOnly
 	 */
-	public function testTargetWordEndOnly( $enabled, $delimiter ) {
+	public function testTargetWordEndOnly($enabled, $delimiter)
+	{
 		$config = new LinkTitles\Config();
 		$config->wordEndOnly = $enabled;
-		$target = new LinKTitles\Target( NS_MAIN, 'test page', $config );
-		$this->assertSame( $delimiter, $target->wordEnd );
+		$target = new LinKTitles\Target(NS_MAIN, 'test page', $config);
+		$this->assertSame($delimiter, $target->wordEnd);
 	}
 
-	public static function provideEndOnly() {
+	public static function provideEndOnly()
+	{
 		return [
-			[ true, '(?!\pL|\pN)' ],
-			[ false, '' ]
+			[true, '(?!\pL|\pN)'],
+			[false, '']
 		];
 	}
 }

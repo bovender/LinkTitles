@@ -23,6 +23,8 @@
  */
 namespace LinkTitles;
 
+use MediaWiki\MediaWikiServices;
+
 /**
  * Represents a page that is a potential link target.
  */
@@ -149,7 +151,7 @@ class Source {
 	 * @return boolean True if the page contains the __NOAUTOLINKS__ magic word.
 	 */
 	public function hasNoAutolinksMagicWord() {
-		return \MediaWiki\MediaWikiServices::getInstance()->getMagicWordFactory()->get( 'MAG_LINKTITLES_NOAUTOLINKS' )->match( $this->getText() );
+		return MediaWikiServices::getInstance()->getMagicWordFactory()->get( 'MAG_LINKTITLES_NOAUTOLINKS' )->match( $this->getText() );
 	}
 
 	/**
