@@ -173,10 +173,11 @@ class Cli extends \Maintenance {
 		$context = \RequestContext::getMain();
 		$this->output( "Processing ${numPages} pages, starting at index ${index}...\n" );
 
+		$numProcessed = 0;
 		foreach ( $res as $row ) {
-			$index += 1; // at this point, $index is only needed for reporting to user
 			$title = \Title::makeTitleSafe( $row->page_namespace, $row->page_title );
-			$this->output( sprintf( "\rPage #%d (%02.0f%%) ", $index, $index / $numPages * 100 ) );
+			$numProcessed += 1;
+			$this->output( sprintf( "\rPage #%d (%02.0f%%) ", $index, $numProcessed / $numPages * 100 ) );
 			Extension::processPage( $title, $context );
 		}
 
