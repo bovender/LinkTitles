@@ -94,7 +94,7 @@ To obtain the extension, you can either download a compressed archive from the
 [Github releases page](https://github.com/bovender/LinkTitles/releases): Choose
 one of the 'Source code' archives and extract it in your Wiki's `extension`
 folder. Note that these archives contain a folder that is named after the
-release version, e.g. `LinkTitles-5.0.0`. You may want to rename the folder to
+release version, e.g. `LinkTitles-8.0.0`. You may want to rename the folder to
 `LinkTitles`.
 
 Alternatively (and preferred by the author), if you have [Git](https://git-scm.com),
@@ -105,9 +105,6 @@ To activate the extension, add the following to your `LocalSettings.php` file:
     wfLoadExtension( 'LinkTitles' );
 
 Do not forget to adjust the [configuration](#configuration) to your needs.
-
-If your MediaWiki version is really old (1.24 and older), you need to use
-a [different mechanism](https://www.mediawiki.org/wiki/Manual:Extensions#Installing_an_extension).
 
 ## Usage
 
