@@ -1,8 +1,9 @@
 <?php
+
 /**
  * Unit tests for the Linker class, i.e. the core functionality
  *
- * Copyright 2012-2018 Daniel Kraus <bovender@bovender.de> ('bovender')
+ * Copyright 2012-2021 Daniel Kraus <bovender@bovender.de> ('bovender')
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
