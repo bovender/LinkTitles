@@ -3,7 +3,7 @@
 [MediaWiki extension](https://www.mediawiki.org/wiki/Extension:LinkTitles) that
 automatically adds links to words that match titles of existing pages.
 
-Minimum requirement: MediaWiki 1.28. Source code documentation can be
+Minimum requirement: MediaWiki 1.35. Source code documentation can be
 found at the [Github project pages](https://bovender.github.io/LinkTitles).
 
 ## Table of contents
@@ -70,6 +70,8 @@ are fixed.
 
 Version | Date | Major changes ||
 -|-|-|-
+8 | 04-2021 | Minimum required version is 1.35. | [Details][v8.0.0]
+7 | 12-2020 | Minimum required version is 1.32. |
 6 | 12-2019 | Renamed deprecated MW constant for compatibility with MW version 1.34, minimum required version is 1.28. | [Details][v6.0.0]
 5 | 09-2017 | Rewrote the entire extension; vastly improved namespace support; some breaking changes | [Details][v5.0.0]
 4 | 11-2016 | Changed format of the extension for MediaWiki version 1.25; added basic namespace support | [Details][v4.0.0]
@@ -77,6 +79,8 @@ Version | Date | Major changes ||
 2 | 11-2013 | Introduced smart mode | [Details][2.0.0]
 1 | 05-2012 | First stable release |
 
+[v8.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v8.0.0
+[v6.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v6.0.0
 [v6.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v6.0.0
 [v5.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v5.0.0
 [v4.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v4.0.0
@@ -106,27 +110,6 @@ Do not forget to adjust the [configuration](#configuration) to your needs.
 
 If your MediaWiki version is really old (1.24 and older), you need to use
 a [different mechanism](https://www.mediawiki.org/wiki/Manual:Extensions#Installing_an_extension).
-
-## Important note for MediaWiki versions 1.32 and newer
-
-**Links can no longer be automatically added when a page is saved with
-MediaWiki versions 1.32 and newer.** This is because MediaWiki changed the
-signature of an important callback function. See [GitHub issue #43][issue-43]
-and [T222413][] for more information. There's a slight chance that link-on-edit
-will work again in a future version of MediaWiki (that is, if/when pull request
-[467308][] is merged). Until that happens, admins are advised to use the
-link-on-render feature (which is now enabled by default).
-
-A workaround is to set up a cron job for the command-line tool, e.g.
-
-    # /etc/crontab
-    # Runs at 1 a.m. every morning.
-    # m h dom mon dow user      command
-    0   1 *   *   *   www-data  php -f /var/www/html/extensions/LinkTitles/linktitles-cli.php
-
-[issue-43]: https://github.com/bovender/LinkTitles/issues/43
-[T222413]: https://phabricator.wikimedia.org/T222413
-[467308]: https://gerrit.wikimedia.org/r/467308
 
 ## Usage
 
@@ -448,7 +431,7 @@ reload interval is 1 second.
 ## Development
 
 As of December 2020, there is only one major branch where all development takes
-place. I used to follow Vincent Driessen's advice on [A successful Git
+place. Formerly, I used to follow Vincent Driessen's advice on [A successful Git
 branching model](http://nvie.com/git-model), but this did not work out for me
 after all. Pull requests from other developers were usually issued against the
 `master` branch, and the constant switching between the `develop` and the `master`
@@ -463,6 +446,8 @@ branches was prone to cause a mess.
 - @yoshida3669, namespace-related bug fixes
 - Caleb Mingle (@dentafrice), bug fix
 - @paladox, bug fixes and compatilibity fixes
+- bluedreamer
+- j-zero
 
 ### Testing
 
@@ -475,12 +460,14 @@ know and I will try to add unit tests and fix it.
 If you have [Docker](https://www.docker.com) available, simply to this:
 
     docker build -t bovender/linktitles .
-    docker run -it --rm bovender/linktitles # repeat as necessary
+    # repeat the following as necessary
+    docker run -it --rm -v `pwd`:/var/www/html/extensions/LinkTitles bovender/linktitles
 
 Or:
 
     make build-test-container
-    make test # repeat as necessary
+    # repeat the following as necessary
+    make test
 
 #### The Olde Way
 

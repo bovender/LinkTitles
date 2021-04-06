@@ -2,16 +2,18 @@
         "name": "LinkTitles",
         "author": [
                 "[https://www.mediawiki.org/wiki/User:Bovender Daniel Kraus (bovender)]",
-                "Ulrich Strauss (c0nnex)",
+                "Adrian (bluedreamer)",
+                "j-zero",
                 "Brent Laabs (labster)",
-                "tetsuya-zama",
-                "yoshida",
                 "Caleb Mingle (dentafrice)",
-                "paladox"
+                "paladox",
+                "Ulrich Strauss (c0nnex)",
+                "tetsuya-zama",
+                "yoshida"
         ],
         "type": "parserhook",
         "url": "https://www.mediawiki.org/wiki/Extension:LinkTitles",
-        "version": "7.1.0",
+        "version": "8.0.0",
         "license-name": "GPL-2.0+",
         "descriptionmsg": "linktitles-desc",
         "requires": {

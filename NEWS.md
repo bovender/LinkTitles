@@ -7,17 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
 
-## [7.1.0][] - 2021-03-21
+## [8.0.0][] - 2021-04-06
 
 ### Changed
 
 - The minimum required version of MediaWiki is now 1.35.
+- The values of `data-*` attributes in HTML tags are now being ignored.
 
 ### Fixed
 
 - Replace PageContentSave with MultiContentSave to fix compatibility with MediaWiki 1.35.
 - The default value for wgLinkTitlesParseOnRender is change back to `false` as support
   for MediaWiki 1.35+ is fixed.
+- Progress reporting by `linktitles-cli.php` is no longer incorrect when a start
+  page is defined.
 
 ## [7.0.0][] - 2020-12-23
 
