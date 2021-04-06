@@ -8,11 +8,10 @@ found at the [Github project pages](https://bovender.github.io/LinkTitles).
 
 ## Table of contents
 
-1. [Oveview](#overview)
+1. [Overview](#overview)
    - [Versions](#versions)
 2. [Installation](#installation)
-3. [Important note for MediaWiki versions 1.32 and newer](#important-note-for-mediawiki-versions-1.32-and-newer)
-4. [Usage](#usage)
+3. [Usage](#usage)
    - [Editing a page](#editing-a-page)
    - [Preventing automatic linking after minor edits](#preventing-automatic-linking-after-minor-edits)
    - [Viewing a page](#viewing-a-page)
@@ -22,7 +21,7 @@ found at the [Github project pages](https://bovender.github.io/LinkTitles).
    - [Batch processing](#batch-processing)
    - [Special:LinkTitles](#special-linktitles)
    - [Maintenance script](#maintenance-script)
-5. [Configuration](#configuration)
+4. [Configuration](#configuration)
    - [Linking when a page is edited and saved](#linking-when-a-page-is-edited-and-saved)
    - [Linking when a page is rendered for display](#linking-when-a-page-is-rendered-for-display)
    - [Enabling case-insensitive linking (smart mode)](#enabling-case-insensitive-linking-(smart-mode))
@@ -35,10 +34,10 @@ found at the [Github project pages](https://bovender.github.io/LinkTitles).
    - [Multiple links to the same page](#multiple-links-to-the-same-page)
    - [Partial words](#partial-words)
    - [Special page configuration](#special-page-configuration)
-6. [Development](#development)
+5. [Development](#development)
    - [Contributors](#contributors)
    - [Testing](#testing)
-7. [License](#license)
+6. [License](#license)
 
 ## Overview
 
