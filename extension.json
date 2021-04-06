@@ -11,15 +11,15 @@
         ],
         "type": "parserhook",
         "url": "https://www.mediawiki.org/wiki/Extension:LinkTitles",
-        "version": "6.0.0",
+        "version": "7.1.0",
         "license-name": "GPL-2.0+",
         "descriptionmsg": "linktitles-desc",
         "requires": {
-                "MediaWiki": ">= 1.32.0"
+                "MediaWiki": ">= 1.35.0"
         },
         "config": {
                 "LinkTitlesParseOnEdit": true,
-                "LinkTitlesParseOnRender": true,
+                "LinkTitlesParseOnRender": false,
                 "LinkTitlesParseHeadings": false,
                 "LinkTitlesSkipTemplates": true,
                 "LinkTitlesPreferShortTitles": true,
@@ -59,8 +59,8 @@
                 }
         },
         "Hooks": {
-                "PageContentSave": [
-                        "LinkTitles\\Extension::onPageContentSave"
+                "MultiContentSave": [
+                        "LinkTitles\\Extension::onMultiContentSave"
                 ],
                 "InternalParseBeforeLinks": [
                         "LinkTitles\\Extension::onInternalParseBeforeLinks"
