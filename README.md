@@ -3,8 +3,7 @@
 [MediaWiki extension](https://www.mediawiki.org/wiki/Extension:LinkTitles) that
 automatically adds links to words that match titles of existing pages.
 
-Minimum requirement: MediaWiki 1.35. Source code documentation can be
-found at the [Github project pages](https://bovender.github.io/LinkTitles).
+Minimum requirement: MediaWiki version **1.35**.
 
 ## Table of contents
 
@@ -113,10 +112,6 @@ a [different mechanism](https://www.mediawiki.org/wiki/Manual:Extensions#Install
 ## Usage
 
 ### Editing a page
-
-*By default, the LinkTitles extension will **no longer** add links to existing
-pages whenever you edit and save a page. This is because MediaWiki 1.32 changed
-an important callback function that the LinkTitles extension relied on (see above).*
 
 When linking-on-edit is enabled (with MW versions prior to 1.33), the extension
 will by default link whole words only, prefer longer target page titles over
