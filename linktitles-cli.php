@@ -177,6 +177,7 @@ class Cli extends \Maintenance {
 		foreach ( $res as $row ) {
 			$title = \Title::makeTitleSafe( $row->page_namespace, $row->page_title );
 			$numProcessed += 1;
+			$index += 1;
 			$this->output( sprintf( "\rPage #%d (%02.0f%%) ", $index, $numProcessed / $numPages * 100 ) );
 			Extension::processPage( $title, $context );
 		}
