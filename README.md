@@ -1,3 +1,11 @@
+> **HEADS UP!**  
+> **THE MAIN BRANCH HAS BEEN RENAMED FROM "MASTER" TO "MAIN".**  
+> **TO UPDATE AN EXISTING LOCAL COPY OF THIS REPOSITORY:**  
+> **`git fetch`**  
+> **`git checkout -t origin/main`**
+
+---
+
 # LinkTitles
 
 [MediaWiki extension](https://www.mediawiki.org/wiki/Extension:LinkTitles) that
