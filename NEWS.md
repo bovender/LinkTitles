@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
 
-## Unreleased
+## [8.0.1][] - 2021-05-08
 
-### [8.0.1][] - 2021-05-08
+### Fixed
 
 - Fixed a regression concerning `linktitles-cli` progress display that was
   introduced in v8.0.0.
