@@ -247,7 +247,14 @@ EOF
 	 * @return undefined
 	 */
 	private function addCompletedInfo( &$output, $start, $end, $reloads ) {
-		$pagesPerReload = sprintf('%0.1f', $end / $reloads);
+		if ( $reloads > 0 ) {
+			$pagesPerReload = sprintf( '%0.1f', $end / $reloads );
+		}
+		else
+		{
+			$pagesPerReload = sprintf( '%0.1f', $end );
+		}
+		
 		$output->addWikiMsg( 'linktitltes-special-completed-info', $end,
 			$config->specialPageReloadAfter, $reloads, $pagesPerReload
 		);

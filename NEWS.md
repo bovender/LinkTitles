@@ -13,7 +13,9 @@ For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
 
 - Fixed a regression concerning `linktitles-cli` progress display that was
   introduced in v8.0.0.
-  
+- Prevent a division-by-zero error that could occur on the LinkTitles special
+  page.
+
 ## [8.0.0][] - 2021-04-06
 
 ### Changed
