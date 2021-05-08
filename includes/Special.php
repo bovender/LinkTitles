@@ -255,7 +255,7 @@ EOF
 			$pagesPerReload = sprintf( '%0.1f', $end );
 		}
 		
-		$output->addWikiMsg( 'linktitltes-special-completed-info', $end,
+		$output->addWikiMsg( 'linktitles-special-completed-info', $end,
 			$config->specialPageReloadAfter, $reloads, $pagesPerReload
 		);
 	}

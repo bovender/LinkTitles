@@ -15,6 +15,8 @@ For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
   introduced in v8.0.0.
 - Prevent a division-by-zero error that could occur on the LinkTitles special
   page.
+- Fixed the message that is shown when linking that was triggered from the
+  special page has been completed.
 
 ## [8.0.0][] - 2021-04-06
 
