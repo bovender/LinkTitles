@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
 
+## Unreleased
+
+### Fixed
+
+- Ensure compatibilty with the PageForms extension (#58)
+
 ## [8.0.1][] - 2021-05-08
 
 ### Fixed
@@ -14,7 +20,7 @@ For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
 - Fixed a regression concerning `linktitles-cli` progress display that was
   introduced in v8.0.0.
 - Prevent a division-by-zero error that could occur on the LinkTitles special
-  page.
+  page (#55).
 - Fixed the message that is shown when linking that was triggered from the
   special page has been completed.
 

@@ -138,6 +138,8 @@ class Splitter {
 			'<syntaxhighlight.*?>.*?<\/syntaxhighlight>|' .                  // syntaxhighlight
 			'<gallery>.*?<\/gallery>|' .                // gallery
 			'<div.*?>|<\/div>|' .                       // attributes of div elements
+			'<input.+<\/input>|' .                      // input tags and anything between them
+			'<select.+<\/select>|' .                    // select tags and anything between them
 			'<span.*?>|<\/span>|' .                     // attributes of span elements
 			'<file>[^<]*<\/file>|' .                    // stuff inside file elements
 			'style=".+?"|class=".+?"|data-sort-value=".+?"|' . 	// styles and classes (e.g. of wikitables)
