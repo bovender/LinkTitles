@@ -3,7 +3,7 @@
 /**
  * The LinkTitles\Target represents a Wiki page that is a potential link target.
  *
- * Copyright 2012-2021 Daniel Kraus <bovender@bovender.de> ('bovender')
+ * Copyright 2012-2022 Daniel Kraus <bovender@bovender.de> ('bovender')
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
