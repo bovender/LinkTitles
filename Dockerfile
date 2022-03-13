@@ -1,10 +1,10 @@
 # This Dockerfile can be used to create a Docker image/container
 # that runs the unit tests on the LinkTitles extension.
-FROM mediawiki:1.35
+FROM mediawiki:1.37
 LABEL "MAINTAINER" Daniel Kraus (https://www.bovender.de)
 RUN apt-get update -yqq && \
 	apt-get install -yqq \
-	php7.3-sqlite \
+	php7.4-sqlite \
 	sqlite3 \
 	unzip \
 	zip
