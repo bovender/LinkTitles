@@ -79,6 +79,13 @@ class Cli extends \Maintenance {
 			true,  // requires argument
 			"p"
 		);
+		$this->addOption(
+			"verbose",
+			"print detailed progress information",
+			false, // not required
+			false, // does not require an argument
+			"v"
+		);
 		// TODO: Add back logging options.
 		// TODO: Add configuration options.
 		// $this->addOption(
@@ -153,6 +160,7 @@ class Cli extends \Maintenance {
 	 */
 	private function allPages( $index = 0 ) {
 		$config = new Config();
+		$verbose = $this->hasOption( 'verbose' );
 
 		// Retrieve page names from the database.
 		$dbr = $this->getDB( DB_REPLICA );
@@ -178,7 +186,21 @@ class Cli extends \Maintenance {
 			$title = \Title::makeTitleSafe( $row->page_namespace, $row->page_title );
 			$numProcessed += 1;
 			$index += 1;
-			$this->output( sprintf( "\rPage #%d (%02.0f%%) ", $index, $numProcessed / $numPages * 100 ) );
+			if ( $verbose ) {
+				$this->output(
+					sprintf(
+						"%s - processed %5d of %5d (%2.0f%%) - index %5d - %s",
+						date("c", time()),
+						$numProcessed,
+						$numPages,
+						$numProcessed / $numPages * 100,
+						$index,
+						$title
+					)
+				);
+			} else {
+				$this->output( sprintf( "\rPage #%d (%02.0f%%) ", $index, $numProcessed / $numPages * 100 ) );
+			}
 			Extension::processPage( $title, $context );
 		}
 

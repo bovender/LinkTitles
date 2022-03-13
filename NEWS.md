@@ -9,6 +9,10 @@ For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
 
 ## Unreleased
 
+### New
+
+- Added a `--verbose` (`-v`) option to the command line script.
+
 ### Fixed
 
 - Ensure compatibility with the PageForms extension (#58)

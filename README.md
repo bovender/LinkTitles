@@ -195,7 +195,7 @@ line
 
 to `LocalSettings.php`.
 
-#### Maintenance script
+#### Commandline
 
 If you have access to a shell on the server that runs your wiki, and are allowed
 to execute `/bin/php` on the command line, you can use the extension's
@@ -214,6 +214,13 @@ page that was processed (e.g., 37), and use the maintenance script with the
 `--start` option (or short `-s`) to indicate the start index:
 
     php linktitles-cli.php -s 37
+
+For more verbose output that also includes the page title, use the `--verbose`
+option (or short `-v`):
+
+    php linktitles-cli.php -s 37 -v
+
+In verbose mode, the script will output all page titles one by one.
 
 See all available options with:
 
