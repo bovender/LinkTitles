@@ -11,7 +11,7 @@ For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
 
 ### Fixed
 
-- Ensure compatibilty with the PageForms extension (#58)
+- Ensure compatibility with the PageForms extension (#58)
 
 ## [8.0.1][] - 2021-05-08
 
