@@ -11,7 +11,9 @@ For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
 
 ### New
 
-- Added a `--verbose` (`-v`) option to the command line script.
+- Added a `--verbose` (`-v`) option to the commandline script.
+- Added a 'shebang' line to the commandline script so that it can be invoked
+  directly.
 
 ### Fixed
 

@@ -213,18 +213,22 @@ To continue parsing at a later time, make a note of the index number of the last
 page that was processed (e.g., 37), and use the maintenance script with the
 `--start` option (or short `-s`) to indicate the start index:
 
-    php linktitles-cli.php -s 37
+    php extensions/LinkTitles/linktitles-cli.php -s 37
 
 For more verbose output that also includes the page title, use the `--verbose`
 option (or short `-v`):
 
-    php linktitles-cli.php -s 37 -v
+    php extensions/LinkTitles/linktitles-cli.php -s 37 -v
 
 In verbose mode, the script will output all page titles one by one.
 
 See all available options with:
 
-    php linktitles-cli.php -h
+    php extensions/LinkTitles/linktitles-cli.php -h
+
+Depending on your shell, you may omit the `php` and call the script directly:
+
+    extensions/LinkTitles/linktitles-cli.php
 
 ## Configuration
 
