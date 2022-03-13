@@ -318,7 +318,7 @@ class LinkTitlesLinkerTest extends LinkTitles\TestCase {
 		// Reset namespace caches.
 		// See https://stackoverflow.com/q/45974979/270712
 		\MWNamespace::getCanonicalNamespaces(true);
-		global $wgContLang;
+		$wgContLang = \MediaWiki\MediaWikiServices::getInstance()->getContentLanguage();
 		$wgContLang->resetNamespaces();
 		$this->assertTrue( MWNamespace::exists( $ns ), "The namespace with id $ns should exist!" );
 

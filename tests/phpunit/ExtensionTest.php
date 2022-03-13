@@ -71,7 +71,8 @@ class ExtensionTest extends LinkTitles\TestCase {
 		] );
 		$title = $this->insertPage( 'test page', $input )['title'];
 		$page = new WikiPage( $title );
-		$output = $page->getParserOutput( new ParserOptions(), null, true );
+		$user = MediaWiki\User\UserFactory::newAnonymous();
+		$output = $page->getParserOutput( new ParserOptions( $user ), null, true );
 		$lines = explode( "\n", $output->getText() );
 		$this->assertRegexp( $expectedOutput, $lines[0] );
 	}
