@@ -189,7 +189,7 @@ class Cli extends \Maintenance {
 			if ( $verbose ) {
 				$this->output(
 					sprintf(
-						"%s - processed %5d of %5d (%2.0f%%) - index %5d - %s",
+						"%s - processed %5d of %5d (%2.0f%%) - index %5d - %s\r\n",
 						date("c", time()),
 						$numProcessed,
 						$numPages,
