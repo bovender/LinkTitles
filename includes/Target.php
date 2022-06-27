@@ -95,7 +95,11 @@ class Target {
 	}
 
 	public function getPrefixedTitleText() {
-		return $this->title->getPrefixedText();
+
+		if ($this->title->getNamespace() == NS_CATEGORY)
+			return ':' . $this->title->getPrefixedText();
+		else
+			return $this->title->getPrefixedText();
 	}
 
 	/**
