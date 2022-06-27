@@ -107,12 +107,12 @@ class Extension {
 			$result = $linker->linkContent( $source );
 			if ( $result ) {
 				$content = $source->getContent()->getContentHandler()->unserializeContent( $result );
-				$source->getPage()->doEditContent(
-					$content,
-					\wfMessage( 'linktitles-bot-comment', self::URL ),
-					EDIT_MINOR | EDIT_FORCE_BOT,
-					false, // baseRevId
-					$context->getUser()
+
+				$updater = $source->getPage()->newPageUpdater( $context->getUser());
+				$updater->setContent( SlotRecord::MAIN, $content );
+				$updater->saveRevision(
+					CommentStoreComment::newUnsavedComment(\wfMessage( 'linktitles-bot-comment', self::URL )),
+					EDIT_MINOR | EDIT_FORCE_BOT
 				);
 			};
 			return true;
