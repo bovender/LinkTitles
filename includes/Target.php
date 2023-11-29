@@ -24,6 +24,8 @@
  */
 namespace LinkTitles;
 
+use MediaWiki\MediaWikiServices;
+
 /**
  * Represents a page that is a potential link target.
  */
@@ -189,7 +191,13 @@ class Target {
 	 */
 	public function getContent() {
 		if ( $this->content === null ) {
-			$this->content = \WikiPage::factory( $this->title )->getContent();
+			// MW 1.36+
+			if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
+				$wikiPageFactory = MediaWikiServices::getInstance()->getWikiPageFactory();
+				$this->content = $wikiPageFactory->newFromTitle( $this->title )->getContent();
+			} else {
+				$this->content = WikiPage::factory( $this->title );
+			}
 		};
 		return $this->content;
 	}
