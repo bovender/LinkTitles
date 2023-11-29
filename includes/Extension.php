@@ -26,6 +26,7 @@
 namespace LinkTitles;
 
 use CommentStoreComment;
+use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RenderedRevision;
 use MediaWiki\Revision\SlotRecord;
 use Status;
@@ -60,7 +61,13 @@ class Extension {
 		$slots = $revision->getSlots();
 		$content = $slots->getContent( SlotRecord::MAIN );
 
-		$wikiPage = WikiPage::factory( $title );
+		// MW 1.36+
+		if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
+			$wikiPageFactory = MediaWikiServices::getInstance()->getWikiPageFactory();
+			$wikiPage = $wikiPageFactory->newFromTitle( $title );
+		} else {
+			$wikiPage = WikiPage::factory( $title );
+		}
 		$source = Source::createFromPageandContent( $wikiPage, $content, $config );
 		$linker = new Linker( $config );
 		$result = $linker->linkContent( $source );
