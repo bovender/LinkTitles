@@ -238,7 +238,13 @@ class Source {
 		if ( $this->page === null ) {
 			// Access the property directly to avoid an infinite loop.
 			if ( $this->title != null) {
-				$this->page = \WikiPage::factory( $this->title );
+				// MW 1.36+
+				if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
+					$wikiPageFactory = MediaWikiServices::getInstance()->getWikiPageFactory();
+					$this->page = $wikiPageFactory->newFromTitle( $this->title );
+				} else {
+					$this->page = \WikiPage::factory( $this->title );
+				}
 			} else {
 				throw new Exception( 'Unable to create Page for this Source because Title is null.' );
 			}
