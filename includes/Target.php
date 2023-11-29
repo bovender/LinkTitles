@@ -196,7 +196,7 @@ class Target {
 				$wikiPageFactory = MediaWikiServices::getInstance()->getWikiPageFactory();
 				$this->content = $wikiPageFactory->newFromTitle( $this->title )->getContent();
 			} else {
-				$this->content = WikiPage::factory( $this->title );
+				$this->content = \WikiPage::factory( $this->title );
 			}
 		};
 		return $this->content;
