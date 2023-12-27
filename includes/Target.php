@@ -240,7 +240,11 @@ class Target {
 	 */
 	public function redirectsTo( $source ) {
 		if ( $this->getContent() ) {
-			$redirectTitle = $this->getContent()->getUltimateRedirectTarget();
+			if ( version_compare( MW_VERSION, '1.38', '>=' ) ) {
+				$redirectTitle = $this->getContent()->getRedirectTarget();
+			} else {
+				$redirectTitle = $this->getContent()->getUltimateRedirectTarget();
+			}
 			return $redirectTitle && $redirectTitle->equals( $source->getTitle() );
 		}
 	}
