@@ -238,7 +238,7 @@ class Source {
 		if ( $this->page === null ) {
 			// Access the property directly to avoid an infinite loop.
 			if ( $this->title != null) {
-				$this->page = static::getPage();
+				$this->page = static::getPageObject();
 			} else {
 				throw new Exception( 'Unable to create Page for this Source because Title is null.' );
 			}
@@ -251,7 +251,7 @@ class Source {
 	 * Workaround for MediaWiki 1.36+ which deprecated Wikipage::factory.
 	 * @return WikiPage object
 	 */
-	private static function getPage() {
+	private static function getPageObject() {
 		if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
 			$wikiPageFactory = MediaWikiServices::getInstance()->getWikiPageFactory();
 			return $wikiPageFactory->newFromTitle( $this->title );
