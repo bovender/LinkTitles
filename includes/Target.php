@@ -24,6 +24,8 @@
  */
 namespace LinkTitles;
 
+use MediaWiki\MediaWikiServices;
+
 /**
  * Represents a page that is a potential link target.
  */
@@ -189,7 +191,7 @@ class Target {
 	 */
 	public function getContent() {
 		if ( $this->content === null ) {
-			$this->content = \WikiPage::factory( $this->title )->getContent();
+			$this->content = static::getPage();
 		};
 		return $this->content;
 	}
@@ -241,5 +243,20 @@ class Target {
 			$redirectTitle = $this->getContent()->getUltimateRedirectTarget();
 			return $redirectTitle && $redirectTitle->equals( $source->getTitle() );
 		}
+	}
+
+	/**
+ 	 * Obtain a page's content.
+	 * Workaround for MediaWiki 1.36+ which deprecated Wikipage::factory.
+	 * @return Content content object of the page
+	 */
+	private static function getPage() {
+		if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
+			$wikiPageFactory = MediaWikiServices::getInstance()->getWikiPageFactory();
+			$page = $wikiPageFactory->newFromTitle( $this->title );
+		} else {
+			$page = \WikiPage::factory( $this->title );
+		}
+		return $page->getContent();
 	}
 }
