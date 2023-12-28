@@ -238,7 +238,7 @@ class Source {
 		if ( $this->page === null ) {
 			// Access the property directly to avoid an infinite loop.
 			if ( $this->title != null) {
-				$this->page = static::getPage();
+				$this->page = static::getPageObject( $this->title );
 			} else {
 				throw new Exception( 'Unable to create Page for this Source because Title is null.' );
 			}
@@ -249,14 +249,15 @@ class Source {
 	/**
  	 * Obtain a WikiPage object.
 	 * Workaround for MediaWiki 1.36+ which deprecated Wikipage::factory.
+	 * @param \Title $title
 	 * @return WikiPage object
 	 */
-	private static function getPage() {
+	private static function getPageObject( $title ) {
 		if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
 			$wikiPageFactory = MediaWikiServices::getInstance()->getWikiPageFactory();
-			return $wikiPageFactory->newFromTitle( $this->title );
+			return $wikiPageFactory->newFromTitle( $title );
 		}
 
-		return \WikiPage::factory( $this->title );
+		return \WikiPage::factory( $title );
 	}
 }
