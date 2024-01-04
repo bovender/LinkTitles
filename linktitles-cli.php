@@ -180,7 +180,7 @@ class Cli extends \Maintenance {
 		);
 		$numPages = $res->numRows();
 		$context = \RequestContext::getMain();
-		$this->output( "Processing ${numPages} pages, starting at index ${index}...\n" );
+		$this->output( "Processing {$numPages} pages, starting at index {$index}...\n" );
 
 		$numProcessed = 0;
 		foreach ( $res as $row ) {
