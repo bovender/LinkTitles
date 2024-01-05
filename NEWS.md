@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
 
+## [8.1.1][] - 2024-01-05
+
+### Fixed
+
+- Fixed "Call to undefined method WikiPage::factory()" error that arose from
+  an incompatibility with recent MediaWiki versions.
+- Fixed string interpolation deprecation warnings.
+
 ## [8.1.0][] - 2022-03-13
 
 ### New
@@ -69,6 +77,7 @@ For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
   constant (DB_SLAVE was renamed to DB_REPLICA). NOTE that the minimum
   required version of MediaWiki is now 1.28 (which is an obsolete version).
 
+[8.1.1]: https://github.com/bovender/LinkTitles/releases/tag/v8.1.1
 [8.1.0]: https://github.com/bovender/LinkTitles/releases/tag/v8.1.0
 [8.0.1]: https://github.com/bovender/LinkTitles/releases/tag/v8.0.1
 [8.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v8.0.0
