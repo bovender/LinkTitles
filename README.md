@@ -541,7 +541,7 @@ use Ubuntu).
 
 ## License
 
-Copyright 2012-2022 Daniel Kraus <mailto:bovender@bovender.de> (GitHub: @bovender)
+Copyright 2012-2024 Daniel Kraus <mailto:bovender@bovender.de> (GitHub: @bovender)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
