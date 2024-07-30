@@ -175,7 +175,7 @@ class Source {
 			if ( $this->page != null) {
 				$this->title = $this->page->getTitle();
 			} else {
-				throw new Exception( 'Unable to create Title for this Source because Page is null.' );
+				throw new \Exception( 'Unable to create Title for this Source because Page is null.' );
 			}
 		}
 		return $this->title;
@@ -249,7 +249,7 @@ class Source {
 			if ( $this->title != null) {
 				$this->page = static::getPageObject( $this->title );
 			} else {
-				throw new Exception( 'Unable to create Page for this Source because Title is null.' );
+				throw new \Exception( 'Unable to create Page for this Source because Title is null.' );
 			}
 		}
 		return $this->page;

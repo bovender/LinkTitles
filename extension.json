@@ -28,6 +28,7 @@
                 "LinkTitlesCheckRedirect": true,
                 "LinkTitlesEnableNoTargetMagicWord": false,
                 "LinkTitlesMinimumTitleLength": 4,
+                "LinkTitlesMaximumTitleLength": 25,
                 "LinkTitlesBlackList": [],
                 "LinkTitlesFirstOnly": true,
                 "LinkTitlesSmartMode": true,

@@ -74,12 +74,40 @@ class Cli extends \Maintenance {
 			"s"
 		);
 		$this->addOption(
+			"limit",
+			"Limit the number of pages to be replaced.",
+			false, // not required
+			true,  // requires argument
+			"l"
+		);
+		$this->addOption(
+			"min_lenght",
+			"Overides the \$wgLinkTitlesMinimumTitleLength variable",
+			false, // not required
+			true,  // requires argument
+			"l"
+		);
+		$this->addOption(
+			"max_length",
+			"Overides the \$wgLinkTitlesMaximumTitleLength variable",
+			false, // not required
+			true,  // requires argument
+			"l"
+		);		
+		$this->addOption(
 			"page",
 			"page name to process",
 			false, // not required
 			true,  // requires argument
 			"p"
 		);
+		$this->addOption(
+			"target",
+			"Specify a target page name to link to.",
+			false, // not required
+			true,  // requires argument
+			"t"
+		);		
 		$this->addOption(
 			"verbose",
 			"print detailed progress information",
@@ -135,11 +163,7 @@ class Cli extends \Maintenance {
 			}
 		}
 		else {
-			$startIndex = intval( $this->getOption( 'start', 0 ) );
-			if ( $startIndex < 0 ) {
-				$this->error( 'FATAL: Start index must be 0 or greater.', 1 );
-			};
-			$this->allPages( $startIndex );
+			$this->allPages( );
 		}
 	}
 
@@ -148,27 +172,53 @@ class Cli extends \Maintenance {
 	 * @return bool True on success, false on failure.
 	 */
 	private function singlePage() {
+		$dryRun = $this->hasOption( 'dryrun' );
+
 		$pageName = strval( $this->getOption( 'page' ) );
 		$this->output( "Processing single page: '$pageName'\n" );
 		$title = \Title::newFromText( $pageName );
-		$success = Extension::processPage( $title, \RequestContext::getMain() );
+		$success = Extension::processPage( $title, \RequestContext::getMain(), $dryRun );
 		if ( $success ) {
 			$this->output( "Finished.\n" );
 		}
 		else {
 			$this->error( 'FATAL: There is no such page.', 3 );
 		}
+
+		$this->outputTargetPagesLog();
+
 		return $success;
 	}
 
 	/**
 	 * Process all pages in the Wiki.
-	 * @param  integer $index Index of the start page.
-	 * @return bool           True on success, false on failure.
+	 * @return bool    True on success, false on failure.
 	 */
-	private function allPages( $index = 0 ) {
+	private function allPages( ) {
 		$config = new Config();
 		$verbose = $this->hasOption( 'verbose' );
+		$dryRun = $this->hasOption( 'dryrun' );
+		$targetPageName = strval( $this->getOption( 'target' ) );
+
+		$startIndex = intval( $this->getOption( 'start', 0 ) );
+		if ( $startIndex < 0 ) {
+			$this->error( 'FATAL: Start index must be 0 or greater.', 1 );
+		};
+		
+		$pageLimit = intval( $this->getOption( 'limit', 0 ) );
+		if ( $pageLimit < 0 ) {
+			$this->error( 'FATAL: limit must be 0 or greater.', 1 );
+		};
+		if (empty($pageLimit))
+			$pageLimit = 999999999;
+
+		$minLength = intval( $this->getOption( 'min_length', 0 ) );
+		if (!empty($minLength))
+			$GLOBALS['wgLinkTitlesMinimumTitleLength'] = $minLength;
+
+		$maxLength = intval( $this->getOption( 'max_length', 0 ) );
+		if (!empty($maxLength))
+			$GLOBALS['wgLinkTitlesMaximumTitleLength'] = $maxLength;
 
 		// Retrieve page names from the database.
 		$dbr = $this->getDB( DB_REPLICA );
@@ -178,23 +228,26 @@ class Cli extends \Maintenance {
 			array( 'page_title', 'page_namespace' ),
 			array(
 				'page_namespace IN ' . $namespacesClause,
-				'page_is_redirect = 0'
+				'page_is_redirect = 0',
+				"page_content_model = 'wikitext'",
 			),
 			__METHOD__,
 			array(
-				'LIMIT' => 999999999,
-				'OFFSET' => $index
+				'ORDER BY' => 'page_namespace ASC, page_id DESC',
+				'LIMIT' => $pageLimit,
+				'OFFSET' => $startIndex
 			)
 		);
+
 		$numPages = $res->numRows();
 		$context = \RequestContext::getMain();
-		$this->output( "Processing {$numPages} pages, starting at index {$index}...\n" );
+		$this->output( "Processing {$numPages} pages, starting at index {$startIndex}...\n" );
 
 		$numProcessed = 0;
 		foreach ( $res as $row ) {
 			$title = \Title::makeTitleSafe( $row->page_namespace, $row->page_title );
 			$numProcessed += 1;
-			$index += 1;
+			$startIndex += 1;
 			if ( $verbose ) {
 				$this->output(
 					sprintf(
@@ -203,17 +256,26 @@ class Cli extends \Maintenance {
 						$numProcessed,
 						$numPages,
 						$numProcessed / $numPages * 100,
-						$index,
+						$startIndex,
 						$title
 					)
 				);
 			} else {
-				$this->output( sprintf( "\rPage #%d (%02.0f%%) ", $index, $numProcessed / $numPages * 100 ) );
+				$this->output( sprintf( "\rPage #%d (%02.0f%%) ", $startIndex, $numProcessed / $numPages * 100 ) );
 			}
-			Extension::processPage( $title, $context );
+			Extension::processPage( $title, $context, $dryRun, $targetPageName );
 		}
 
 		$this->output( "\rFinished.\n" );
+		
+		$this->outputTargetPagesLog();
+	}
+
+	private function outputTargetPagesLog() {
+		$this->output( "\n\nList of titles that have been used as targets::\n\n" );
+		$linkedPages = Targets::getTargetedPages();
+		foreach ($linkedPages as $page => $pageCount)
+			$this->output( "$page\t$pageCount\n" );
 	}
 }
 
