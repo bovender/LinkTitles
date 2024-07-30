@@ -3,7 +3,7 @@
 /**
  * The LinkTitles\Source represents a Wiki page to which links may be added.
  *
- * Copyright 2012-2022 Daniel Kraus <bovender@bovender.de> ('bovender')
+ * Copyright 2012-2024 Daniel Kraus <bovender@bovender.de> ('bovender')
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -238,11 +238,26 @@ class Source {
 		if ( $this->page === null ) {
 			// Access the property directly to avoid an infinite loop.
 			if ( $this->title != null) {
-				$this->page = \WikiPage::factory( $this->title );
+				$this->page = static::getPageObject( $this->title );
 			} else {
 				throw new Exception( 'Unable to create Page for this Source because Title is null.' );
 			}
 		}
 		return $this->page;
+	}
+
+	/**
+ 	 * Obtain a WikiPage object.
+	 * Workaround for MediaWiki 1.36+ which deprecated Wikipage::factory.
+	 * @param \Title $title
+	 * @return WikiPage object
+	 */
+	private static function getPageObject( $title ) {
+		if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
+			$wikiPageFactory = MediaWikiServices::getInstance()->getWikiPageFactory();
+			return $wikiPageFactory->newFromTitle( $title );
+		}
+
+		return \WikiPage::factory( $title );
 	}
 }

@@ -3,7 +3,7 @@
 /**
  * Provides a special page for the LinkTitles extension.
  *
- * Copyright 2012-2022 Daniel Kraus <bovender@bovender.de> ('bovender')
+ * Copyright 2012-2024 Daniel Kraus <bovender@bovender.de> ('bovender')
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,7 +181,7 @@ class Special extends \SpecialPage {
 		$submitButtonLabel = $this->msg( 'linktitles-special-submit' );
 		$output->addHTML(
 <<<EOF
-<form method="post" action="${url}">
+<form method="post" action="{$url}">
 	<input type="submit" value="$submitButtonLabel" />
 	<input type="hidden" name="s" value="0" />
 </form>
@@ -206,8 +206,8 @@ EOF
 		$output->addHTML( // TODO: do not use the style attribute (to make it work with CSP-enabled sites)
 <<<EOF
 <div style="width:100%; padding:2px; border:1px solid #000; position: relative; margin-bottom:16px;">
-	<span style="position: absolute; left: 50%; font-weight:bold; color:#555;">${percent}%</span>
-	<div style="width:${progress}%; background-color:#bbb; height:20px; margin:0;"></div>
+	<span style="position: absolute; left: 50%; font-weight:bold; color:#555;">{$percent}%</span>
+	<div style="width:{$progress}%; background-color:#bbb; height:20px; margin:0;"></div>
 </div>
 EOF
 		);
@@ -226,10 +226,10 @@ EOF
 	private function getReloaderForm( $url, $start, $end, $reloads ) {
 		return
 <<<EOF
-<form method="post" name="linktitles" action="${url}">
-	<input type="hidden" name="s" value="${start}" />
-	<input type="hidden" name="e" value="${end}" />
-	<input type="hidden" name="r" value="${reloads}" />
+<form method="post" name="linktitles" action="{$url}">
+	<input type="hidden" name="s" value="{$start}" />
+	<input type="hidden" name="e" value="{$end}" />
+	<input type="hidden" name="r" value="{$reloads}" />
 </form>
 <script type="text/javascript">
 	document.linktitles.submit();
@@ -254,7 +254,7 @@ EOF
 		{
 			$pagesPerReload = sprintf( '%0.1f', $end );
 		}
-		
+
 		$output->addWikiMsg( 'linktitles-special-completed-info', $end,
 			$config->specialPageReloadAfter, $reloads, $pagesPerReload
 		);

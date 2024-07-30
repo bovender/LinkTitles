@@ -3,7 +3,7 @@
 /**
  * The LinkTitles\Target represents a Wiki page that is a potential link target.
  *
- * Copyright 2012-2022 Daniel Kraus <bovender@bovender.de> ('bovender')
+ * Copyright 2012-2024 Daniel Kraus <bovender@bovender.de> ('bovender')
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
  * @author Daniel Kraus <bovender@bovender.de>
  */
 namespace LinkTitles;
+
+use MediaWiki\MediaWikiServices;
 
 /**
  * Represents a page that is a potential link target.
@@ -189,7 +191,7 @@ class Target {
 	 */
 	public function getContent() {
 		if ( $this->content === null ) {
-			$this->content = \WikiPage::factory( $this->title )->getContent();
+			$this->content = static::getPageContents( $this->title );
 		};
 		return $this->content;
 	}
@@ -238,8 +240,28 @@ class Target {
 	 */
 	public function redirectsTo( $source ) {
 		if ( $this->getContent() ) {
-			$redirectTitle = $this->getContent()->getUltimateRedirectTarget();
+			if ( version_compare( MW_VERSION, '1.38', '>=' ) ) {
+				$redirectTitle = $this->getContent()->getRedirectTarget();
+			} else {
+				$redirectTitle = $this->getContent()->getUltimateRedirectTarget();
+			}
 			return $redirectTitle && $redirectTitle->equals( $source->getTitle() );
 		}
+	}
+
+	/**
+ 	 * Obtain a page's content.
+	 * Workaround for MediaWiki 1.36+ which deprecated Wikipage::factory.
+	 * @param  \Title $title
+	 * @return Content content object of the page
+	 */
+	private static function getPageContents( $title ) {
+		if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
+			$wikiPageFactory = MediaWikiServices::getInstance()->getWikiPageFactory();
+			$page = $wikiPageFactory->newFromTitle( $title );
+		} else {
+			$page = \WikiPage::factory( $title );
+		}
+		return $page->getContent();
 	}
 }
