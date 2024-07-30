@@ -87,6 +87,13 @@ class Cli extends \Maintenance {
 			false, // does not require an argument
 			"v"
 		);
+		$this->addOption(
+			"dryrun",
+			"Show pages that are going to be linked into, with the number of occurences",
+			false, // not required
+			false, // does not require an argument
+			"d"
+		);
 		// TODO: Add back logging options.
 		// TODO: Add configuration options.
 		// $this->addOption(

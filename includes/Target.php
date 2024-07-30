@@ -77,7 +77,6 @@ class Target {
 	 */
 	public function __construct( $namespace, $title, Config &$config ) {
 		$this->title = \Title::makeTitleSafe( $namespace, $title );
-		$this->titleValue = $this->title->getTitleValue();
 		$this->config = $config;
 
 		// Use unicode character properties rather than \b escape sequences
