@@ -1,0 +1,6 @@
+{
+    "intelephense.environment.includePaths": [
+        "../../includes",
+        "../../maintenance/includes",
+    ]
+}
