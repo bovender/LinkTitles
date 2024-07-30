@@ -213,7 +213,7 @@ class Cli extends \Maintenance {
 			Extension::processPage( $title, $context );
 		}
 
-		$this->output( "\rFinished.                          \n" );
+		$this->output( "\rFinished.\n" );
 	}
 }
 

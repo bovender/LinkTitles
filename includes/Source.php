@@ -134,7 +134,9 @@ class Source {
 	 * @return [type] [description]
 	 */
 	public function canBeLinked() {
-		return $this->hasDesiredNamespace() && !$this->hasNoAutolinksMagicWord();
+		return $this->hasDesiredNamespace() &&
+			  !$this->hasNoAutolinksMagicWord() &&
+			  !$this->isRedirect();
 	}
 
 	/**
@@ -144,6 +146,13 @@ class Source {
 	 */
 	public function hasDesiredNamespace() {
 		return in_array( $this->getTitle()->getNamespace(), $this->config->sourceNamespaces );
+	}
+
+	/**
+	 * Stops pages that are redirects from being modified
+	 */
+	private function isRedirect() {
+		return $this->getTitle()->isRedirect();
 	}
 
 	/**
