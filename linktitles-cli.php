@@ -272,7 +272,7 @@ class Cli extends \Maintenance {
 	}
 
 	private function outputTargetPagesLog() {
-		$this->output( "\n\nList of titles that have been used as targets::\n\n" );
+		$this->output( "\n\nList of titles that have been used as targets:\n\n" );
 		$linkedPages = Targets::getTargetedPages();
 		foreach ($linkedPages as $page => $pageCount)
 			$this->output( "$page\t$pageCount\n" );

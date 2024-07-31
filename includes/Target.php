@@ -67,6 +67,9 @@ class Target {
 
 	private $nsText;
 
+	private static $pagesWithMagicWord;
+	private static $pagesRedirects;
+
 	/**
 	 * Constructs a new Target object
 	 *
@@ -216,9 +219,14 @@ class Target {
 		// page does indeed contain this magic word, return the page title
 		// as-is (unlinked).
 		if ( $this->config->enableNoTargetMagicWord ) {
-			if ( $this->getContent()->matchMagicWord( \MediaWiki\MediaWikiServices::getInstance()->getMagicWordFactory()->get( 'MAG_LINKTITLES_NOTARGET' ) ) ) {
-				return false;
+			if (!isset(self::$pagesWithMagicWord[$this->getPrefixedTitleText()]))
+			{
+				self::$pagesWithMagicWord[$this->getPrefixedTitleText()] = false;
+				if ( $this->getContent() )
+					self::$pagesWithMagicWord[$this->getPrefixedTitleText()] = $this->getContent()->matchMagicWord( \MediaWiki\MediaWikiServices::getInstance()->getMagicWordFactory()->get( 'MAG_LINKTITLES_NOTARGET' ) );
 			}
+
+			return !self::$pagesWithMagicWord[$this->getPrefixedTitleText()];
 		};
 		return true;
 	}
@@ -238,14 +246,20 @@ class Target {
 	 * @return bool           True if the target redirects to the source.
 	 */
 	public function redirectsTo( $source ) {
-		if ( $this->getContent() ) {
-			if ( version_compare( MW_VERSION, '1.38', '>=' ) ) {
-				$redirectTitle = $this->getContent()->getRedirectTarget();
-			} else {
-				$redirectTitle = $this->getContent()->getUltimateRedirectTarget();
+		if (!isset(self::$pagesRedirects[$this->getPrefixedTitleText()]))
+		{
+			self::$pagesRedirects[$this->getPrefixedTitleText()] = null;
+
+			if ( $this->getContent() ) {
+				if ( version_compare( MW_VERSION, '1.38', '>=' ) ) {
+					self::$pagesRedirects[$this->getPrefixedTitleText()] = $this->getContent()->getRedirectTarget();
+				} else {
+					self::$pagesRedirects[$this->getPrefixedTitleText()] = $this->getContent()->getUltimateRedirectTarget();
+				}
 			}
-			return $redirectTitle && $redirectTitle->equals( $source->getTitle() );
 		}
+
+		return self::$pagesRedirects[$this->getPrefixedTitleText()] && self::$pagesRedirects[$this->getPrefixedTitleText()]->equals( $source->getTitle() );
 	}
 
 	/**
