@@ -125,7 +125,7 @@ class Linker {
 			if ( $count > 0 ) {
 				$newLinks = true;
 				$newText = implode( '', $arr );
-				Targets::incrementTargetCount($row->page_title);
+				Targets::incrementTargetCount( $target->getPrefixedTitleText() );
 			}
 
 			// If smart mode is turned on, the extension will perform a second
@@ -150,7 +150,7 @@ class Linker {
 				if ( $count > 0 ) {
 					$newLinks = true;
 					$newText = implode( '', $arr );
-					Targets::incrementTargetCount($row->page_title);
+					Targets::incrementTargetCount( $target->getPrefixedTitleText() );
 				}
 			} // $wgLinkTitlesSmartMode
 		}; // foreach $res as $row
