@@ -1,6 +1,5 @@
 #!/usr/bin/env php
 <?php
-
 /**
  * LinkTitles command line interface (CLI)/maintenance script
  *

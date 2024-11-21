@@ -106,6 +106,12 @@ class Linker {
 			// Credits to inhan @ StackOverflow for suggesting preg_split.
 			// See http://stackoverflow.com/questions/10672286
 			$arr = $splitter->split( $newText );
+			if ($arr === false)
+			{
+				echo "Error while trying to parse Title ". $source->getTitle() ."\n". preg_last_error() . " " . preg_last_error_msg() . "\n";
+				return;
+			}
+
 			$count = 0;
 
 			// Cache the target title text for the regex callbacks
