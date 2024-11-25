@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
 
+## [8.1.2][] - 2024-11-22
+
+### Fixed
+
+- Fix handling of words with special characters (e.g. French accents, German umlauts).
+
 ## [8.1.1][] - 2024-01-05
 
 ### Fixed
@@ -77,6 +83,7 @@ For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
   constant (DB_SLAVE was renamed to DB_REPLICA). NOTE that the minimum
   required version of MediaWiki is now 1.28 (which is an obsolete version).
 
+[8.1.2]: https://github.com/bovender/LinkTitles/releases/tag/v8.1.2
 [8.1.1]: https://github.com/bovender/LinkTitles/releases/tag/v8.1.1
 [8.1.0]: https://github.com/bovender/LinkTitles/releases/tag/v8.1.0
 [8.0.1]: https://github.com/bovender/LinkTitles/releases/tag/v8.0.1
