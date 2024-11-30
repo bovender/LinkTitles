@@ -29,6 +29,11 @@ namespace LinkTitles;
  */
 class Targets {
 	private static $instance;
+	
+	/**
+	 * Stores a list of pages that have been linked into other pages
+	 */
+	private static $includedPages;
 
 	/**
 	 * Singleton factory that returns a (cached) database query results with
@@ -41,11 +46,26 @@ class Targets {
 	 * @param  String $sourceNamespace The namespace of the current page.
 	 * @param  Config $config    LinkTitles configuration.
 	 */
-	public static function singleton( \Title $title, Config $config ) {
+	public static function singleton( \Title $title, Config $config, $targetPageTitle = "" ) {
 		if ( ( self::$instance === null ) || ( self::$instance->sourceNamespace != $title->getNamespace() ) ) {
-			self::$instance = new Targets( $title, $config );
+			self::$instance = new Targets( $title, $config, $targetPageTitle );
 		}
 		return self::$instance;
+	}
+	
+	public static function incrementTargetCount($pageTitle)
+	{
+		if (!isset(self::$includedPages[$pageTitle]))
+			self::$includedPages[$pageTitle] = 0;
+
+		self::$includedPages[$pageTitle]++;
+	}
+
+	public static function getTargetedPages() : Array {
+		if (empty(self::$includedPages))
+			self::$includedPages = [];
+		
+		return self::$includedPages;		
 	}
 
 	/**
@@ -85,26 +105,39 @@ class Targets {
 	 * The constructor is private to enforce using the singleton pattern.
 	 * @param  \Title $title
 	 */
-	private function __construct( \Title $title, Config $config) {
+	private function __construct( \Title $title, Config $config, $targetPageTitle = "" ) {
 		$this->config = $config;
 		$this->sourceNamespace = $title->getNamespace();
-		$this->fetch();
+		$this->fetch($targetPageTitle);
 	}
 
 	//
 	/**
 	 * Fetches the page titles from the database.
 	 */
-	private function fetch() {
+	private function fetch($targetPageTitle = '') {
 		( $this->config->preferShortTitles ) ? $sortOrder = 'ASC' : $sortOrder = 'DESC';
 
+		$dbr = wfGetDB( DB_REPLICA );
+
+		$whereClauses = [
+			"page_content_model = 'wikitext'"			
+		];
+		
 		// Build a blacklist of pages that are not supposed to be link
 		// targets. This includes the current page.
 		if ( $this->config->blackList ) {
-			$blackList = 'page_title NOT IN ' .
+			$whereClauses[] = 'page_title NOT IN ' .
 				str_replace( ' ', '_', '("' . implode( '","', str_replace( '"', '\"', $this->config->blackList ) ) . '")' );
-		} else {
-			$blackList = null;
+		}
+
+		if ( !empty($targetPageTitle) ) {
+			$whereClauses[] = 'page_title LIKE ' . $dbr->addQuotes( $targetPageTitle );
+		}
+		else {
+			// Apply the min max lenght of the page titles:
+			$whereClauses[] = $this->charLength() . '(page_title) >= ' . $this->config->minimumTitleLength;
+			$whereClauses[] = $this->charLength() . '(page_title) <= ' . $this->config->maximumTitleLength;
 		}
 
 		if ( $this->config->sameNamespace ) {
@@ -129,23 +162,16 @@ class Targets {
 				$weightSelect = $weightSelect . " WHEN " . $namespaceValue . " THEN " . $currentWeight . PHP_EOL;
 		}
 		$weightSelect = $weightSelect . " END ";
-		$namespacesClause = '(' . implode( ', ', $namespaces ) . ')';
+		$whereClauses[] = 'page_namespace IN (' . implode( ', ', $namespaces ) . ')';
 
 		// Build an SQL query and fetch all page titles ordered by length from
 		// shortest to longest. Only titles from 'normal' pages (namespace uid
 		// = 0) are returned. Since the db may be sqlite, we need a try..catch
 		// structure because sqlite does not support the CHAR_LENGTH function.
-		$dbr = wfGetDB( DB_REPLICA );
 		$this->queryResult = $dbr->select(
 			'page',
 			array( 'page_title', 'page_namespace' , "weight" => $weightSelect),
-			array_filter(
-				array(
-					'page_namespace IN ' . $namespacesClause,
-					$this->charLength() . '(page_title) >= ' . $this->config->minimumTitleLength,
-					$blackList,
-				)
-			),
+			$whereClauses,
 			__METHOD__,
 			array( 'ORDER BY' => 'weight ASC, ' . $this->charLength() . '(page_title) ' . $sortOrder )
 		);

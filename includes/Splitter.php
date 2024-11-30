@@ -85,6 +85,9 @@ class Splitter {
 	 * @return Array of strings where even indexes point to linkable sections.
 	 */
 	public function split( &$text ) {
+		ini_set( 'pcre.jit', false );
+		ini_set( 'pcre.recursion_limit', "500000" );
+		
 		return preg_split( $this->splitter, $text, -1, PREG_SPLIT_DELIM_CAPTURE );
 	}
 

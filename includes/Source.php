@@ -134,7 +134,9 @@ class Source {
 	 * @return [type] [description]
 	 */
 	public function canBeLinked() {
-		return $this->hasDesiredNamespace() && !$this->hasNoAutolinksMagicWord();
+		return $this->hasDesiredNamespace() &&
+			  !$this->hasNoAutolinksMagicWord() &&
+			  !$this->isRedirect();
 	}
 
 	/**
@@ -144,6 +146,13 @@ class Source {
 	 */
 	public function hasDesiredNamespace() {
 		return in_array( $this->getTitle()->getNamespace(), $this->config->sourceNamespaces );
+	}
+
+	/**
+	 * Stops pages that are redirects from being modified
+	 */
+	private function isRedirect() {
+		return $this->getTitle()->isRedirect();
 	}
 
 	/**
@@ -166,7 +175,7 @@ class Source {
 			if ( $this->page != null) {
 				$this->title = $this->page->getTitle();
 			} else {
-				throw new Exception( 'Unable to create Title for this Source because Page is null.' );
+				throw new \Exception( 'Unable to create Title for this Source because Page is null.' );
 			}
 		}
 		return $this->title;
@@ -240,7 +249,7 @@ class Source {
 			if ( $this->title != null) {
 				$this->page = static::getPageObject( $this->title );
 			} else {
-				throw new Exception( 'Unable to create Page for this Source because Title is null.' );
+				throw new \Exception( 'Unable to create Page for this Source because Title is null.' );
 			}
 		}
 		return $this->page;

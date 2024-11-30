@@ -68,9 +68,10 @@ class Linker {
 	 *
 	 * @param \Title &$title Title object for the current page.
 	 * @param String $text String that holds the article content
+ 	 * @param  string $targetPageTitle When not empty, will be the only replaced linked in the source page
 	 * @return String|null Source page text with links to target pages, or null if no links were added
 	 */
-	public function linkContent( Source $source ) {
+	public function linkContent( Source $source, $targetPageTitle = "" ) {
 		if ( self::$locked > 0 || !$source->canBeLinked() ) {
 			return;
 		}
@@ -80,7 +81,7 @@ class Linker {
 		$newLinks = false; // whether or not new links were added
 		$newText = $source->getText();
 		$splitter = Splitter::singleton( $this->config );
-		$targets = Targets::singleton( $source->getTitle(), $this->config );
+		$targets = Targets::singleton( $source->getTitle(), $this->config, $targetPageTitle );
 
 		// Iterate through the target page titles
 		foreach( $targets->queryResult as $row ) {
@@ -105,6 +106,12 @@ class Linker {
 			// Credits to inhan @ StackOverflow for suggesting preg_split.
 			// See http://stackoverflow.com/questions/10672286
 			$arr = $splitter->split( $newText );
+			if ($arr === false)
+			{
+				echo "Error while trying to parse Title ". $source->getTitle() ."\n". preg_last_error() . " " . preg_last_error_msg() . "\n";
+				return;
+			}
+
 			$count = 0;
 
 			// Cache the target title text for the regex callbacks
@@ -124,6 +131,7 @@ class Linker {
 			if ( $count > 0 ) {
 				$newLinks = true;
 				$newText = implode( '', $arr );
+				Targets::incrementTargetCount( $target->getPrefixedTitleText() );
 			}
 
 			// If smart mode is turned on, the extension will perform a second
@@ -148,6 +156,7 @@ class Linker {
 				if ( $count > 0 ) {
 					$newLinks = true;
 					$newText = implode( '', $arr );
+					Targets::incrementTargetCount( $target->getPrefixedTitleText() );
 				}
 			} // $wgLinkTitlesSmartMode
 		}; // foreach $res as $row
