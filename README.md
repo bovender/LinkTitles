@@ -407,7 +407,7 @@ parse-on-render! This is because the templates have already been transcluded
 
 ### Multiple links to the same page
 
-    $wgLinkTitlesFirstOnly = false;
+    $wgLinkTitlesFirstOnly = true;
 
 If set to true, only link the first occurrence of a title on a given page. If
 a link is piped, i.e. hiding the title of the target page:
