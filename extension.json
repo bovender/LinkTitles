@@ -30,7 +30,7 @@
                 "LinkTitlesEnableNoTargetMagicWord": false,
                 "LinkTitlesMinimumTitleLength": 4,
                 "LinkTitlesBlackList": [],
-                "LinkTitlesFirstOnly": true,
+                "LinkTitlesFirstOnly": false,
                 "LinkTitlesSmartMode": true,
                 "LinkTitlesWordStartOnly": true,
                 "LinkTitlesWordEndOnly": true,
