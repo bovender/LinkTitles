@@ -61,6 +61,12 @@ class Config {
 	public $minimumTitleLength;
 
 	/**
+	 * Maximum length of a page title for it to qualify as a potential link target.
+	 * @var int $maximumTitleLength
+	 */
+	public $maximumTitleLength;
+
+	/**
 	 * Array of page titles that must never be link targets.
 	 *
 	 * This may be useful to exclude common abbreviations or acronyms from
@@ -199,6 +205,7 @@ class Config {
 		global $wgLinkTitlesParseOnRender;
 		global $wgLinkTitlesPreferShortTitles;
 		global $wgLinkTitlesMinimumTitleLength;
+		global $wgLinkTitlesMaximumTitleLength;
 		global $wgLinkTitlesBlackList;
 		global $wgLinkTitlesSourceNamespaces;
 		global $wgLinkTitlesTargetNamespaces;
@@ -218,6 +225,7 @@ class Config {
 		$this->parseOnRender = $wgLinkTitlesParseOnRender;
 		$this->preferShortTitles = $wgLinkTitlesPreferShortTitles;
 		$this->minimumTitleLength = $wgLinkTitlesMinimumTitleLength;
+		$this->maximumTitleLength = $wgLinkTitlesMaximumTitleLength;
 		$this->blackList = $wgLinkTitlesBlackList;
 		$this->sourceNamespaces = $wgLinkTitlesSourceNamespaces ? $wgLinkTitlesSourceNamespaces : [ NS_MAIN ];
 		$this->targetNamespaces = $wgLinkTitlesTargetNamespaces;

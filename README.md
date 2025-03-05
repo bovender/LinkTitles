@@ -369,6 +369,12 @@ page, but there may be a page title "Mg" which redirects to the page
 "Magnesium". This settings prevents erroneous linking to very short titles by
 setting a minimum length. You can adjust this setting to your liking.
 
+
+    $wgLinkTitlesMaximumTitleLength = 25;
+
+Only link to page titles that have a certain maximum length. By filtering out pages
+that have a very low chance to be written out exactly the same way, we save on performance.
+
 ### Excluding pages from being linked to
 
     $wgLinkTitlesBlackList = [];

@@ -104,15 +104,17 @@ class Extension {
 	 *
 	 * @param  \Title $title Title object.
 	 * @param  \RequestContext $context Current request context. If in doubt, call MediaWiki's `RequestContext::getMain()` to obtain such an object.
+	 * @param  bool $dryRun When true, no change will be done to any page, but the log of target pages will still be produced
+	 * @param  string $targetPageTitle When not empty, will be the only replaced linked in the source page
 	 * @return bool True if the page exists, false if the page does not exist
 	 */
-	public static function processPage( \Title $title, \RequestContext $context ) {
+	public static function processPage( \Title $title, \RequestContext $context, $dryRun = false, $targetPageTitle = "" ) {
 		$config = new Config();
 		$source = Source::createFromTitle( $title, $config );
 		if ( $source->hasContent() ) {
 			$linker = new Linker( $config );
-			$result = $linker->linkContent( $source );
-			if ( $result ) {
+			$result = $linker->linkContent( $source, $targetPageTitle );
+			if ( $result && !$dryRun ) {
 				$content = $source->getContent()->getContentHandler()->unserializeContent( $result );
 
 				$updater = $source->getPage()->newPageUpdater( $context->getUser());
