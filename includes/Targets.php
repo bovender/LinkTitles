@@ -24,6 +24,8 @@
  */
 namespace LinkTitles;
 
+use MediaWiki\MediaWikiServices;
+
 /**
  * Fetches potential target page titles from the database.
  */
@@ -139,7 +141,7 @@ class Targets {
 		// shortest to longest. Only titles from 'normal' pages (namespace uid
 		// = 0) are returned. Since the db may be sqlite, we need a try..catch
 		// structure because sqlite does not support the CHAR_LENGTH function.
-		$dbr = wfGetDB( DB_REPLICA );
+		$dbr = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_REPLICA );
 		$this->queryResult = $dbr->select(
 			'page',
 			array( 'page_title', 'page_namespace' , "weight" => $weightSelect),
