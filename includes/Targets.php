@@ -41,7 +41,11 @@ class Targets {
 	 * @param  String $sourceNamespace The namespace of the current page.
 	 * @param  Config $config    LinkTitles configuration.
 	 */
-	public static function singleton( \Title $title, Config $config ) {
+	public static function singleton( \Title|MediaWiki\Title\Title $title, Config $config ) {
+		// If we received a MediaWiki\Title\Title, convert to legacy Title
+		if ( $title instanceof MediaWiki\Title\Title ) {
+	  		$title = Title::newFromLinkTarget( $title );
+		}
 		if ( ( self::$instance === null ) || ( self::$instance->sourceNamespace != $title->getNamespace() ) ) {
 			self::$instance = new Targets( $title, $config );
 		}
