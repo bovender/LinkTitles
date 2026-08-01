@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Standalone PHPUnit configuration for running the LinkTitles test suite
+	inside a MediaWiki installation, without depending on MediaWiki core's
+	tests/phpunit/generatePHPUnitConfig.php (which needs a phpunit.xml.template
+	that is not shipped in the official mediawiki Docker image).
+
+	This file is copied to the MediaWiki root as phpunit.xml by the project
+	Dockerfile, both to configure PHPUnit and to satisfy the sanity check in
+	tests/phpunit/bootstrap.php that looks for a generated config override.
+	Paths below are therefore relative to the MediaWiki root, not to this
+	file's location.
+	-->
+<phpunit bootstrap="tests/phpunit/bootstrap.php" colors="true">
+	<testsuites>
+		<testsuite name="LinkTitles">
+			<directory>extensions/LinkTitles/tests/phpunit</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>

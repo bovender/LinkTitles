@@ -23,6 +23,9 @@
  * @author Daniel Kraus <bovender@bovender.de>
  */
 namespace LinkTitles;
+
+use MediaWiki\MediaWikiServices;
+
 /// @defgroup batch Batch processing
 
 /// @cond
@@ -103,8 +106,8 @@ class Special extends \SpecialPage {
 		// Start the stopwatch
 		$startTime = microtime( true );
 
-		// Connect to the database
-		$dbr = wfGetDB( DB_REPLICA );
+		// Connect to the database (wfGetDB() was removed in MW 1.42+)
+		$dbr = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_REPLICA );
 
 		// Fetch the start index and max number of records from the POST
 		// request.
@@ -256,7 +259,7 @@ EOF
 		}
 
 		$output->addWikiMsg( 'linktitles-special-completed-info', $end,
-			$config->specialPageReloadAfter, $reloads, $pagesPerReload
+			$this->config->specialPageReloadAfter, $reloads, $pagesPerReload
 		);
 	}
 

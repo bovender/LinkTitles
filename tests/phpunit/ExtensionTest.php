@@ -82,7 +82,7 @@ class ExtensionTest extends LinkTitles\TestCase {
 		$user = $userFactory->newAnonymous();
 		$output = $page->getParserOutput( new ParserOptions( $user ), null, true );
 		$lines = explode( "\n", $output->getRawText() );
-		$this->assertRegexp( $expectedOutput, $lines[0] );
+		$this->assertMatchesRegularExpression( $expectedOutput, $lines[0] );
 	}
 
 	public function provideParseOnRenderData() {

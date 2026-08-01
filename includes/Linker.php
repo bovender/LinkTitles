@@ -87,6 +87,9 @@ class Linker {
 		// Iterate through the target page titles
 		foreach( $targets->queryResult as $row ) {
 			$target = new Target( $row->page_namespace, $row->page_title, $this->config );
+			if ( !$target->isValid() ) {
+				continue;
+			}
 
 			// Don't link current page and don't link if the target page redirects
 			// to the current page or has the __NOAUTOLINKTARGET__ magic word

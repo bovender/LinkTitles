@@ -21,6 +21,9 @@
  * @author Daniel Kraus <bovender@bovender.de>
  */
 
+use MediaWiki\MediaWikiServices;
+use MediaWiki\Title\Title;
+
 /**
  * Tests the LinkTitles\Targets class.
  *
@@ -41,7 +44,7 @@ class TargetsTest extends LinkTitles\TestCase {
 
 		// Count number of articles: Inspired by updateArticleCount.php maintenance
 		// script: https://doc.wikimedia.org/mediawiki-core/master/php/updateArticleCount_8php_source.html
-		$dbr = wfGetDB( DB_REPLICA );
+		$dbr = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_REPLICA );
 		$counter = new SiteStatsInit( $dbr );
 		$count = $counter->pages();
 

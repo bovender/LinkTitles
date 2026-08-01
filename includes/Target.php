@@ -78,7 +78,6 @@ class Target {
 	 */
 	public function __construct( $namespace, $title, Config &$config ) {
 		$this->title = MWTitle::makeTitleSafe( $namespace, $title );
-		$this->titleValue = $this->title->getTitleValue();
 		$this->config = $config;
 
 		// Use unicode character properties rather than \b escape sequences
@@ -87,6 +86,18 @@ class Target {
 		// --enable-unicode-properties
 		( $config->wordStartOnly ) ? $this->wordStart = '(?<!\pL|\pN)' : $this->wordStart = '';
 		( $config->wordEndOnly ) ? $this->wordEnd = '(?!\pL|\pN)' : $this->wordEnd = '';
+	}
+
+	/**
+	 * Whether the title could be resolved.
+	 *
+	 * A row from the page table should always yield a valid title, but this
+	 * guards against edge cases where MWTitle::makeTitleSafe() returns null
+	 * (e.g. a namespace that is no longer registered).
+	 * @return boolean
+	 */
+	public function isValid() {
+		return $this->title !== null;
 	}
 
 	/**
