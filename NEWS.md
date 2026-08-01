@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
 
+## [9.0.0][] - 2026-08-01
+
+This release was developed with the assistance of Claude (Anthropic).
+
+### Changed
+
+- The minimum required version of MediaWiki is now 1.39 (verified by testing
+  against 1.35 through 1.46; older versions fail with a fatal type error
+  since MediaWiki core did not yet pass `MediaWiki\Title\Title` objects to
+  hooks).
+- The Docker-based test environment now targets MediaWiki 1.46 (current
+  stable), and CI (GitHub Actions) now builds and runs the test suite on
+  every push and pull request.
+
+### Fixed
+
+- Fixed a fatal "Creation of dynamic property" error on PHP 8.2+
+  (`Target::$titleValue`).
+- Replaced `wfGetDB()`, which was removed in MediaWiki 1.42, with
+  `MediaWikiServices` in `Special.php` and in the test suite.
+- Fixed a longstanding undefined-variable bug in
+  `Special::addCompletedInfo()`.
+- A page-table row that cannot be resolved to a valid title (e.g. because
+  its namespace was later deregistered) no longer crashes the whole
+  save/render pipeline; it is now skipped.
+- Fixed a test-isolation bug where a stale internal cache could leak
+  between test classes.
+
 ## [8.1.2][] - 2024-11-22
 
 ### Fixed
@@ -83,6 +111,7 @@ For changes prior to version 6.0.0, please see [`NEWS.old`](news.old).
   constant (DB_SLAVE was renamed to DB_REPLICA). NOTE that the minimum
   required version of MediaWiki is now 1.28 (which is an obsolete version).
 
+[9.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v9.0.0
 [8.1.2]: https://github.com/bovender/LinkTitles/releases/tag/v8.1.2
 [8.1.1]: https://github.com/bovender/LinkTitles/releases/tag/v8.1.1
 [8.1.0]: https://github.com/bovender/LinkTitles/releases/tag/v8.1.0

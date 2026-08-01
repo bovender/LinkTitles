@@ -11,7 +11,7 @@
 [MediaWiki extension](https://www.mediawiki.org/wiki/Extension:LinkTitles) that
 automatically adds links to words that match titles of existing pages.
 
-Minimum requirement: MediaWiki version **1.35**.
+Minimum requirement: MediaWiki version **1.39**.
 
 ## Table of contents
 
@@ -76,6 +76,7 @@ are fixed.
 
 Version | Date | Major changes ||
 -|-|-|-
+9 | 08-2026 | Minimum required version is 1.39. | [Details][v9.0.0]
 8 | 04-2021 | Minimum required version is 1.35. | [Details][v8.0.0]
 7 | 12-2020 | Minimum required version is 1.32. |
 6 | 12-2019 | Renamed deprecated MW constant for compatibility with MW version 1.34, minimum required version is 1.28. | [Details][v6.0.0]
@@ -85,6 +86,7 @@ Version | Date | Major changes ||
 2 | 11-2013 | Introduced smart mode | [Details][2.0.0]
 1 | 05-2012 | First stable release |
 
+[v9.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v9.0.0
 [v8.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v8.0.0
 [v6.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v6.0.0
 [v6.0.0]: https://github.com/bovender/LinkTitles/releases/tag/v6.0.0
